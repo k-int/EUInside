@@ -45,6 +45,7 @@
               <li<%= request.forwardURI == "${createLink(uri: '/')}" ? ' class="active"' : '' %>><a href="${createLink(uri: '/')}">Home</a></li>
               <li<%= request.forwardURI.startsWith("${createLink(uri: '/function')}") ? ' class="active"' : '' %>><a href="${createLink(uri: '/function')}">Functions</a></li>
               <li<%= request.forwardURI.startsWith("${createLink(uri: '/import')}") ? ' class="active"' : '' %>><a href="${createLink(uri: '/import')}">Import</a></li>
+              <li<%= request.forwardURI.startsWith("${createLink(uri: '/lookup')}") ? ' class="active"' : '' %>><a href="${createLink(uri: '/lookup')}">Lookup</a></li>
             </ul>
           </div>
 
@@ -59,7 +60,7 @@
 
       <footer>
         <span class="pull-right">&copy; Knowledge Integration Ltd 2013</span>
-        <span><b>Europeana Inside ECK Core prototype</b> <i>Simpler uploading of resources to Europeana inside the Collections Management System</i></span>
+        <span><b>Europeana Inside ECK Core prototype</b> <i>Simplified uploading of resources to Europeana Inside the Collections Management System</i></span>
       </footer>
     </div>
 

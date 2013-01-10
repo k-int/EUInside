@@ -7,6 +7,8 @@ class ImportController {
 	// Ensure save only responds to POST requests
 	static allowedMethods = [save: 'POST'];
 	
+	def importService;
+	
 	/**
 	 * Simple index action just to provide instructions on what to do
 	 * in HTML format
@@ -36,7 +38,7 @@ class ImportController {
 		
 		def cmsId = params.cmsId;
 		def persistentId = params.persistentId;
-		// TODO - get the file too..
+		def metadataFile = request.getFile("metadataFile");
 
 		// Set up the response to be returned
 		def responseVal = [:];
@@ -53,15 +55,32 @@ class ImportController {
 			okToContinue = false;
 			responseMessages.add("A persistent ID is required and has not been specified");
 		}
+		if ( !metadataFile || metadataFile.isEmpty() ) {
+			okToContinue = false;
+			responseMessages.add("A non-empty metadata file is required and has not been provided");
+		}
 		
 		if ( okToContinue ) {
+
+			def savedRecordInfo = importService.storeMetadata(cmsId, persistentId, metadataFile.bytes);
 			
-			// TODO - actually do something about storing the uploaded file, etc.
+			log.debug("savedRecordInfo.successful = " + savedRecordInfo.successful);
 			
-			responseVal.success = true;
-			responseVal.messages = [];
-			responseVal.messages.add("Metadata record successfully imported");
-			responseVal.eckId = System.currentTimeMillis();
+			if ( savedRecordInfo.successful == true ) {
+				responseVal.success = true;
+				responseVal.messages = [];
+				responseVal.messages.add("Metadata record successfully imported");
+				responseVal.eckId = savedRecordInfo.record.id;
+			} else {
+				// Something's gone wrong with the save - complain
+				responseVal.success = false;
+				responseVal.messages = [];
+				responseVal.messages.add("Something has gone wrong with saving the metadata");
+				savedRecordInfo.messages.each() {
+					responseVal.messages.add(it);
+				}
+				responseVal.eckId = 0l;
+			}
 		} else {
 			// Can't continue as we don't have the required information - set up the return information
 			// with this fact so that it can be returned as appropriate

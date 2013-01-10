@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="layout" content="bootstrap"/>
-    <title>ECKCore - Record import / update submission form</title>
+    <title>ECKCore - Record lookup search form</title>
   </head>
 
   <body>
@@ -12,13 +12,13 @@
 
         <div class="hero-unit row">
           <div class="page-header span12">
-            <h1>Import / update record</h1>
+            <h1>Lookup record</h1>
           </div>
         </div>
         
         <div class="row">
           <div class="span12">
-            <form id="importForm" name="importForm" action="save" method="POST" enctype="multipart/form-data">
+            <form id="lookupForm" name="lookupForm" action="show" method="POST" >
                 <table>
                     <tr>
                         <th>CMS ID:</th>
@@ -29,12 +29,12 @@
                         <td><input type="text" name="persistentId" id="persistentId"/></td>
                     </tr>
                     <tr>
-                        <th>Metadata file:</th>
-                        <td><input type="file" name="metadataFile" id="metadataFile"/></td>
+                        <th>ECK ID:</th>
+                        <td><input type="text" name="eckId" id="eckId"/></td>
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <input type="button" class="btn btn-primary" name="importSubmit" id="importSubmit" value="Import"/>
+                            <input type="button" class="btn btn-primary" name="lookupSubmit" id="lookupSubmit" value="Lookup"/>
                         </td>
                     </tr>
                 </table>
@@ -60,20 +60,20 @@
     
     <script type="text/javascript">
 
-        $("#importSubmit").click(function() {
+        $("#lookupSubmit").click(function() {
 
             var responseType = $("#responseType").val();
-            var action = "save";
+            var action = "show";
             
             if ( responseType == "html" ) {
                 // Default action ok
             }
             if ( responseType == "json" ) {
-                action = "save.json";
+                action = "show.json";
             }
 
-            $("#importForm").attr("action", action);
-            $("#importForm").submit();
+            $("#lookupForm").attr("action", action);
+            $("#lookupForm").submit();
 
             return false;
         });

@@ -6,12 +6,16 @@ class Record {
 	String cmsId;
 	// The generated persistent ID for the record
 	String persistentId;
+	// The actual contents of the record
+	byte[] recordContents;
+	
 	// Has the record been deleted? (true for deleted, not-true for live record)
 	Boolean deleted;
 	
     static constraints = {
 		cmsId 				nullable: false
 		persistentId 		nullable: false
-		deleted				nullable: true		
+		deleted				nullable: true	
+		recordContents		nullable: true, maxSize: 10 * 1024 * 1024 
     }
 }
