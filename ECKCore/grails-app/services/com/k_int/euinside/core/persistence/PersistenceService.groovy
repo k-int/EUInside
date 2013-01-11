@@ -94,13 +94,25 @@ class PersistenceService {
 		return retval;
 	}
 	
-	// TODO - ADD JAVADOC...
+	/**
+	 * Lookup all records that have the specified ID - whatever type of ID matches
+	 * @param id The id to look for whatever type of ID
+	 * @return Set<Record> the set of records that match the given search
+	 */
 	def Set<Record> lookupRecords(id) {
 		log.debug("PersistenceService::lookupRecords called with id: " + id);
 		
 		return lookupRecords(id, id, id);
 	}
 	
+	/**
+	 * Lookup all records that match any of the given IDs making sure that the identifiers
+	 * only match the specified type
+	 * @param cmsId The CMS id to look for
+	 * @param persistentId The persistent ID to look for
+	 * @param eckId The ECK assigned ID to look for
+	 * @return Set<Record> the set of records that match the given search
+	 */
 	def Set<Record> lookupRecords(cmsId, persistentId, eckId) {
 		
 		def Set<Record> retval = new LinkedHashSet<Record>();

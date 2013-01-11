@@ -1,5 +1,9 @@
 package com.k_int.euinside.core.upload
 
+import com.k_int.euinside.core.functions.ArgumentDefinition
+import com.k_int.euinside.core.functions.MethodDefinition
+import com.k_int.euinside.core.functions.ModuleDefinition
+
 import grails.converters.JSON
 
 class ImportController {
@@ -97,20 +101,39 @@ class ImportController {
 	}
 	
 	/**
-	 * Pull together and return everything we know about an uploaded record by its ID 
-	 * in either HTML or JSON depending on the request
-	 * @return Information about the specified record in HTML or JSON
+	 * Method to specify the methods, etc. provided by this controller for use
+	 * in the function listing section of the system
+	 * 
+	 * @return Description of the 'module' and its available methods
 	 */
-	def show() {
-		log.debug("ImportController::show method called with cms id: " + params.cmsId + " persistent id: " + params.persistentId + " and eck ID: " + params.eckId);
+	def static identify() {
 		
-		def responseVal = [:];
+		// Set up the index method
+		def indexMethodDesc = new MethodDefinition();
+		indexMethodDesc.methodName = "index";
+
+		// Set up the create method
+		def createMethodDesc = new MethodDefinition();
+		createMethodDesc.methodName = "create";
+
+		// Set up the save method
+		def saveMethodDesc = new MethodDefinition();
+		saveMethodDesc.methodName = "save";
+		def cmsIdArg = new ArgumentDefinition("cmsId", "String", true);
+		def persistentIdArg = new ArgumentDefinition("persistentId", "String", true);
+		def metadataFileArg = new ArgumentDefinition("metadataFile", "File", true);
+		saveMethodDesc.arguments.add(cmsIdArg);
+		saveMethodDesc.arguments.add(persistentIdArg);
+		saveMethodDesc.arguments.add(metadataFileArg);
 		
-		// TODO
 		
-		withFormat {
-			html responseVal
-			json { render responseVal as JSON }
-		}
+		// Set up the 'module' description and add the various methods to it
+		def importModule = new ModuleDefinition();
+		importModule.name = "Import";
+		importModule.methodDefinitions.add(indexMethodDesc);
+		importModule.methodDefinitions.add(createMethodDesc);
+		importModule.methodDefinitions.add(saveMethodDesc);
+		
+		return importModule;
 	}
 }

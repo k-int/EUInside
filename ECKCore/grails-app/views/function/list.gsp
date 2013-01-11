@@ -33,14 +33,19 @@
                     <thead>
 	                <tr>
 	                    <th>Method name</th>
-	                    <th>Arguments</th>
-	                    <td colspan="2" class="emptyCell"/>
+	                    <th colspan="3">Arguments</th>
 	                </tr>
 	                <tr>
 	                    <td class="emptyCell"/>
-	                    <th>Name</th>
-	                    <th>Type</th>
-	                    <th>Required?</th>
+	                    <td colspan="3">
+	                       <table class="table table-condensed">
+	                           <tr>
+			                        <th width="33%">Name</th>
+			                        <th width="33%">Type</th>
+			                        <th width="33%">Required?</th>
+	                           </tr>
+	                       </table>
+	                    </td>
 	                </tr>
                 </thead>
                 <tbody>
@@ -56,9 +61,9 @@
                        
                         <g:each in="${aMethod.arguments}" var="anArg">
 	                        <tr>
-	                            <td>${anArg.argumentName}</td>
-	                            <td>${anArg.argumentType}</td>
-	                            <td>${anArg.required}</td>
+	                            <td width="33%">${anArg.argumentName}</td>
+	                            <td width="33%">${anArg.argumentType}</td>
+	                            <td width="33%">${anArg.required}</td>
 	                        </tr>
                         </g:each>
                                 </table>

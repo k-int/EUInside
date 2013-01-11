@@ -1,5 +1,8 @@
 package com.k_int.euinside.core.lookup
 
+import com.k_int.euinside.core.functions.ArgumentDefinition
+import com.k_int.euinside.core.functions.MethodDefinition
+import com.k_int.euinside.core.functions.ModuleDefinition
 import grails.converters.JSON
 
 class LookupController {
@@ -59,5 +62,43 @@ class LookupController {
 			html { return [responseVal: responseVal] }
 			json { render responseVal as JSON }
 		}
+	}
+	
+	/**
+	 * Method to specify the methods, etc. provided by this controller for use
+	 * in the function listing section of the system
+	 * 
+	 * @return Description of the 'module' and its available methods
+	 */
+	def static identify() {
+		
+		// Set up the index method
+		def indexMethodDesc = new MethodDefinition();
+		indexMethodDesc.methodName = "index";
+
+		// Set up the search method
+		def searchMethodDesc = new MethodDefinition();
+		searchMethodDesc.methodName = "search";
+
+		// Set up the show method
+		def showMethodDesc = new MethodDefinition();
+		showMethodDesc.methodName = "show";
+		
+		def cmsIdArg = new ArgumentDefinition("cmsId", "String", false);
+		def persistentIdArg = new ArgumentDefinition("persistentId", "String", false);
+		def eckIdArg = new ArgumentDefinition("eckId", "String", false);
+		showMethodDesc.arguments.add(cmsIdArg);
+		showMethodDesc.arguments.add(persistentIdArg);
+		showMethodDesc.arguments.add(eckIdArg);
+		
+		
+		// Set up the 'module' description and add the various methods to it
+		def lookupModule = new ModuleDefinition();
+		lookupModule.name = "Lookup";
+		lookupModule.methodDefinitions.add(indexMethodDesc);
+		lookupModule.methodDefinitions.add(searchMethodDesc);
+		lookupModule.methodDefinitions.add(showMethodDesc);
+		
+		return lookupModule;
 	}
 }

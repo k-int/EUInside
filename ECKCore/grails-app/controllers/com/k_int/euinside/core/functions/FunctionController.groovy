@@ -4,6 +4,8 @@ import grails.converters.JSON
 
 class FunctionController {
 
+	def internalFunctionsService;
+	
 	/**
 	 * Index method - simply here to redirect to the list() method
 	 */
@@ -20,27 +22,22 @@ class FunctionController {
 	def list() {
 		log.debug("FunctionController::list method called");
 		
-		def args1 = ["argumentName":"arg1", "argumentType":"string", "required": true];
-		def args2 = ["argumentName":"arg2", "argumentType":"integer", "required": false];
-		def args3 = ["argumentName":"arg3", "argumentType":"boolean", "required": false];
-		def args4 = ["argumentName":"arg4", "argumentType":"boolean", "required": false];
+		// Use the functions service to build up the list
+		def definitions = internalFunctionsService.list();
 		
-		def method1 = ["methodName": "method1-1", "arguments": [args1,args2,args3]];
-		def method2 = ["methodName": "method1-2", "arguments": [args1,args3]];
-		def method3 = ["methodName": "method1-3", "arguments": [args2, args4]];
-		def method4 = ["methodName": "method1-4", "arguments": [args1,args4]];
+//		// TODO  - what to do about call signatures, etc.?
 		
-		def module1 = ["name":"module1", "methods":[method1,method2,method3,method4]]
-		def module2 = ["name":"module2", "methods":[method2, method4]]
-		def module3 = ["name":"module3", "methods":[method3,method1]]
-
-		def availableCalls = [module1, module2, module3]		
-//		def availableCalls = [module1]		
-		// TODO  - what to do about call signatures, etc.?
+		// Convert the data into the relevant JSON that we want to return for HTML use
+		// as we don't want to rely on it serialising the objects directly.
+		def definitionsAsJson = definitions as JSON
+		def asString = definitionsAsJson.toString();
+		def parsedJson = JSON.parse(asString);
+		
+		log.debug("definitionsAsJson as string: " + asString);
 		
 		withFormat {
-			html { return [availableCalls: availableCalls] }
-			json { render availableCalls as JSON }
+			html { return [availableCalls: parsedJson] }
+			json { render definitions as JSON }
 		}
 	}
 	
@@ -63,4 +60,37 @@ class FunctionController {
 		}
 		
 	}
-}
+	
+	/**
+	 * Method to specify the methods, etc. provided by this controller for use
+	 * in the function listing section of the system
+	 * 
+	 * @return Description of the 'module' and its available methods
+	 */
+	def static identify() {
+		
+		// Set up the index method
+		def indexMethodDesc = new MethodDefinition();
+		indexMethodDesc.methodName = "index";
+
+		// Set up the list method
+		def listMethodDesc = new MethodDefinition();
+		listMethodDesc.methodName = "list";
+
+		// Set up the call method
+		def callMethodDesc = new MethodDefinition();
+		callMethodDesc.methodName = "call";
+		
+		def cmsIdArg = new ArgumentDefinition("TODO", "TODO", true);
+		callMethodDesc.arguments.add(cmsIdArg);
+		
+		
+		// Set up the 'module' description and add the various methods to it
+		def lookupModule = new ModuleDefinition();
+		lookupModule.name = "Lookup";
+		lookupModule.methodDefinitions.add(indexMethodDesc);
+		lookupModule.methodDefinitions.add(listMethodDesc);
+		lookupModule.methodDefinitions.add(callMethodDesc);
+		
+		return lookupModule;
+	}}
