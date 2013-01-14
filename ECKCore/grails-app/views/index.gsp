@@ -25,6 +25,7 @@
             <ul>
                 <li><g:link controller="function" action="list">List / call functions</g:link></li>
                 <li><g:link controller="import" action="index">Import / update record</g:link></li>
+                <li><g:link controller="lookup" action="index">Lookup / retrieve imported record</g:link></li>
             </ul>
           </div>
 
