@@ -18,7 +18,11 @@ class InternalFunctionsService {
 	def init() {
 		log.debug("InternalFunctionsService::init called");
 	}
-	
+
+	/**
+	 * Compile and return the list of all available methods from the various ECK Core internal modules	
+	 * @return The list of module definitions and their method definitions
+	 */
 	def list() {
 		def importResponse = ImportController.identify();
 		def lookupResponse = LookupController.identify();
@@ -35,6 +39,4 @@ class InternalFunctionsService {
 		return retval;
 	}
 	
-	
-	// TODO
 }

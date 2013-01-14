@@ -24,9 +24,7 @@ class FunctionController {
 		
 		// Use the functions service to build up the list
 		def definitions = internalFunctionsService.list();
-		
-//		// TODO  - what to do about call signatures, etc.?
-		
+				
 		// Convert the data into the relevant JSON that we want to return for HTML use
 		// as we don't want to rely on it serialising the objects directly.
 		def definitionsAsJson = definitions as JSON
