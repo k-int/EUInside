@@ -51,8 +51,13 @@
                 <tbody>
                     <g:each in="${it.methods}" var="aMethod">
                         <tr>
-                            <td>${aMethod.methodName}</td>
-                            <td colspan="3"/>
+                            <td colspan="4">
+                                <h5>${aMethod.methodName}</h5>
+                                <ul>
+                                    <li><b>Return type: </b>${aMethod.returnType}</li>
+                                    <li><b>Description: </b>${aMethod.description}</li>
+                                </ul>
+                            </td>
                         </tr>
                         <tr>
                             <td/>

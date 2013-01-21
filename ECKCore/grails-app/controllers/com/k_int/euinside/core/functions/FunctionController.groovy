@@ -1,5 +1,9 @@
 package com.k_int.euinside.core.functions
 
+import com.k_int.euinside.shared.model.functions.ArgumentDefinition;
+import com.k_int.euinside.shared.model.functions.MethodDefinition;
+import com.k_int.euinside.shared.model.functions.ModuleDefinition;
+
 import grails.converters.JSON
 
 class FunctionController {
@@ -17,7 +21,7 @@ class FunctionController {
 	/**
 	 * List available functions that are provided by modules (either internal to the core
 	 * or external). Returns either html or json depending on requested response format	
-	 * @return Tje list of available functions
+	 * @return The available functions
 	 */
 	def list() {
 		log.debug("FunctionController::list method called");
@@ -68,19 +72,17 @@ class FunctionController {
 	def static identify() {
 		
 		// Set up the index method
-		def indexMethodDesc = new MethodDefinition();
-		indexMethodDesc.methodName = "index";
+		def indexMethodDesc = new MethodDefinition("index",null,null, null);
 
 		// Set up the list method
-		def listMethodDesc = new MethodDefinition();
-		listMethodDesc.methodName = "list";
+		def listMethodDesc = new MethodDefinition("list", null, null, null);
 
 		// Set up the call method
-		def callMethodDesc = new MethodDefinition();
-		callMethodDesc.methodName = "call";
-		
+		def callArgs = new LinkedHashSet<ArgumentDefinition>();
 		def cmsIdArg = new ArgumentDefinition("TODO", "TODO", true);
-		callMethodDesc.arguments.add(cmsIdArg);
+		callArgs.add(cmsIdArg);
+
+		def callMethodDesc = new MethodDefinition("call", callArgs, null, null);
 		
 		
 		// Set up the 'module' description and add the various methods to it

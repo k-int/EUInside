@@ -1,8 +1,8 @@
 package com.k_int.euinside.core.upload
 
-import com.k_int.euinside.core.functions.ArgumentDefinition
-import com.k_int.euinside.core.functions.MethodDefinition
-import com.k_int.euinside.core.functions.ModuleDefinition
+import com.k_int.euinside.shared.model.functions.ArgumentDefinition;
+import com.k_int.euinside.shared.model.functions.MethodDefinition;
+import com.k_int.euinside.shared.model.functions.ModuleDefinition;
 
 import grails.converters.JSON
 
@@ -109,23 +109,21 @@ class ImportController {
 	def static identify() {
 		
 		// Set up the index method
-		def indexMethodDesc = new MethodDefinition();
-		indexMethodDesc.methodName = "index";
+		def indexMethodDesc = new MethodDefinition("index", null, null, null);
 
 		// Set up the create method
-		def createMethodDesc = new MethodDefinition();
-		createMethodDesc.methodName = "create";
+		def createMethodDesc = new MethodDefinition("create", null, null, null);
 
 		// Set up the save method
-		def saveMethodDesc = new MethodDefinition();
-		saveMethodDesc.methodName = "save";
 		def cmsIdArg = new ArgumentDefinition("cmsId", "String", true);
 		def persistentIdArg = new ArgumentDefinition("persistentId", "String", true);
 		def metadataFileArg = new ArgumentDefinition("metadataFile", "File", true);
-		saveMethodDesc.arguments.add(cmsIdArg);
-		saveMethodDesc.arguments.add(persistentIdArg);
-		saveMethodDesc.arguments.add(metadataFileArg);
-		
+		def args = new LinkedHashSet<ArgumentDefinition>();
+		args.add(cmsIdArg);
+		args.add(persistentIdArg);
+		args.add(metadataFileArg);
+
+		def saveMethodDesc = new MethodDefinition("save", args, null, null);
 		
 		// Set up the 'module' description and add the various methods to it
 		def importModule = new ModuleDefinition();

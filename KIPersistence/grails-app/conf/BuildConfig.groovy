@@ -12,14 +12,12 @@ grails.project.dependency.resolution = {
         // specify dependency exclusions here; for example, uncomment this to disable ehcache:
         // excludes 'ehcache'
     }
-    log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
 
-		mavenRepo "http://snapshots.repository.codehaus.org/"
-		
         grailsPlugins()
         grailsHome()
         grailsCentral()
@@ -32,19 +30,17 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
-		mavenRepo "https://oss.sonatype.org/content/repositories/releases"
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-
-        runtime 'mysql:mysql-connector-java:5.1.21'
+	
+         runtime 'mysql:mysql-connector-java:5.1.21'
     }
 
     plugins {
         runtime ":hibernate:$grailsVersion"
-        runtime ":jquery:1.8.3"
-        runtime ":resources:1.2.RC2"
-
+        runtime ":jquery:1.8.0"
+        runtime ":resources:1.1.6"
 
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"
@@ -53,8 +49,11 @@ grails.project.dependency.resolution = {
 
         build ":tomcat:$grailsVersion"
 
+        runtime ":database-migration:1.1"
 
+        compile ':cache:1.0.0'
     }
+	
+	
 }
-
 grails.plugin.location.SharedModelLayerPlugin = "../SharedModelLayerPlugin"

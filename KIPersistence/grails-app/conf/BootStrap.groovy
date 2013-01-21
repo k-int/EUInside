@@ -4,6 +4,8 @@ import com.k_int.euinside.shared.model.functions.ArgumentDefinition;
 import com.k_int.euinside.shared.model.functions.MethodDefinition;
 import com.k_int.euinside.shared.model.functions.ModuleDefinition;
 
+import com.k_int.euinside.core.datamodel.Record;
+
 class BootStrap {
 
     def init = { servletContext ->
@@ -30,7 +32,6 @@ class BootStrap {
 					argData.argumentName = anArg.argName;
 					argData.argumentType = anArg.argType;
 					argData.required = anArg.required;
-					
 					// Add this argument to the array
 					argArray.add(argData);
 				}
