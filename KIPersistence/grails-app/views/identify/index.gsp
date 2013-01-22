@@ -44,7 +44,7 @@
                     <g:each in="${availableCalls.methods}" var="aMethod">
                         <tr>
                             <td colspan="4">
-                                <h5>${aMethod.methodName}</h5>
+                                <h5><a href="${availableCalls.name}/${aMethod.methodName}.json?">${aMethod.methodName}</a></h5>
                                 <ul>
                                     <li><b>Return type: </b>${aMethod.returnType}</li>
                                     <li><b>Description: </b>${aMethod.description}</li>
@@ -57,16 +57,16 @@
                             <td colspan="3">
                                 <table class="table table-condensed"> 
                        
-                        <g:each in="${aMethod.arguments}" var="anArg">
-                            <tr>
-                                <td width="33%">${anArg.argumentName}</td>
-                                <td width="33%">${anArg.argumentType}</td>
-                                <td width="33%">${anArg.required}</td>
-                            </tr>
-                        </g:each>
+			                        <g:each in="${aMethod.arguments}" var="anArg">
+			                            <tr>
+			                                <td width="33%">${anArg.argumentName}</td>
+			                                <td width="33%">${anArg.argumentType}</td>
+			                                <td width="33%">${anArg.required}</td>
+			                            </tr>
+			                        </g:each>
                                 </table>
-                                </td>
-                                </tr>
+                            </td>
+                        </tr>
                     </g:each>
                 </tbody>
                 </table>

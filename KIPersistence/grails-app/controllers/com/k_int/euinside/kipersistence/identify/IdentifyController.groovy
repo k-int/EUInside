@@ -14,14 +14,8 @@ class IdentifyController {
 	
     def index() { 
 
-		def methods = persistenceService.identify();
+		def persistenceModule = persistenceService.identify();
 		
-		def persistenceModule = new ModuleDefinition();
-		persistenceModule.name = "KIPersistence";
-		persistenceModule.methodDefinitions = methods;
-		
-		// TODO - what actually needs to go here?
-				
 		// Convert the data into the relevant JSON that we want to return for HTML use
 		// as we don't want to rely on it serialising the objects directly.
 		def persistenceAsJson = persistenceModule as JSON

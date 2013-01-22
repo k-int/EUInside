@@ -59,7 +59,7 @@
 
       <footer>
         <span class="pull-right">&copy; Knowledge Integration Ltd 2013</span>
-        <span><b>Europeana Inside Temp persistence prototype</b> <i>Simplified uploading of resources to Europeana Inside the Collections Management System</i></span>
+        <span><b>Europeana Inside Temp persistence prototype</b> <i>K-Int's temporary persistence module for use in the ECK prototype</i></span>
       </footer>
     </div>
 

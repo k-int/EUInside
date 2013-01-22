@@ -1,5 +1,8 @@
 package com.k_int.euinside.kipersistence.persistence
 
+import com.k_int.euinside.shared.model.functions.ArgumentDefinition
+import com.k_int.euinside.shared.model.functions.MethodDefinition
+import com.k_int.euinside.shared.model.functions.ModuleDefinition
 import grails.converters.JSON
 
 /**
@@ -250,7 +253,114 @@ class PersistenceController {
 		}
 	}
 	
-	// TODO - add the identify method here instead of in the service... (Remember to change the save / update specifications)
+	/**
+	 * construct and return information about the methods provided by this service
+	 * @return Set<MethodDefinition> The set of methods that this service provides
+	 */
+	def static identify() {
+		
+		Set<MethodDefinition> methods = new LinkedHashSet<MethodDefinition>();
+		
+		//*********************
+		// Lookup methods
+		//*********************
+		
+		// By ECK ID
+		def lookupEckIdArg = new ArgumentDefinition("eckId", "String", true);
+		def args = new LinkedHashSet<ArgumentDefinition>();
+		args.add(lookupEckIdArg);
+		
+		def lookupRecordByEckIdMethod = new MethodDefinition("lookupRecordByEckId", args, "Record", "Lookup a record by its assigned ECK ID");
+
+		methods.add(lookupRecordByEckIdMethod);
+		
+		// By CMS ID
+		def lookupCmsIdArg = new ArgumentDefinition("cmsId", "String", true);
+		def lookupCmsArgs = new LinkedHashSet<ArgumentDefinition>();
+		lookupCmsArgs.add(lookupCmsIdArg);
+		
+		def lookupRecordByCmsIdMethod = new MethodDefinition("lookupRecordByCmsId", lookupCmsArgs, "Record", "Lookup a record by its assigned CMS ID");
+		
+		methods.add(lookupRecordByCmsIdMethod);
+		
+		// By Persistent ID
+		def lookupPersistentIdArg = new ArgumentDefinition("persistentId", "String", true);
+		def lookupPersistArgs = new LinkedHashSet<ArgumentDefinition>();
+		lookupPersistArgs.add(lookupPersistentIdArg);
+		
+		def lookupRecordByPersistentIdMethod = new MethodDefinition("lookupRecordByPersistentId", lookupPersistArgs, "Record", "Lookup a record by its assigned persistent ID");
+		
+		methods.add(lookupRecordByPersistentIdMethod);
+		
+		// By type of ID
+		def lookupIdArg = new ArgumentDefinition("id", "String", true);
+		def lookupTypeArg = new ArgumentDefinition("idType", "String", true);
+		def lookupByTypeArgs = new LinkedHashSet<ArgumentDefinition>();
+		lookupByTypeArgs.add(lookupIdArg);
+		lookupByTypeArgs.add(lookupTypeArg);
+		
+		def lookupRecordWithTypeMethod = new MethodDefinition("lookupRecord", lookupByTypeArgs, "Record", "Lookup a record by its ID with the given type");
+		methods.add(lookupRecordWithTypeMethod);
+		
+		// By any type of ID
+		def lookupJustIdArg = new ArgumentDefinition("id", "String", true);
+		def lookupArgs = new LinkedHashSet<ArgumentDefinition>();
+		lookupArgs.add(lookupJustIdArg);
+		
+		def lookupRecordAnyIdTypeMethod = new MethodDefinition("lookupRecord", lookupArgs, "Set<Record>", "Lookup a record or records with any type of identifier");
+		methods.add(lookupRecordAnyIdTypeMethod);
+		
+		// Lookup by multiple identifiers
+		def optionalCmsIdArg = new ArgumentDefinition("cmsId", "String", false);
+		def optionalPersistentIdArg = new ArgumentDefinition("persistentId", "String", false);
+		def optionalEckIdArg = new ArgumentDefinition("eckId", "String", false);
+		def lookupMultiArgs = new LinkedHashSet<ArgumentDefinition>();
+		lookupMultiArgs.add(optionalCmsIdArg);
+		lookupMultiArgs.add(optionalPersistentIdArg);
+		lookupMultiArgs.add(optionalEckIdArg);
+		
+		def lookupWithMultipleIdsMethod = new MethodDefinition("lookupRecords", lookupMultiArgs, "Set<Record>", "Lookup a record or records with multiple identifiers of different types");
+		methods.add(lookupWithMultipleIdsMethod);
+		
+		//********************
+		// Creation methods
+		//********************
+		def createArgs = new LinkedHashSet<ArgumentDefinition>();
+		def recordCreationMethod = new MethodDefinition("createRecord", createArgs, "Record", "Create a new empty record");
+		methods.add(recordCreationMethod);
+		
+		//********************
+		// Save / update methods
+		//********************
+		
+		// Save method
+		def saveRecordArg = new ArgumentDefinition("record", "Record", true);
+		def saveArgs = new LinkedHashSet<ArgumentDefinition>();
+		saveArgs.add(saveRecordArg);
+		
+		// TODO FIXME Change the above arguments for the save / update methods
+		
+		def saveRecordMethod = new MethodDefinition("saveRecord", saveArgs, "void", "Save a record in the persistence layer");
+		methods.add(saveRecordMethod);
+		
+		// Update method
+		def updateRecordMethod = new MethodDefinition("updateRecord", saveArgs, "void", "Update a record in the persistence layer");
+		methods.add(updateRecordMethod);
+		
+		// Save or update method
+		def saveOrUpdateRecordMethod = new MethodDefinition("saveOrUpdateRecord", saveArgs, "void", "Update an existing record in the persistence layer or save it if one does not already exist");
+		methods.add(saveOrUpdateRecordMethod);
+		
+		// TODO - add more methods as they are implemented above..
+		
+		
+		// Set up the overall persistence module information
+		def retval = new ModuleDefinition();
+		retval.name = "/KIPersistence/persistence";
+		retval.methodDefinitions = methods;
+		
+		return retval;
+	}
 	
-    // FIXME - Really add the identify method
+	
 }
