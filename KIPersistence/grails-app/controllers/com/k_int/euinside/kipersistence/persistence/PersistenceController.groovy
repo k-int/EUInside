@@ -103,13 +103,36 @@ class PersistenceController {
 	} 
 	
 	
-	def lookupRecords() {
+	def lookupRecordsAnyIdType() {
 		
 		def id = params.id;
 		
 		if ( id != null ) {
 			// Id specified - ok to continue
-			def records = persistenceService.lookupRecords(id);
+			def records = persistenceService.lookupRecordsAnyIdType(id);
+			
+			def htmlResp = [records: records];
+			
+			withFormat {
+				html { return htmlResp; }
+				json { render records as JSON }
+			}
+			
+		} else {
+			// No ID - can't continue - return an error
+			response.sendError(400, "An id must be specified when calling this function");
+		}
+	}
+	
+	def lookupRecords() {
+		
+		def eckId = params.eckId;
+		def cmsId = params.cmsId;
+		def persistentId = params.persistentId;
+		
+		if ( eckId != null || cmsId != null || persistentId != null ) {
+			// Id specified - ok to continue
+			def records = persistenceService.lookupRecords(cmsId, persistentId, eckId);
 			
 			def htmlResp = [records: records];
 			
@@ -266,7 +289,7 @@ class PersistenceController {
 		//*********************
 		
 		// By ECK ID
-		def lookupEckIdArg = new ArgumentDefinition("eckId", "String", true);
+		def lookupEckIdArg = new ArgumentDefinition("eckId", "Long", true);
 		def args = new LinkedHashSet<ArgumentDefinition>();
 		args.add(lookupEckIdArg);
 		
@@ -307,13 +330,13 @@ class PersistenceController {
 		def lookupArgs = new LinkedHashSet<ArgumentDefinition>();
 		lookupArgs.add(lookupJustIdArg);
 		
-		def lookupRecordAnyIdTypeMethod = new MethodDefinition("lookupRecord", lookupArgs, "Set<Record>", "Lookup a record or records with any type of identifier");
+		def lookupRecordAnyIdTypeMethod = new MethodDefinition("lookupRecordsAnyIdType", lookupArgs, "Set<Record>", "Lookup a record or records with any type of identifier");
 		methods.add(lookupRecordAnyIdTypeMethod);
 		
 		// Lookup by multiple identifiers
 		def optionalCmsIdArg = new ArgumentDefinition("cmsId", "String", false);
 		def optionalPersistentIdArg = new ArgumentDefinition("persistentId", "String", false);
-		def optionalEckIdArg = new ArgumentDefinition("eckId", "String", false);
+		def optionalEckIdArg = new ArgumentDefinition("eckId", "Long", false);
 		def lookupMultiArgs = new LinkedHashSet<ArgumentDefinition>();
 		lookupMultiArgs.add(optionalCmsIdArg);
 		lookupMultiArgs.add(optionalPersistentIdArg);
@@ -334,21 +357,31 @@ class PersistenceController {
 		//********************
 		
 		// Save method
-		def saveRecordArg = new ArgumentDefinition("record", "Record", true);
-		def saveArgs = new LinkedHashSet<ArgumentDefinition>();
-		saveArgs.add(saveRecordArg);
+		def cmsIdArg = new ArgumentDefinition("cmsId", "String", true);
+		def persistentIdArg = new ArgumentDefinition("persistentId", "String", true);
+		def deletedArg = new ArgumentDefinition("deleted", "boolean", false);
+		def recordContentsArg = new ArgumentDefinition("recordContents", "byte[]", true); 
 		
-		// TODO FIXME Change the above arguments for the save / update methods
+		def saveArgs = new LinkedHashSet<ArgumentDefinition>();
+		saveArgs.add(cmsIdArg);
+		saveArgs.add(persistentIdArg);
+		saveArgs.add(deletedArg);
+		saveArgs.add(recordContentsArg);
 		
 		def saveRecordMethod = new MethodDefinition("saveRecord", saveArgs, "void", "Save a record in the persistence layer");
 		methods.add(saveRecordMethod);
 		
 		// Update method
-		def updateRecordMethod = new MethodDefinition("updateRecord", saveArgs, "void", "Update a record in the persistence layer");
+		def eckIdArg = new ArgumentDefinition("eckId", "Long", true);
+		def updateArgs = new LinkedHashSet<ArgumentDefinition>();
+		updateArgs.add(eckIdArg);
+		updateArgs.addAll(saveArgs);
+		
+		def updateRecordMethod = new MethodDefinition("updateRecord", updateArgs, "void", "Update a record in the persistence layer");
 		methods.add(updateRecordMethod);
 		
 		// Save or update method
-		def saveOrUpdateRecordMethod = new MethodDefinition("saveOrUpdateRecord", saveArgs, "void", "Update an existing record in the persistence layer or save it if one does not already exist");
+		def saveOrUpdateRecordMethod = new MethodDefinition("saveOrUpdateRecord", updateArgs, "void", "Update an existing record in the persistence layer or save it if one does not already exist");
 		methods.add(saveOrUpdateRecordMethod);
 		
 		// TODO - add more methods as they are implemented above..

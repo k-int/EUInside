@@ -20,6 +20,8 @@ class IdentifyController {
 		// as we don't want to rely on it serialising the objects directly.
 		def persistenceAsJson = persistenceModule as JSON
 		def asString = persistenceAsJson.toString();
+		asString = asString.replace("<","&lt;");
+		asString = asString.replace(">","&gt;");
 		def parsedJson = JSON.parse(asString);
 		
 		log.debug("persistenceAsJson as string: " + asString);

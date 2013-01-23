@@ -8,7 +8,7 @@ import grails.converters.JSON
 
 class LookupController {
 
-	def persistenceService;
+	def kiPersistenceWrapperService;
 	
 	/**
 	 * Simple index action just to provide instructions on what to do
@@ -40,7 +40,8 @@ class LookupController {
 		
 		def responseVal = [:];
 		
-		def records = persistenceService.lookupRecords(params.cmsId, params.persistentId, params.eckId);
+		def records = kiPersistenceWrapperService.lookupRecords(params.cmsId, params.persistentId, params.eckId);
+//		def records = kiPersistenceWrapperService.lookupRecords(params.eckId);
 		
 		def responseRecords = [];
 		records.each() {
@@ -49,8 +50,7 @@ class LookupController {
 			nextResponseRecord.cmsId = it.cmsId;
 			nextResponseRecord.persistentId = it.persistentId;
 			nextResponseRecord.deleted = it.deleted;
-			def tempContents = new String(it.recordContents);
-			nextResponseRecord.recordContents = tempContents; 
+			nextResponseRecord.recordContents = it.recordContents; 
 			
 			responseRecords.add(nextResponseRecord);
 		}

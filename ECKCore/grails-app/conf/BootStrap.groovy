@@ -48,19 +48,19 @@ class BootStrap {
 		
 		// Register the JSON marshaller for a record to ensure that the byte[] record contents
 		// are converted back into a string
-		JSON.registerObjectMarshaller(Record) {
-			def returnArray = [:]
-			
-			returnArray['cmsId'] = it.cmsId;
-			returnArray['persistentId'] = it.persistentId;
-			returnArray['id'] = it.id;
-			returnArray['deleted'] = it.deleted;
-			
-			String tempString = new String(it.recordContents);
-			returnArray['recordContents'] = tempString;
-			
-			return returnArray;
-		}
+//		JSON.registerObjectMarshaller(Record) {
+//			def returnArray = [:]
+//			
+//			returnArray['cmsId'] = it.cmsId;
+//			returnArray['persistentId'] = it.persistentId;
+//			returnArray['id'] = it.id;
+//			returnArray['deleted'] = it.deleted;
+//			
+//			String tempString = new String(it.recordContents);
+//			returnArray['recordContents'] = tempString;
+//			
+//			return returnArray;
+//		}
 		
     }
     def destroy = {

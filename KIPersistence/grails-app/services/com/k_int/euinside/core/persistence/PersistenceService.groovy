@@ -113,7 +113,7 @@ class PersistenceService {
 	 * @param id The id to look for whatever type of ID
 	 * @return Set<Record> the set of records that match the given search
 	 */
-	def Set<Record> lookupRecords(id) {
+	def Set<Record> lookupRecordsAnyIdType(id) {
 		log.debug("PersistenceService::lookupRecords called with id: " + id);
 		
 		return lookupRecords(id, id, id);
