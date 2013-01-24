@@ -52,14 +52,21 @@ class BootStrap {
 		JSON.registerObjectMarshaller(Record) {
 			def returnArray = [:]
 			
-			returnArray['cmsId'] = it.cmsId;
-			returnArray['persistentId'] = it.persistentId;
-			returnArray['id'] = it.id;
-			returnArray['deleted'] = it.deleted;
-			
-			String tempString = new String(it.recordContents);
-			returnArray['recordContents'] = tempString;
-			
+			if ( it != null ) {
+				
+				returnArray['cmsId'] = it.cmsId;
+				returnArray['persistentId'] = it.persistentId;
+				returnArray['id'] = it.id;
+				returnArray['deleted'] = it.deleted;
+				
+				if ( it.recordContents != null ) {
+					String tempString = new String(it.recordContents);
+					returnArray['recordContents'] = tempString;
+				} else {
+					returnArray['recordContents'] = null;
+				} 
+			}
+						
 			return returnArray;
 		}
 		

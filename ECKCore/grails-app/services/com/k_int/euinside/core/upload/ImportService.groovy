@@ -7,74 +7,39 @@ package com.k_int.euinside.core.upload
  */
 class ImportService {
 
-	def persistenceService;
+	def kiPersistenceWrapperService;
 	
 	def storeMetadata(String cmsId, String persistentId, byte[] metadataFileContents) {
 		def retval = [:];
 		
-		def existingRecord = persistenceService.lookupRecord(cmsId, "cms");
+		def existingRecord = kiPersistenceWrapperService.lookupRecord(cmsId, "cms");
 		if ( !existingRecord ) {
-			existingRecord = persistenceService.lookupRecord(persistentId, "persistence");
+			existingRecord = kiPersistenceWrapperService.lookupRecord(persistentId, "persistent");
 		} 
 		
-		if ( existingRecord ) {
+		if ( existingRecord != null && existingRecord.id != null ) {
 			// There's an existing record - update it
 			log.debug("Updating an existing record");
 			
 			existingRecord.recordContents = metadataFileContents;
 			
 			log.debug("About to persist the updated record");
-			def updateData = persistenceService.updateRecord(existingRecord);
+			existingRecord = kiPersistenceWrapperService.updateRecord(existingRecord);
 			
-			def messages = [];
-			
-			if ( updateData.successful == false ) {
-				// An error occurred..
-				messages.add("Unable to update the provided record.");
-				updateData.messages.each() {
-					messages.add(it);
-				}
-			} else {
-				// Saved successfully..
-				messages.add("Record updated successfully");
-				updateData.messages.each() {
-					messages.add(it);
-				}
-			}
-			
-			retval.successful = updateData.successful;
-			retval.messages = messages;
 			retval.record = existingRecord;
 
 		} else {
 			// No existing record - create a new one
 			log.debug("Saving a new record");
 			
-			def newRecord = persistenceService.createRecord();
+			def newRecord = kiPersistenceWrapperService.createRecord();
 			newRecord.cmsId = cmsId;
 			newRecord.persistentId = persistentId;
 			newRecord.recordContents = metadataFileContents
 			
 			log.debug("Saving new record with details set");
-			def saveData = persistenceService.saveRecord(newRecord);
-			def messages = [];
+			newRecord = kiPersistenceWrapperService.saveRecord(newRecord);
 			
-			if ( saveData.successful == false ) {
-				// An error occurred..
-				messages.add("Unable to save the new record");
-				saveData.messages.each() {
-					messages.add(it);
-				}
-			} else {
-				// Saved successfully
-				messages.add("New record saved successfully");
-				saveData.messages.each() {
-					messages.add(it);
-				}
-			}
-			
-			retval.successful = saveData.successful;
-			retval.messages = messages;
 			retval.record = newRecord;
 		}
 		

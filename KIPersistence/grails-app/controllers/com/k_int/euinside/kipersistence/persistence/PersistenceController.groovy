@@ -173,13 +173,25 @@ class PersistenceController {
 			newRecord.deleted = deleted;
 			newRecord.recordContents = recordContents;
 			
-			def record = persistenceService.saveRecord(newRecord);
+			def recordStatus = persistenceService.saveRecord(newRecord);
 			
-			def htmlResp = [record: record];
-			
-			withFormat {
-				html { return htmlResp; }
-				json { render record as JSON }
+			if ( recordStatus.successful ) {
+				// Saved successfully
+				def htmlResp = [record: recordStatus.record];
+				
+				withFormat {
+					html { return htmlResp; }
+					json { render recordStatus.record as JSON }
+				}
+			} else {
+				// Failure during save
+				String errors = "";
+				recordStatus.messages.each() { aMessage ->
+					if ( !"".equals(errors) )
+						errors.append("; ");
+					errors.append(aMessage);
+				}
+				response.sendError(500, errors);
 			}
 		} else {
 			// Missing required information - return an error
@@ -204,13 +216,25 @@ class PersistenceController {
 				existingRecord.deleted = deleted;
 				existingRecord.recordContents = recordContents;
 				
-				def record = persistenceService.saveRecord(existingRecord);
+				def recordStatus = persistenceService.saveRecord(existingRecord);
 				
-				def htmlResp = [record: record];
-				
-				withFormat {
-					html { return htmlResp; }
-					json { render record as JSON }
+				if ( recordStatus.successful ) {
+					// Saved successfully
+					def htmlResp = [record: recordStatus.record];
+					
+					withFormat {
+						html { return htmlResp; }
+						json { render recordStatus.record as JSON }
+					}
+				} else {
+					// Failure during save
+					String errors = "";
+					recordStatus.messages.each() { aMessage ->
+						if ( !"".equals(errors) )
+							errors.append("; ");
+						errors.append(aMessage);
+					}
+					response.sendError(500, errors);
 				}
 			} else {
 				// No record with the specified eck ID - can't update..
@@ -241,13 +265,25 @@ class PersistenceController {
 					existingRecord.deleted = deleted;
 					existingRecord.recordContents = recordContents;
 					
-					def record = persistenceService.saveRecord(existingRecord);
+					def recordStatus = persistenceService.saveRecord(existingRecord);
 					
-					def htmlResp = [record: record];
-					
-					withFormat {
-						html { return htmlResp; }
-						json { render record as JSON }
+					if ( recordStatus.successful ) {
+						// Saved successfully
+						def htmlResp = [record: recordStatus.record];
+						
+						withFormat {
+							html { return htmlResp; }
+							json { render recordStatus.record as JSON }
+						}
+					} else {
+						// Failure during save
+						String errors = "";
+						recordStatus.messages.each() { aMessage ->
+							if ( !"".equals(errors) )
+								errors.append("; ");
+							errors.append(aMessage);
+						}
+						response.sendError(500, errors);
 					}
 				} else {
 					// No record with the specified eck ID - can't update..

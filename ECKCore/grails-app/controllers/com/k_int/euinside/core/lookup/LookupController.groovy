@@ -41,7 +41,6 @@ class LookupController {
 		def responseVal = [:];
 		
 		def records = kiPersistenceWrapperService.lookupRecords(params.cmsId, params.persistentId, params.eckId);
-//		def records = kiPersistenceWrapperService.lookupRecords(params.eckId);
 		
 		def responseRecords = [];
 		records.each() {

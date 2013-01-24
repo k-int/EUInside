@@ -87,7 +87,7 @@ class FunctionController {
 		
 		// Set up the 'module' description and add the various methods to it
 		def lookupModule = new ModuleDefinition();
-		lookupModule.name = "Lookup";
+		lookupModule.name = "Function";
 		lookupModule.methodDefinitions.add(indexMethodDesc);
 		lookupModule.methodDefinitions.add(listMethodDesc);
 		lookupModule.methodDefinitions.add(callMethodDesc);

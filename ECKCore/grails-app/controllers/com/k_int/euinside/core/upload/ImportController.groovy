@@ -68,9 +68,7 @@ class ImportController {
 
 			def savedRecordInfo = importService.storeMetadata(cmsId, persistentId, metadataFile.bytes);
 			
-			log.debug("savedRecordInfo.successful = " + savedRecordInfo.successful);
-			
-			if ( savedRecordInfo.successful == true ) {
+			if ( savedRecordInfo.record.id != null ) {
 				responseVal.success = true;
 				responseVal.messages = [];
 				responseVal.messages.add("Metadata record successfully imported");
@@ -80,9 +78,6 @@ class ImportController {
 				responseVal.success = false;
 				responseVal.messages = [];
 				responseVal.messages.add("Something has gone wrong with saving the metadata");
-				savedRecordInfo.messages.each() {
-					responseVal.messages.add(it);
-				}
 				responseVal.eckId = 0l;
 			}
 		} else {

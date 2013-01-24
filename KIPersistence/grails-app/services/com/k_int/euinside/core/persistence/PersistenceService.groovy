@@ -181,6 +181,7 @@ class PersistenceService {
 			retval.successful = true;
 			retval.messages = [];
 			retval.messages.add("Record stored successfully");
+			retval.record = record;
 		}
 		
 		return retval;

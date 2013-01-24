@@ -93,6 +93,10 @@ class KiPersistenceWrapperService {
 		return httpResponse;
 	}
 	
+	def saveRecord(record) {
+		return saveRecord(record.cmsId, record.persistentId, record.deleted, record.recordContents);
+	}
+	
 	def saveRecord(cmsId, persistentId, deleted, recordContents) {
 		
 		def method = "saveRecord";
@@ -104,6 +108,10 @@ class KiPersistenceWrapperService {
 		return httpResponse;
 	}
 	
+	def updateRecord(record) {
+		return updateRecord(record.id, record.cmsId, record.persistentId, record.deleted, record.recordContents);	
+	}
+	
 	def updateRecord(eckId, cmsId, persistentId, deleted, recordContents) {
 		
 		def method = "updateRecord";
@@ -113,6 +121,10 @@ class KiPersistenceWrapperService {
 		
 		def httpResponse = makeHttpCall(method, format, action, args);
 		return httpResponse;
+	}
+	
+	def saveOrUpdateRecord(record) {
+		return saveOrUpdateRecord(record.id, record.cmsId, record.persistentId, record.deleted, record.recordContents);	
 	}
 	
 	def saveOrUpdateRecord(eckId, cmsId, persistentId, deleted, recordContents) {
@@ -151,7 +163,10 @@ class KiPersistenceWrapperService {
 				log.debug("POST httpResp.statusLine.statusCode = " + httpResp.statusLine.statusCode);
 				log.debug("returned json = " + json.toString());
 				
-				returnValue = json;
+				if ( "null".equals(json.toString()) )
+					returnValue = null;
+				else
+					returnValue = json;
 			}			
 		} else {
 			// Perform a GET
@@ -163,7 +178,10 @@ class KiPersistenceWrapperService {
 				log.debug("GET httpResp.statusLine.statusCode = " + httpResp.statusLine.statusCode);
 				log.debug("Returned json = " + json.toString());
 				
-				returnValue = json;
+				if ( "null".equals(json.toString()) )
+					returnValue = null;
+				else
+					returnValue = json;
 			}
 		}
 		
