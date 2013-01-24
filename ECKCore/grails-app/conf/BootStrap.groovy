@@ -13,6 +13,7 @@ class BootStrap {
 		JSON.registerObjectMarshaller(ModuleDefinition) {
 			def returnArray = [:]
 			returnArray['name'] = it.name
+			returnArray['moduleType'] = it.moduleType
 
 			// Construct the list of methods
 			def methodArray = [];

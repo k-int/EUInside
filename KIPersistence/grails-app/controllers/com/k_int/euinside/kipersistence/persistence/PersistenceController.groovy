@@ -427,6 +427,7 @@ class PersistenceController {
 		def retval = new ModuleDefinition();
 		retval.name = "/KIPersistence/persistence";
 		retval.methodDefinitions = methods;
+		retval.moduleType = "external";
 		
 		return retval;
 	}

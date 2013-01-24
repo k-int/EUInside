@@ -40,7 +40,8 @@ class LookupController {
 		
 		def responseVal = [:];
 		
-		def records = kiPersistenceWrapperService.lookupRecords(params.cmsId, params.persistentId, params.eckId);
+		def lookupParams = [cmsId:params.cmsId, persistentId:params.persistentId, eckId:params.eckId];
+		def records = kiPersistenceWrapperService.lookupRecords(lookupParams);
 		
 		def responseRecords = [];
 		records.each() {
@@ -73,10 +74,10 @@ class LookupController {
 	def static identify() {
 		
 		// Set up the index method
-		def indexMethodDesc = new MethodDefinition("index", null, null, null);
+		def indexMethodDesc = new MethodDefinition("index", null, null, "Provide a simple frontpage to the lookup service (when called with an HTML content type)");
 
 		// Set up the search method
-		def searchMethodDesc = new MethodDefinition("search", null, null, null);
+		def searchMethodDesc = new MethodDefinition("search", null, null, "Provide a simple search interface to test the lookup service (when called with an HTML content type)");
 
 		// Set up the show method
 		def cmsIdArg = new ArgumentDefinition("cmsId", "String", false);
@@ -86,12 +87,13 @@ class LookupController {
 		args.add(cmsIdArg);
 		args.add(persistentIdArg);
 		args.add(eckIdArg);
-		def showMethodDesc = new MethodDefinition("show", args, null, null);
+		def showMethodDesc = new MethodDefinition("show", args, "Set<Record>", "Search for records matching the specified IDs and return those found");
 		
 		
 		// Set up the 'module' description and add the various methods to it
 		def lookupModule = new ModuleDefinition();
 		lookupModule.name = "Lookup";
+		lookupModule.moduleType = "internal";
 		lookupModule.methodDefinitions.add(indexMethodDesc);
 		lookupModule.methodDefinitions.add(searchMethodDesc);
 		lookupModule.methodDefinitions.add(showMethodDesc);

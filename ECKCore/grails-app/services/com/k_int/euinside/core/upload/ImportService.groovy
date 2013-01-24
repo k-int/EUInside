@@ -12,9 +12,12 @@ class ImportService {
 	def storeMetadata(String cmsId, String persistentId, byte[] metadataFileContents) {
 		def retval = [:];
 		
-		def existingRecord = kiPersistenceWrapperService.lookupRecord(cmsId, "cms");
+		def lookupParams = [id: cmsId, idType: "cms"];
+		def existingRecord = kiPersistenceWrapperService.lookupRecord(lookupParams);
 		if ( !existingRecord ) {
-			existingRecord = kiPersistenceWrapperService.lookupRecord(persistentId, "persistent");
+			lookupParams.id=persistentId;
+			lookupParams.idType = "persistent";
+			existingRecord = kiPersistenceWrapperService.lookupRecord(lookupParams);
 		} 
 		
 		if ( existingRecord != null && existingRecord.id != null ) {
@@ -24,7 +27,8 @@ class ImportService {
 			existingRecord.recordContents = metadataFileContents;
 			
 			log.debug("About to persist the updated record");
-			existingRecord = kiPersistenceWrapperService.updateRecord(existingRecord);
+			def updateParams = [record:existingRecord];
+			existingRecord = kiPersistenceWrapperService.updateRecord(updateParams);
 			
 			retval.record = existingRecord;
 
@@ -32,13 +36,14 @@ class ImportService {
 			// No existing record - create a new one
 			log.debug("Saving a new record");
 			
-			def newRecord = kiPersistenceWrapperService.createRecord();
+			def newRecord = kiPersistenceWrapperService.createRecord(null);
 			newRecord.cmsId = cmsId;
 			newRecord.persistentId = persistentId;
 			newRecord.recordContents = metadataFileContents
 			
 			log.debug("Saving new record with details set");
-			newRecord = kiPersistenceWrapperService.saveRecord(newRecord);
+			def saveParams = [record: newRecord];
+			newRecord = kiPersistenceWrapperService.saveRecord(saveParams);
 			
 			retval.record = newRecord;
 		}

@@ -104,10 +104,10 @@ class ImportController {
 	def static identify() {
 		
 		// Set up the index method
-		def indexMethodDesc = new MethodDefinition("index", null, null, null);
+		def indexMethodDesc = new MethodDefinition("index", null, null, "Provide a simple frontpage to the import service (when called with an HTML content type)");
 
 		// Set up the create method
-		def createMethodDesc = new MethodDefinition("create", null, null, null);
+		def createMethodDesc = new MethodDefinition("create", null, null, "Provide a simple form to allow the testing of importing records (when called with an HTML content type)");
 
 		// Set up the save method
 		def cmsIdArg = new ArgumentDefinition("cmsId", "String", true);
@@ -118,11 +118,12 @@ class ImportController {
 		args.add(persistentIdArg);
 		args.add(metadataFileArg);
 
-		def saveMethodDesc = new MethodDefinition("save", args, null, null);
+		def saveMethodDesc = new MethodDefinition("save", args, "JSON wrapper", "Save or update the metadata record within the ECK");
 		
 		// Set up the 'module' description and add the various methods to it
 		def importModule = new ModuleDefinition();
 		importModule.name = "Import";
+		importModule.moduleType = "internal";
 		importModule.methodDefinitions.add(indexMethodDesc);
 		importModule.methodDefinitions.add(createMethodDesc);
 		importModule.methodDefinitions.add(saveMethodDesc);

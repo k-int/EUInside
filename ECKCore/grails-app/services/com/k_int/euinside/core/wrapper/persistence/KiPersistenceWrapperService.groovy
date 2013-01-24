@@ -1,6 +1,5 @@
 package com.k_int.euinside.core.wrapper.persistence
 
-import com.k_int.euinside.core.dto.RecordDTO
 import groovyx.net.http.HTTPBuilder;
 
 class KiPersistenceWrapperService {
@@ -11,11 +10,12 @@ class KiPersistenceWrapperService {
 	}
 	
 	// Config settings
-	def persistenceModuleBaseUrl = "http://localhost:28080/KIPersistence";
-	def callBase = "/persistence/";
+	def static persistenceModuleBaseUrl = "http://localhost:28080/KIPersistence";
+	def static callBase = "/persistence/";
 	
-	def lookupRecordByEckId(eckId) {
+	def lookupRecordByEckId(params) {
 		
+		def eckId = params.eckId;
 		def method = "lookupRecordByEckId";
 		def format = "json";
 		def action = "get"
@@ -25,7 +25,9 @@ class KiPersistenceWrapperService {
 		return httpResponse;
 	}
 	
-	def lookupRecordByCmsId(cmsId) {
+	def lookupRecordByCmsId(params) {
+		
+		def cmsId = params.cmsId;
 		
 		def method = "lookupRecordByCmsId";
 		def format = "json";
@@ -36,7 +38,9 @@ class KiPersistenceWrapperService {
 		return httpResponse;
 	}
 	
-	def lookupRecordByPersistentId(persistentId) {
+	def lookupRecordByPersistentId(params) {
+		
+		def persistentId = params.persistentId;
 		
 		def method = "lookupRecordByPersistentId";
 		def format = "json";
@@ -47,7 +51,11 @@ class KiPersistenceWrapperService {
 		return httpResponse;
 	}
 	
-	def lookupRecord(id, idType) {
+	def lookupRecord(params) {
+		
+		def id = params.id;
+		def idType = params.idType;
+		
 		def method = "lookupRecord";
 		def format = "json";
 		def action = "get"
@@ -58,7 +66,9 @@ class KiPersistenceWrapperService {
 		return httpResponse;
 	}
 	
-	def lookupRecordsAnyIdType(id) {
+	def lookupRecordsAnyIdType(params) {
+		
+		def id = params.id;
 		
 		def method = "lookupRecordsAnyIdType";
 		def format = "json";
@@ -70,7 +80,11 @@ class KiPersistenceWrapperService {
 		return httpResponse;
 	}
 	
-	def lookupRecords(cmsId, persistentId, eckId) {
+	def lookupRecords(params) {
+		
+		def cmsId = params.cmsId;
+		def persistentId = params.persistentId;
+		def eckId = params.eckId;
 		
 		def method = "lookupRecords";
 		def format = "json";
@@ -82,7 +96,7 @@ class KiPersistenceWrapperService {
 		return httpResponse;
 	}
 	
-	def createRecord() {
+	def createRecord(params) {
 		
 		def method = "createRecord";
 		def format = "json";
@@ -93,7 +107,9 @@ class KiPersistenceWrapperService {
 		return httpResponse;
 	}
 	
-	def saveRecord(record) {
+	def saveRecord(params) {
+		
+		def record = params.record;
 		return saveRecord(record.cmsId, record.persistentId, record.deleted, record.recordContents);
 	}
 	
@@ -108,7 +124,10 @@ class KiPersistenceWrapperService {
 		return httpResponse;
 	}
 	
-	def updateRecord(record) {
+	def updateRecord(params) {
+		
+		def record = params.record;
+		
 		return updateRecord(record.id, record.cmsId, record.persistentId, record.deleted, record.recordContents);	
 	}
 	
@@ -123,7 +142,9 @@ class KiPersistenceWrapperService {
 		return httpResponse;
 	}
 	
-	def saveOrUpdateRecord(record) {
+	def saveOrUpdateRecord(params) {
+		
+		def record = params.record;
 		return saveOrUpdateRecord(record.id, record.cmsId, record.persistentId, record.deleted, record.recordContents);	
 	}
 	
@@ -138,18 +159,36 @@ class KiPersistenceWrapperService {
 		return httpResponse;
 	}
 	
+	def identify(params) {
+		
+		def callBaseOveride = "/";
+		def method = "identify";
+		def format = "json";
+		def action = "get";
+		def args = [:];
+		
+		def returnValue = makeHttpCall(method, format, action, args, callBaseOveride);
+	}
+	
 	def makeHttpCall(method, format, action, args) {
-		
-		log.debug("KiPersistenceWrapperService::makeHTTPCall method called");
-		
+		return makeHttpCall(method, format, action, args, null);
+	}
+	
+	def makeHttpCall(method, format, action, args, callBaseOveride) {
 		def returnValue;
 		
 		def url = persistenceModuleBaseUrl + callBase;
+		if ( callBaseOveride != null ) {
+			// We want to over ride the call base value (to call something like identify)
+			url = persistenceModuleBaseUrl + callBaseOveride;
+		}
+		
 		def path = method;
 		if ( "json".equals(format) ) {
 			path = path + ".json";
 		}
-		log.debug("Method URL worked out to be: " + url + " and path: " + path);
+		
+		log.debug("making HTTP call to url: " + url + " path: " + path);
 		
 		def http = new HTTPBuilder(url);
 		
@@ -187,7 +226,5 @@ class KiPersistenceWrapperService {
 		
 		return returnValue;
 	}
-	
-	// FIXME - STILL NEED TO FIX THE MULTIPLE LOOKUP RECORDS METHODS..
 	
 }

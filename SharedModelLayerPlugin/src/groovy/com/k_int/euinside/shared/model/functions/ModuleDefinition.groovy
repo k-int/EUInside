@@ -16,6 +16,10 @@ class ModuleDefinition {
 	 * The set of methods provided by the module
 	 */
 	def Set<MethodDefinition> methodDefinitions = new LinkedHashSet<MethodDefinition>();
+	/**
+	 * The type of the module (internal / external)
+	 */
+	def moduleType = "external";
 	
 	
 	/**
@@ -51,6 +55,25 @@ class ModuleDefinition {
 	}
 	
 	/**
+	 * Get the type of the module
+	 * @return String the module type - either 'internal' or 'external'
+	 */
+	def getModuleType() {
+		return this.moduleType;
+	}
+	
+	/**
+	 * Set the type of the module
+	 * @param moduleType The module type - either 'internal' or 'external'
+	 */
+	def setModuleType(String moduleType) {
+		if ( "internal".equalsIgnoreCase(moduleType) )
+			this.moduleType = "internal";
+		else 
+			this.moduleType = "external";
+	}
+	
+	/**
 	 * Simple constructor that just returns a new empty module definition for population later
 	 * @return ModuleDefinition A new unpopulated module definition
 	 */
@@ -62,11 +85,13 @@ class ModuleDefinition {
 	 * Constructor that returns a new module definition with the name and methods populated appropriately
 	 * @param name The name of the module
 	 * @param methods The set of methods provided by the module
+	 * @param moduleType The type of the module ('internal' or 'external')
 	 * @return ModuleDefinition The module definition with the name and methods populated as appropriate
 	 */
-	def ModuleDefinition(name, methods) {
+	def ModuleDefinition(name, methods, moduleType) {
 		this.name = name;
 		this.methods = methods;
+		this.moduleType = moduleType;
 	}
 
 }
