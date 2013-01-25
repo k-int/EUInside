@@ -164,14 +164,14 @@ class PersistenceController {
 		def cmsId = params.cmsId;
 		def persistentId = params.persistentId;
 		def deleted = params.deleted;
-		def recordContents = params.recordContents;
+		def recordContents = request.getFile("recordContents");
 		
-		if ( cmsId != null && persistentId != null && recordContents != null ) {
+		if ( cmsId != null && persistentId != null && recordContents != null && !recordContents.isEmpty()) {
 			def newRecord = persistenceService.createRecord();
 			newRecord.cmsId = cmsId;
 			newRecord.persistentId = persistentId;
 			newRecord.deleted = deleted;
-			newRecord.recordContents = recordContents;
+			newRecord.recordContents = recordContents.getBytes();
 			
 			def recordStatus = persistenceService.saveRecord(newRecord);
 			
@@ -205,16 +205,16 @@ class PersistenceController {
 		def cmsId = params.cmsId;
 		def persistentId = params.persistentId;
 		def deleted = params.deleted;
-		def recordContents = params.recordContents;
+		def recordContents = request.getFile("recordContents");
 		
-		if ( eckId != null && cmsId != null && persistentId != null && recordContents != null ) {
+		if ( eckId != null && cmsId != null && persistentId != null && recordContents != null && !recordContents.isEmpty() ) {
 			
 			def existingRecord = persistenceService.lookupRecordByEckId(eckId);
 			if ( existingRecord != null ) {
 				existingRecord.cmsId = cmsId;
 				existingRecord.persistentId = persistentId;
 				existingRecord.deleted = deleted;
-				existingRecord.recordContents = recordContents;
+				existingRecord.recordContents = recordContents.getBytes();
 				
 				def recordStatus = persistenceService.saveRecord(existingRecord);
 				
@@ -252,9 +252,9 @@ class PersistenceController {
 		def cmsId = params.cmsId;
 		def persistentId = params.persistentId;
 		def deleted = params.deleted;
-		def recordContents = params.recordContents;
+		def recordContents = request.getFile("recordContents");
 		
-		if ( cmsId != null && persistentId != null && recordContents != null ) {
+		if ( cmsId != null && persistentId != null && recordContents != null && !recordContents.isEmpty() ) {
 			
 			if ( eckId != null ) {
 				// Existing record..
@@ -263,7 +263,7 @@ class PersistenceController {
 					existingRecord.cmsId = cmsId;
 					existingRecord.persistentId = persistentId;
 					existingRecord.deleted = deleted;
-					existingRecord.recordContents = recordContents;
+					existingRecord.recordContents = recordContents.getBytes();
 					
 					def recordStatus = persistenceService.saveRecord(existingRecord);
 					
@@ -396,7 +396,7 @@ class PersistenceController {
 		def cmsIdArg = new ArgumentDefinition("cmsId", "String", true);
 		def persistentIdArg = new ArgumentDefinition("persistentId", "String", true);
 		def deletedArg = new ArgumentDefinition("deleted", "boolean", false);
-		def recordContentsArg = new ArgumentDefinition("recordContents", "byte[]", true); 
+		def recordContentsArg = new ArgumentDefinition("recordContents", "File", true); 
 		
 		def saveArgs = new LinkedHashSet<ArgumentDefinition>();
 		saveArgs.add(cmsIdArg);
@@ -404,7 +404,7 @@ class PersistenceController {
 		saveArgs.add(deletedArg);
 		saveArgs.add(recordContentsArg);
 		
-		def saveRecordMethod = new MethodDefinition("saveRecord", saveArgs, "void", "Save a record in the persistence layer");
+		def saveRecordMethod = new MethodDefinition("saveRecord", saveArgs, "void", "Save a record in the persistence layer. Note this method must be POSTed to with an encoding type of \"multipart/form-data\"");
 		methods.add(saveRecordMethod);
 		
 		// Update method
@@ -413,11 +413,11 @@ class PersistenceController {
 		updateArgs.add(eckIdArg);
 		updateArgs.addAll(saveArgs);
 		
-		def updateRecordMethod = new MethodDefinition("updateRecord", updateArgs, "void", "Update a record in the persistence layer");
+		def updateRecordMethod = new MethodDefinition("updateRecord", updateArgs, "void", "Update a record in the persistence layer. Note this method must be POSTed to with an encoding type of \"multipart/form-data\"");
 		methods.add(updateRecordMethod);
 		
 		// Save or update method
-		def saveOrUpdateRecordMethod = new MethodDefinition("saveOrUpdateRecord", updateArgs, "void", "Update an existing record in the persistence layer or save it if one does not already exist");
+		def saveOrUpdateRecordMethod = new MethodDefinition("saveOrUpdateRecord", updateArgs, "void", "Update an existing record in the persistence layer or save it if one does not already exist. Note this method must be POSTed to with an encoding type of \"multipart/form-data\"");
 		methods.add(saveOrUpdateRecordMethod);
 		
 		// TODO - add more methods as they are implemented above..

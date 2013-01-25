@@ -118,9 +118,9 @@ class KiPersistenceWrapperService {
 		def method = "saveRecord";
 		def format = "json";
 		def action = "post";
-		def args = ["cmsId":cmsId, "persistentId":persistentId, "deleted":deleted, "recordContents":recordContents];
+		def args = ["cmsId":cmsId, "persistentId":persistentId, "deleted":deleted, "recordContents":recordContents, "fileArgs":["recordContents"]];
 		
-		def httpResponse = makeHttpCall(method, format, action, args);
+		def httpResponse = makeHttpCallWithFile(method, format, action, args);
 		return httpResponse;
 	}
 	
@@ -136,9 +136,9 @@ class KiPersistenceWrapperService {
 		def method = "updateRecord";
 		def format = "json";
 		def action = "post";
-		def args = ["eckId": eckId, "cmsId":cmsId, "persistentId":persistentId, "deleted":deleted, "recordContents":recordContents];
+		def args = ["eckId": eckId, "cmsId":cmsId, "persistentId":persistentId, "deleted":deleted, "recordContents":recordContents, "fileArgs":["recordContents"]];
 		
-		def httpResponse = makeHttpCall(method, format, action, args);
+		def httpResponse = makeHttpCallWithFile(method, format, action, args);
 		return httpResponse;
 	}
 	
@@ -153,9 +153,9 @@ class KiPersistenceWrapperService {
 		def method = "saveOrUpdateRecord";
 		def format = "json";
 		def action = "post";
-		def args = ["eckId": eckId, "cmsId":cmsId, "persistentId":persistentId, "deleted":deleted, "recordContents":recordContents];
+		def args = ["eckId": eckId, "cmsId":cmsId, "persistentId":persistentId, "deleted":deleted, "recordContents":recordContents, "fileArgs":["recordContents"]];
 		
-		def httpResponse = makeHttpCall(method, format, action, args);
+		def httpResponse = makeHttpCallWithFile(method, format, action, args);
 		return httpResponse;
 	}
 	
@@ -227,4 +227,60 @@ class KiPersistenceWrapperService {
 		return returnValue;
 	}
 	
+	def makeHttpCallWithFile(method, format, action, args, callBaseOveride) {
+		def returnValue;
+		
+		def url = persistenceModuleBaseUrl + callBase;
+		if ( callBaseOveride != null ) {
+			// We want to over ride the call base value (to call something like identify)
+			url = persistenceModuleBaseUrl + callBaseOveride;
+		}
+		
+		def path = method;
+		if ( "json".equals(format) ) {
+			path = path + ".json";
+		}
+		
+		log.debug("making HTTP call to url: " + url + " path: " + path);
+		
+		def http = new HTTPBuilder(url);
+		
+		// Work out which args should be passed as files
+		def fileArgs = args.fileArgs;
+		args.remove("fileArgs");
+		
+		def actualFiles = [:];
+		
+		fileArgs.each() { aFileArg ->
+				
+			def fileKey = aFileArg;
+			def fileContents = args[fileKey];
+			args.remove(fileKey);
+		}
+		
+		// A POST is required
+		def postBody = [:];
+		// Add the non-file args
+		postBody.putAll(args);
+		// Add the file args
+		// TODO
+		
+		// I think we need to do something like:
+		// http://roshandawrani.wordpress.com/2011/02/12/grails-functional-testing-a-file-upload-using-httpbuilder-spock/ 
+		// to attach the files
+// FIXME
+		
+		http.post(path: path, body: postBody) { httpResp, json ->
+			
+			log.debug("POST httpResp.statusLine.statusCode = " + httpResp.statusLine.statusCode);
+			log.debug("returned json = " + json.toString());
+			
+			if ( "null".equals(json.toString()) )
+				returnValue = null;
+			else
+				returnValue = json;
+		}
+		
+		return returnValue;
+	}
 }
