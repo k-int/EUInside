@@ -1,6 +1,13 @@
 package com.k_int.euinside.core.wrapper.persistence
 
+import java.nio.charset.Charset
+
+import groovyx.net.http.Method
 import groovyx.net.http.HTTPBuilder;
+import org.apache.http.entity.mime.content.ByteArrayBody
+import org.apache.http.entity.mime.HttpMultipartMode
+import org.apache.http.entity.mime.MultipartEntity
+import org.apache.http.entity.mime.content.StringBody
 
 class KiPersistenceWrapperService {
 
@@ -10,18 +17,48 @@ class KiPersistenceWrapperService {
 	}
 	
 	// Config settings
-	def static persistenceModuleBaseUrl = "http://localhost:28080/KIPersistence";
-	def static callBase = "/persistence/";
+	private def static URL_PERSISTENCE_MODULE_BASE = "http://localhost:28080/KIPersistence";
 	
+	private def static CALLBASE_IDENTIFY    = "/";
+	private def static CALLBASE_PERSISTENCE = "/persistence/";
+	
+	private def static FORMAT_JSON = "json"
+
+	private def static METHOD_CREATE_RECORD                  = "createRecord";
+	private def static METHOD_IDENTIFY                       = "identify";
+	private def static METHOD_LOOKUP_RECORD_BY_CMS_ID        = "lookupRecordByCmsId";
+	private def static METHOD_LOOKUP_RECORD_BY_ECK_ID        = "lookupRecordByEckId";
+	private def static METHOD_LOOKUP_RECORD                  = "lookupRecord";
+	private def static METHOD_LOOKUP_RECORD_BY_PERSISTENT_ID = "lookupRecordByPersistentId";
+	private def static METHOD_LOOKUP_RECORDS                 = "lookupRecords";
+	private def static METHOD_LOOKUP_RECORD_ANY_ID_TYPE      = "lookupRecordsAnyIdType";
+	private def static METHOD_SAVE_OR_UPDATE_RECORD          = "saveOrUpdateRecord";
+	private def static METHOD_SAVE_RECORD                    = "saveRecord";
+	private def static METHOD_UPDATE_RECORD                  = "updateRecord";
+
+	private def static ARGUMENT_CMS_ID          = "cmsId";
+	private def static ARGUMENT_DELETED         = "deleted";
+	private def static ARGUMENT_ECK_ID          = "eckId";
+	private def static ARGUMENT_ID              = "id";
+	private def static ARGUMENT_ID_TYPE         = "idType";
+	private def static ARGUMENT_PERSISTENT_ID   = "persistentId";
+	private def static ARGUMENT_RECORD_CONTENTS = "recordContents";
+	
+	private def static JSON_NULL = "null";
+	
+	private def static EXTENSION_JSON = ".json";
+
+	private def static CONTENT_TYPE_FORM = "multipart/form-data";
+		
 	def lookupRecordByEckId(params) {
 		
 		def eckId = params.eckId;
-		def method = "lookupRecordByEckId";
-		def format = "json";
-		def action = "get"
-		def args = ["eckId":eckId];
+		def method = METHOD_LOOKUP_RECORD_BY_ECK_ID;
+		def format = FORMAT_JSON;
+		def args = [ : ];
+		args.put(ARGUMENT_ECK_ID, eckId);
 		
-		def httpResponse = makeHttpCall(method, format, action, args);
+		def httpResponse = httpGet(method, format, args, CALLBASE_PERSISTENCE);
 		return httpResponse;
 	}
 	
@@ -29,12 +66,12 @@ class KiPersistenceWrapperService {
 		
 		def cmsId = params.cmsId;
 		
-		def method = "lookupRecordByCmsId";
-		def format = "json";
-		def action = "get"
-		def args = ["cmsId":cmsId];
+		def method = METHOD_LOOKUP_RECORD_BY_CMS_ID;
+		def format = FORMAT_JSON;
+		def args = [ : ];
+		args.put(ARGUMENT_CMS_ID, cmsId);
 		
-		def httpResponse = makeHttpCall(method, format, action, args);
+		def httpResponse = httpGet(method, format, args, CALLBASE_PERSISTENCE);
 		return httpResponse;
 	}
 	
@@ -42,12 +79,12 @@ class KiPersistenceWrapperService {
 		
 		def persistentId = params.persistentId;
 		
-		def method = "lookupRecordByPersistentId";
-		def format = "json";
-		def action = "get"
-		def args = ["persistentId":persistentId];
+		def method = METHOD_LOOKUP_RECORD_BY_PERSISTENT_ID;
+		def format = FORMAT_JSON;
+		def args = [ : ];
+		args.put(ARGUMENT_PERSISTENT_ID, persistentId);
 		
-		def httpResponse = makeHttpCall(method, format, action, args);
+		def httpResponse = httpGet(method, format, args, CALLBASE_PERSISTENCE);
 		return httpResponse;
 	}
 	
@@ -56,12 +93,13 @@ class KiPersistenceWrapperService {
 		def id = params.id;
 		def idType = params.idType;
 		
-		def method = "lookupRecord";
-		def format = "json";
-		def action = "get"
-		def args = ["id":id, "idType":idType];
+		def method = METHOD_LOOKUP_RECORD;
+		def format = FORMAT_JSON;
+		def args = [ : ]
+		args.put(ARGUMENT_ID, id);
+		args.put(ARGUMENT_ID_TYPE, idType);
 		
-		def httpResponse = makeHttpCall(method, format, action, args);
+		def httpResponse = httpGet(method, format, args, CALLBASE_PERSISTENCE);
 	
 		return httpResponse;
 	}
@@ -70,12 +108,12 @@ class KiPersistenceWrapperService {
 		
 		def id = params.id;
 		
-		def method = "lookupRecordsAnyIdType";
-		def format = "json";
-		def action = "get"
-		def args = ["id":id];
+		def method = METHOD_LOOKUP_RECORD_ANY_ID_TYPE;
+		def format = FORMAT_JSON;
+		def args = [ : ];
+		args.put(ARGUMENT_ID, id);
 		
-		def httpResponse = makeHttpCall(method, format, action, args);
+		def httpResponse = httpGet(method, format, args, CALLBASE_PERSISTENCE);
 	
 		return httpResponse;
 	}
@@ -86,41 +124,44 @@ class KiPersistenceWrapperService {
 		def persistentId = params.persistentId;
 		def eckId = params.eckId;
 		
-		def method = "lookupRecords";
-		def format = "json";
-		def action = "get"
-		def args = ["cmsId":cmsId, "persistentId": persistentId, "eckId":eckId];
+		def method = METHOD_LOOKUP_RECORDS;
+		def format = FORMAT_JSON;
+		def args = [ : ];
+		args.put(ARGUMENT_CMS_ID, cmsId);
+		args.put(ARGUMENT_PERSISTENT_ID, persistentId);
+		args.put(ARGUMENT_ECK_ID, eckId);
 		
-		def httpResponse = makeHttpCall(method, format, action, args);
+		def httpResponse = httpGet(method, format, args, CALLBASE_PERSISTENCE);
 	
 		return httpResponse;
 	}
 	
 	def createRecord(params) {
 		
-		def method = "createRecord";
-		def format = "json";
-		def action = "post"
+		def method = METHOD_CREATE_RECORD;
+		def format = FORMAT_JSON;
 		def args = [:];
 		
-		def httpResponse = makeHttpCall(method, format, action, args);
+		def httpResponse = httpPost(method, format, args, CALLBASE_PERSISTENCE);
 		return httpResponse;
 	}
 	
 	def saveRecord(params) {
 		
 		def record = params.record;
-		return saveRecord(record.cmsId, record.persistentId, record.deleted, record.recordContents);
+		return saveRecord(record.cmsId, record.persistentId, record.deleted, record.recordContents, params.contentType, params.filename);
 	}
 	
-	def saveRecord(cmsId, persistentId, deleted, recordContents) {
+	def saveRecord(cmsId, persistentId, deleted, recordContents, contentType, filename) {
 		
-		def method = "saveRecord";
-		def format = "json";
-		def action = "post";
-		def args = ["cmsId":cmsId, "persistentId":persistentId, "deleted":deleted, "recordContents":recordContents, "fileArgs":["recordContents"]];
+		def method = METHOD_SAVE_RECORD;
+		def format = FORMAT_JSON;
+		def args = [ : ];
+		args.put(ARGUMENT_CMS_ID, cmsId);
+		args.put(ARGUMENT_PERSISTENT_ID, persistentId);
+		args.put(ARGUMENT_DELETED, deleted);
 		
-		def httpResponse = makeHttpCallWithFile(method, format, action, args);
+		def httpResponse = httpPost(method, format, args, recordContents, contentType, filename, CALLBASE_PERSISTENCE);
 		return httpResponse;
 	}
 	
@@ -128,159 +169,140 @@ class KiPersistenceWrapperService {
 		
 		def record = params.record;
 		
-		return updateRecord(record.id, record.cmsId, record.persistentId, record.deleted, record.recordContents);	
+		return updateRecord(record.id, record.cmsId, record.persistentId, record.deleted, record.recordContents, params.contentType, params.filename);	
 	}
 	
-	def updateRecord(eckId, cmsId, persistentId, deleted, recordContents) {
+	def updateRecord(eckId, cmsId, persistentId, deleted, recordContents, contentType, filename) {
 		
-		def method = "updateRecord";
-		def format = "json";
-		def action = "post";
-		def args = ["eckId": eckId, "cmsId":cmsId, "persistentId":persistentId, "deleted":deleted, "recordContents":recordContents, "fileArgs":["recordContents"]];
+		def method = METHOD_UPDATE_RECORD;
+		def format = FORMAT_JSON;
+		def args = [ : ];
+		args.put(ARGUMENT_ECK_ID, eckId);
+		args.put(ARGUMENT_CMS_ID, cmsId);
+		args.put(ARGUMENT_PERSISTENT_ID, persistentId);
+		args.put(ARGUMENT_DELETED, deleted);
 		
-		def httpResponse = makeHttpCallWithFile(method, format, action, args);
+		def httpResponse = httpPost(method, format, args, recordContents, contentType, filename, CALLBASE_PERSISTENCE);
 		return httpResponse;
 	}
 	
 	def saveOrUpdateRecord(params) {
 		
 		def record = params.record;
-		return saveOrUpdateRecord(record.id, record.cmsId, record.persistentId, record.deleted, record.recordContents);	
+		return saveOrUpdateRecord(record.id, record.cmsId, record.persistentId, record.deleted, record.recordContents, params.contentType, params.filename);	
 	}
 	
-	def saveOrUpdateRecord(eckId, cmsId, persistentId, deleted, recordContents) {
+	def saveOrUpdateRecord(eckId, cmsId, persistentId, deleted, recordContents, contentType, filename) {
 		
-		def method = "saveOrUpdateRecord";
-		def format = "json";
-		def action = "post";
-		def args = ["eckId": eckId, "cmsId":cmsId, "persistentId":persistentId, "deleted":deleted, "recordContents":recordContents, "fileArgs":["recordContents"]];
+		def method = METHOD_SAVE_OR_UPDATE_RECORD;
+		def format = FORMAT_JSON;
+		def args = [ : ];
+		args.put(ARGUMENT_ECK_ID, eckId);
+		args.put(ARGUMENT_CMS_ID, cmsId);
+		args.put(ARGUMENT_PERSISTENT_ID, persistentId);
+		args.put(ARGUMENT_DELETED, deleted);
 		
-		def httpResponse = makeHttpCallWithFile(method, format, action, args);
+		def httpResponse = httpPost(method, format, args, recordContents, contentType, filename, CALLBASE_PERSISTENCE);
 		return httpResponse;
 	}
 	
 	def identify(params) {
 		
-		def callBaseOveride = "/";
-		def method = "identify";
-		def format = "json";
-		def action = "get";
+		def method = METHOD_IDENTIFY;
+		def format = FORMAT_JSON;
 		def args = [:];
 		
-		def returnValue = makeHttpCall(method, format, action, args, callBaseOveride);
+		def returnValue = httpGet(method, format, args, CALLBASE_IDENTIFY);
 	}
 	
-	def makeHttpCall(method, format, action, args) {
-		return makeHttpCall(method, format, action, args, null);
-	}
-	
-	def makeHttpCall(method, format, action, args, callBaseOveride) {
+	def httpGet(method, format, args, callBase) {
 		def returnValue;
 		
-		def url = persistenceModuleBaseUrl + callBase;
-		if ( callBaseOveride != null ) {
-			// We want to over ride the call base value (to call something like identify)
-			url = persistenceModuleBaseUrl + callBaseOveride;
-		}
-		
-		def path = method;
-		if ( "json".equals(format) ) {
-			path = path + ".json";
-		}
+		def url = determineURL(callBase);
+		def path = determinePath(method, format);
 		
 		log.debug("making HTTP call to url: " + url + " path: " + path);
 		
 		def http = new HTTPBuilder(url);
 		
-		if ( "post".equals(action) ) {
-			// A POST is required
-			def postBody = [:];
-			postBody.putAll(args);
-
-			http.post(path: path, body: postBody) { httpResp, json ->
-				
-				log.debug("POST httpResp.statusLine.statusCode = " + httpResp.statusLine.statusCode);
-				log.debug("returned json = " + json.toString());
-				
-				if ( "null".equals(json.toString()) )
-					returnValue = null;
-				else
-					returnValue = json;
-			}			
-		} else {
-			// Perform a GET
-			def query = [:];
-			query.putAll(args);
-			
-			http.get(path: path, query: query) { httpResp, json ->
-				
-				log.debug("GET httpResp.statusLine.statusCode = " + httpResp.statusLine.statusCode);
-				log.debug("Returned json = " + json.toString());
-				
-				if ( "null".equals(json.toString()) )
-					returnValue = null;
-				else
-					returnValue = json;
-			}
+		// Perform a GET
+		def query = [:];
+		query.putAll(args);
+		
+		http.get(path: path, query: query) { httpResponse, json ->
+			returnValue = processJSONResponse(httpResponse, json)
 		}
 		
 		return returnValue;
 	}
-	
-	def makeHttpCallWithFile(method, format, action, args, callBaseOveride) {
-		def returnValue;
-		
-		def url = persistenceModuleBaseUrl + callBase;
-		if ( callBaseOveride != null ) {
-			// We want to over ride the call base value (to call something like identify)
-			url = persistenceModuleBaseUrl + callBaseOveride;
-		}
-		
-		def path = method;
-		if ( "json".equals(format) ) {
-			path = path + ".json";
-		}
-		
-		log.debug("making HTTP call to url: " + url + " path: " + path);
-		
-		def http = new HTTPBuilder(url);
-		
-		// Work out which args should be passed as files
-		def fileArgs = args.fileArgs;
-		args.remove("fileArgs");
-		
-		def actualFiles = [:];
-		
-		fileArgs.each() { aFileArg ->
-				
-			def fileKey = aFileArg;
-			def fileContents = args[fileKey];
-			args.remove(fileKey);
-		}
-		
-		// A POST is required
-		def postBody = [:];
-		// Add the non-file args
-		postBody.putAll(args);
-		// Add the file args
-		// TODO
-		
-		// I think we need to do something like:
-		// http://roshandawrani.wordpress.com/2011/02/12/grails-functional-testing-a-file-upload-using-httpbuilder-spock/ 
-		// to attach the files
-// FIXME
-		
-		http.post(path: path, body: postBody) { httpResp, json ->
-			
-			log.debug("POST httpResp.statusLine.statusCode = " + httpResp.statusLine.statusCode);
+
+	private def processJSONResponse(httpResponse, json) {
+		def returnValue = null;
+		log.debug("HTTP Status Code response = " + httpResponse.statusLine.statusCode);
+		if (httpResponse.statusLine.statusCode == 200) {
 			log.debug("returned json = " + json.toString());
 			
-			if ( "null".equals(json.toString()) )
+			if (JSON_NULL.equals(json.toString()))
 				returnValue = null;
 			else
 				returnValue = json;
 		}
+		return(returnValue);
+	}
+
+	private def determineURL(callBase) {
+		return(URL_PERSISTENCE_MODULE_BASE + callBase);
+	}
 		
+	private def determinePath(method, format) {
+		def path = method;
+		if ( FORMAT_JSON.equals(format) ) {
+			path = path + EXTENSION_JSON;
+		}
+		return(path);
+	}
+		
+	private def httpPost(method, format, args, callBase) {
+		return(httpPost(method, format, args, null, null, null, callBase))
+	}
+	
+	private def httpPost(method, format, args, recordContents, contentType, filename, callBase) {
+		def returnValue;
+		
+		def url = determineURL(callBase);
+		def path = determinePath(method, format);
+		log.debug("making HTTP call to url: " + url + " path: " + path);
+		
+		// We can now post this file off to the persistence layer		
+		def http = new HTTPBuilder(url);
+		http.request(Method.POST) { req ->
+			uri.path = path
+			requestContentType: CONTENT_TYPE_FORM
+			MultipartEntity multiPartContent = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
+
+			// Only add the record contents, if we have been supplied with them
+			if ((recordContents != null) &&
+				(contentType != null) &&
+				(filename != null)) {	   
+				// Add the file contents to the request as the recordContents parameter
+			    multiPartContent.addPart(ARGUMENT_RECORD_CONTENTS, new ByteArrayBody(recordContents, contentType, filename))
+			}
+				
+			// Now add all the parameters, seems a bit of an odd way of doing it, but hey it seems to work	   
+			args.each() {argument ->
+				multiPartContent.addPart(argument.key, new StringBody((argument.value == null) ? "" : argument.value))
+			}
+
+			// Now we can add the parts to the request
+			req.setEntity(multiPartContent)
+
+			// Define what we are going to do if we are successful and have received json response
+			// We need to deal with failures in some sensible way	   
+			response.success = { httpResponse, json ->
+				returnValue = processJSONResponse(httpResponse, json)
+			}	   
+		}
+	   
 		return returnValue;
 	}
 }

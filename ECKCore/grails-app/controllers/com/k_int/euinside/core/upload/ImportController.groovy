@@ -66,7 +66,7 @@ class ImportController {
 		
 		if ( okToContinue ) {
 
-			def savedRecordInfo = importService.storeMetadata(cmsId, persistentId, metadataFile.bytes);
+			def savedRecordInfo = importService.storeMetadata(cmsId, persistentId, metadataFile.bytes, metadataFile.contentType, metadataFile.originalFilename);
 			
 			if ( savedRecordInfo.record.id != null ) {
 				responseVal.success = true;

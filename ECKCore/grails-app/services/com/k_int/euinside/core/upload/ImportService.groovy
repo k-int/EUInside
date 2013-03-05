@@ -9,7 +9,7 @@ class ImportService {
 
 	def kiPersistenceWrapperService;
 	
-	def storeMetadata(String cmsId, String persistentId, byte[] metadataFileContents) {
+	def storeMetadata(String cmsId, String persistentId, byte[] metadataFileContents, String contentType, String filename) {
 		def retval = [:];
 		
 		def lookupParams = [id: cmsId, idType: "cms"];
@@ -39,10 +39,10 @@ class ImportService {
 			def newRecord = kiPersistenceWrapperService.createRecord(null);
 			newRecord.cmsId = cmsId;
 			newRecord.persistentId = persistentId;
-			newRecord.recordContents = metadataFileContents
+			newRecord.recordContents = metadataFileContents;
 			
 			log.debug("Saving new record with details set");
-			def saveParams = [record: newRecord];
+			def saveParams = [record: newRecord, contentType: contentType, filename: filename];
 			newRecord = kiPersistenceWrapperService.saveRecord(saveParams);
 			
 			retval.record = newRecord;
