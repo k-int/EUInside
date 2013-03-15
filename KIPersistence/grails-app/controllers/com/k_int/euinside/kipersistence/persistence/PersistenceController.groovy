@@ -206,7 +206,7 @@ class PersistenceController {
 		def persistentId = params.persistentId;
 		def deleted = params.deleted;
 		def recordContents = request.getFile("recordContents");
-		
+
 		if ( eckId != null && cmsId != null && persistentId != null && recordContents != null && !recordContents.isEmpty() ) {
 			
 			def existingRecord = persistenceService.lookupRecordByEckId(eckId);
