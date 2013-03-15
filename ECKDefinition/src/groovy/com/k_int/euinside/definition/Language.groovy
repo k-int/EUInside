@@ -25,7 +25,7 @@ class Language {
 	
 	boolean loadProperties(boolean withLanguage) {
 		boolean loaded = true;
-		String filename = BASE_MESSAGE_PROPERTIES + (withLanguage ? (LANGUAGE_CODE_PREFIX + languageCode) : "") + END_MESSAGE_PROPERTIES;
+		String filename = MessagePropertyUtilitiesService.getRootDirectory() + BASE_MESSAGE_PROPERTIES + (withLanguage ? (LANGUAGE_CODE_PREFIX + languageCode) : "") + END_MESSAGE_PROPERTIES;
 		try {
 			properties.load(new FileInputStream(filename));
 		} catch (FileNotFoundException e) {

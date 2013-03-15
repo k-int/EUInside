@@ -3,8 +3,10 @@ package com.k_int.euinside.definition
 
 class MessagePropertyUtilitiesService {
 
+	private static List<String> POSSIBLE_ROOT_PATHS = ["../webapps/ECKDefinition/WEB-INF/",
+													   "./"];
 	private static String DIRECTORY_MESSAGE_PROPERTIES = "grails-app/i18n";
-	
+
 	private static String KEY_PREFIX_DEFINITION = "definition";
 	private static String KEY_PREFIX_ERROR      = "error";
 	private static String KEY_PREFIX_FIELD      = "field";
@@ -19,11 +21,16 @@ class MessagePropertyUtilitiesService {
 	private static Map<String, Profile> profiles = new HashMap<String, Profile>();
 	private static Map<String, Error> errors = new HashMap<String, Error>();
 	
-    void initialise() {
+	private static String rootDirectory;
+	
+    static void initialise() {
 
+		// Determine the root directory to the application
+		determineRootDirectory();
+		
 		// Called once from bootstrap, to load up our configuration
 		// Look at all the messages.property files to see which ones we have defined 		
-		new File(DIRECTORY_MESSAGE_PROPERTIES).eachFile {
+		new File(rootDirectory + DIRECTORY_MESSAGE_PROPERTIES).eachFile {
 			// The files take the format message_<language>_<country>.properties
 			// Where both _<language> and _<country> are optional
 			// but if _<country> is defined then _<language> must be defined
@@ -90,8 +97,17 @@ class MessagePropertyUtilitiesService {
 			}
 		}
 	}
-	
-	private Profile determineProfile(keyComponents, profilePosition) {
+
+	private static void determineRootDirectory() {
+		POSSIBLE_ROOT_PATHS.each {
+			// Check to see if the path exists to the messages directory
+			if ((new File(it + DIRECTORY_MESSAGE_PROPERTIES)).exists()) {
+				rootDirectory = it;
+			}
+		}
+	}
+		
+	private static Profile determineProfile(keyComponents, profilePosition) {
 		// Get hold of the profile identifier
 		String profileIdentifier = keyComponents[profilePosition];
 		
@@ -104,7 +120,7 @@ class MessagePropertyUtilitiesService {
 		return(profile);
 	}
 	
-	private String determineCode(String [] keyComponents, int startPosition) {
+	private static String determineCode(String [] keyComponents, int startPosition) {
 		String key = "";
 		for (i in startPosition..(keyComponents.length - 1)) {
 			// Unfortunately the key has a dot in it as there is more than 1 part to it
@@ -116,27 +132,31 @@ class MessagePropertyUtilitiesService {
 		return(key);
 	}
 	
-	Language getLanguage(String languageCode) {
+	static Language getLanguage(String languageCode) {
 		return(languages.getAt(languageCode));
 	}
 	
-	Map<String, Language> getLanguages() {
+	static Map<String, Language> getLanguages() {
 		return(languages);
 	}
 	
-	Profile getProfile(String profile) {
+	static Profile getProfile(String profile) {
 		return(profiles.getAt(profile));
 	}
 	
-	Map<String, Profile> getProfiles() {
+	static Map<String, Profile> getProfiles() {
 		return(profiles);
 	}
 	
-	Error getError(String error) {
+	static Error getError(String error) {
 		return(errors.getAt(error));
 	}
 	
-	Map<String, Error> getErrors() {
+	static Map<String, Error> getErrors() {
 		return(errors);
+	}
+	
+	static String getRootDirectory() {
+		return(rootDirectory);
 	}
 }
