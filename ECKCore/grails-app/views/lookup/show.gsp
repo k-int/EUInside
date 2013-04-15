@@ -49,7 +49,7 @@
                         </tr>
                         <tr>
                             <th>Contents:</th>
-                            <td>${thisRecord.recordContents}</td>
+                            <td>${thisRecord.originalData}</td>
                         </tr>
                     </table>
                 </g:each>

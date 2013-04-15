@@ -59,3 +59,4 @@ grails.project.dependency.resolution = {
 	
 }
 grails.plugin.location.SharedModelLayerPlugin = "../SharedModelLayerPlugin"
+grails.plugin.location.ECKPersistence = "../ECKPersistence"

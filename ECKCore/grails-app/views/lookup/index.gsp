@@ -50,7 +50,7 @@
 
     $(document).ready(function (){
 
-    	var successData = {records: [{eckId: 1,cmsId: "1234",persistentId: "http://www.k-int.com/object/1234",deleted: null,recordContents: "metadata"}], recordCount: 1};
+    	var successData = {records: [{eckId: 1,cmsId: "1234",persistentId: "http://www.k-int.com/object/1234",deleted: null,originalData: "metadata"}], recordCount: 1};
     	var failData = {records: [ ],recordCount: 0};
         $("#successResponse").html(syntaxHighlight(successData));
         $('#failResponse').html(syntaxHighlight(failData));

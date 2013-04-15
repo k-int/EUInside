@@ -50,7 +50,7 @@ class LookupController {
 			nextResponseRecord.cmsId = it.cmsId;
 			nextResponseRecord.persistentId = it.persistentId;
 			nextResponseRecord.deleted = it.deleted;
-			nextResponseRecord.recordContents = it.recordContents; 
+			nextResponseRecord.originalData = it.originalData; 
 			
 			responseRecords.add(nextResponseRecord);
 		}

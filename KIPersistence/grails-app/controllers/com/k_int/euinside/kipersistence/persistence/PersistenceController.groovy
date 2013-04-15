@@ -17,7 +17,7 @@ class PersistenceController {
 	/**
 	 * The injected persistence service to actually provide the persistence requirements
 	 */
-	def persistenceService;
+	def LegacyPersistenceService;
 	
     def index() { 
 		// Don't do anything - just display some text..
@@ -30,13 +30,10 @@ class PersistenceController {
 		if ( eckId != null ) {
 			// We have an ID - ok to continue
 
-			def record = persistenceService.lookupRecordByEckId(eckId);
+			def record = LegacyPersistenceService.lookupRecordByEckId(eckId);
 		
-			def htmlResp = [record: record]
-			withFormat {
-				html { return htmlResp; }
-				json { render record as JSON }
-			}
+			// Only support json		
+			render record as JSON
 		} else {
 			// No ID - can't continue return an error
 			response.sendError(400, "An eckId must be specified when calling this function");
@@ -50,13 +47,10 @@ class PersistenceController {
 		if ( cmsId != null ) {
 			// We have an ID - ok to continue
 
-			def record = persistenceService.lookupRecordByCmsId(cmsId);
+			def record = LegacyPersistenceService.lookupRecordByCmsId(cmsId);
 		
-			def htmlResp = [record: record]
-			withFormat {
-				html { return htmlResp; }
-				json { render record as JSON }
-			}
+			// Only support json		
+			render record as JSON
 		} else {
 			// No ID - can't continue return an error
 			response.sendError(400, "A cmsId must be specified when calling this function");
@@ -69,13 +63,10 @@ class PersistenceController {
 		if ( persistentId != null ) {
 			// We have an ID - ok to continue
 
-			def record = persistenceService.lookupRecordByPersistentId(persistentId);
+			def record = LegacyPersistenceService.lookupRecordByPersistentId(persistentId);
 		
-			def htmlResp = [record: record]
-			withFormat {
-				html { return htmlResp; }
-				json { render record as JSON }
-			}
+			// Only support json		
+			render record as JSON
 		} else {
 			// No ID - can't continue return an error
 			response.sendError(400, "A persistentId must be specified when calling this function");
@@ -89,13 +80,10 @@ class PersistenceController {
 		
 		if ( id != null && idType != null ) {
 			// ID and type specified - ok to continue
-			def records = persistenceService.lookupRecord(id, idType);
+			def records = LegacyPersistenceService.lookupRecord(id, idType);
 			
-			def htmlResp = [records: records]
-			withFormat {
-				html { return htmlResp; }
-				json { render records as JSON; }
-			}
+			// Only support json		
+			render records as JSON
 		} else {
 			// ID or type missing (or both) - can't continue return an error
 			response.sendError(400, "An id and an idType must be specified when calling this function");
@@ -109,15 +97,10 @@ class PersistenceController {
 		
 		if ( id != null ) {
 			// Id specified - ok to continue
-			def records = persistenceService.lookupRecordsAnyIdType(id);
+			def records = LegacyPersistenceService.lookupRecordsAnyIdType(id);
 			
-			def htmlResp = [records: records];
-			
-			withFormat {
-				html { return htmlResp; }
-				json { render records as JSON }
-			}
-			
+			// Only support json		
+			render records as JSON
 		} else {
 			// No ID - can't continue - return an error
 			response.sendError(400, "An id must be specified when calling this function");
@@ -132,15 +115,10 @@ class PersistenceController {
 		
 		if ( eckId != null || cmsId != null || persistentId != null ) {
 			// Id specified - ok to continue
-			def records = persistenceService.lookupRecords(cmsId, persistentId, eckId);
+			def records = LegacyPersistenceService.lookupRecords(cmsId, persistentId, eckId);
 			
-			def htmlResp = [records: records];
-			
-			withFormat {
-				html { return htmlResp; }
-				json { render records as JSON }
-			}
-			
+			// Only support json			
+			render records as JSON
 		} else {
 			// No ID - can't continue - return an error
 			response.sendError(400, "An id must be specified when calling this function");
@@ -149,40 +127,38 @@ class PersistenceController {
 	
 	def createRecord() {
 		
-		def record = persistenceService.createRecord();
+		def record = LegacyPersistenceService.createRecord();
 		
-		def htmlResp = [record: record];
-		
-		withFormat {
-			html { return htmlResp; }
-			json { render record as JSON }
-		}
+		// Only support json		
+		render record as JSON
 	}
 	
 	def saveRecord() {
 		
 		def cmsId = params.cmsId;
 		def persistentId = params.persistentId;
-		def deleted = params.deleted;
-		def recordContents = request.getFile("recordContents");
+		def deleted = Boolean.parseBoolean(params.deleted);
+		def recordContents = ((request instanceof org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest) ? request.getFile("recordContents") : null);
+		def providerCode = request.provider;
+		def setCode = request.set; 
 		
-		if ( cmsId != null && persistentId != null && recordContents != null && !recordContents.isEmpty()) {
-			def newRecord = persistenceService.createRecord();
+		if ((cmsId != null) &&
+			(persistentId != null) &&
+			(recordContents != null) &&
+			 !recordContents.isEmpty()) {
+			def newRecord = LegacyPersistenceService.createRecord();
 			newRecord.cmsId = cmsId;
 			newRecord.persistentId = persistentId;
 			newRecord.deleted = deleted;
-			newRecord.recordContents = recordContents.getBytes();
+			newRecord.originalData = recordContents.getBytes();
+			newRecord.set = LegacyPersistenceService.checkProviderSet(providerCode, setCode, true);
 			
-			def recordStatus = persistenceService.saveRecord(newRecord);
+			def recordStatus = LegacyPersistenceService.saveRecord(newRecord);
 			
 			if ( recordStatus.successful ) {
 				// Saved successfully
-				def htmlResp = [record: recordStatus.record];
-				
-				withFormat {
-					html { return htmlResp; }
-					json { render recordStatus.record as JSON }
-				}
+				// Only support json				
+				render recordStatus.record as JSON
 			} else {
 				// Failure during save
 				String errors = "";
@@ -198,44 +174,54 @@ class PersistenceController {
 			response.sendError(400, "A cmsId, persistentId and recordContents must be specified when calling this function");
 		}
 	}
-	
+
+	private def localUpdateRecord(record) {
+		def cmsId = params.cmsId;
+		def persistentId = params.persistentId;
+		def deleted = Boolean.parseBoolean(params.deleted);
+		def recordContents = ((request instanceof org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest) ? request.getFile("recordContents") : null);
+			
+		if ( record != null ) {
+			if (cmsId != null) {
+				record.cmsId = cmsId;
+			}
+			if (persistentId != null) {
+				record.persistentId = persistentId;
+			}
+			if (params.deleted != null) {
+				record.deleted = deleted;
+			}
+			if (recordContents != null) {
+				record.originalData = recordContents.getBytes();
+			}
+			
+			def recordStatus = LegacyPersistenceService.saveRecord(record);
+			
+			if (recordStatus.successful) {
+				// Saved successfully
+				// We only support a json response				
+				render recordStatus.record as JSON
+			} else {
+				// Failure during save
+				String errors = "";
+				recordStatus.messages.each() { aMessage ->
+					if ( !"".equals(errors) )
+						errors.append("; ");
+					errors.append(aMessage);
+				}
+				response.sendError(500, errors);
+			}
+		}
+	}
+			
 	def updateRecord() {
 		
 		def eckId = params.eckId;
-		def cmsId = params.cmsId;
-		def persistentId = params.persistentId;
-		def deleted = params.deleted;
-		def recordContents = request.getFile("recordContents");
 
-		if ( eckId != null && cmsId != null && persistentId != null && recordContents != null && !recordContents.isEmpty() ) {
-			
-			def existingRecord = persistenceService.lookupRecordByEckId(eckId);
+		if (eckId != null) {
+			def existingRecord = LegacyPersistenceService.lookupRecordByEckId(eckId);
 			if ( existingRecord != null ) {
-				existingRecord.cmsId = cmsId;
-				existingRecord.persistentId = persistentId;
-				existingRecord.deleted = deleted;
-				existingRecord.recordContents = recordContents.getBytes();
-				
-				def recordStatus = persistenceService.saveRecord(existingRecord);
-				
-				if ( recordStatus.successful ) {
-					// Saved successfully
-					def htmlResp = [record: recordStatus.record];
-					
-					withFormat {
-						html { return htmlResp; }
-						json { render recordStatus.record as JSON }
-					}
-				} else {
-					// Failure during save
-					String errors = "";
-					recordStatus.messages.each() { aMessage ->
-						if ( !"".equals(errors) )
-							errors.append("; ");
-						errors.append(aMessage);
-					}
-					response.sendError(500, errors);
-				}
+				localUpdateRecord(existingRecord);
 			} else {
 				// No record with the specified eck ID - can't update..
 				response.sendError(404, "No record found with the specified ECK Id - unable to update");
@@ -249,66 +235,19 @@ class PersistenceController {
 	def saveOrUpdateRecord() {
 		
 		def eckId = params.eckId;
-		def cmsId = params.cmsId;
-		def persistentId = params.persistentId;
-		def deleted = params.deleted;
-		def recordContents = request.getFile("recordContents");
 		
-		if ( cmsId != null && persistentId != null && recordContents != null && !recordContents.isEmpty() ) {
-			
-			if ( eckId != null ) {
-				// Existing record..
-				def existingRecord = persistenceService.lookupRecordByEckId(eckId);
-				if ( existingRecord != null ) {
-					existingRecord.cmsId = cmsId;
-					existingRecord.persistentId = persistentId;
-					existingRecord.deleted = deleted;
-					existingRecord.recordContents = recordContents.getBytes();
-					
-					def recordStatus = persistenceService.saveRecord(existingRecord);
-					
-					if ( recordStatus.successful ) {
-						// Saved successfully
-						def htmlResp = [record: recordStatus.record];
-						
-						withFormat {
-							html { return htmlResp; }
-							json { render recordStatus.record as JSON }
-						}
-					} else {
-						// Failure during save
-						String errors = "";
-						recordStatus.messages.each() { aMessage ->
-							if ( !"".equals(errors) )
-								errors.append("; ");
-							errors.append(aMessage);
-						}
-						response.sendError(500, errors);
-					}
-				} else {
-					// No record with the specified eck ID - can't update..
-					response.sendError(404, "No record found with the specified ECK Id - unable to update");
-				}
+		if (eckId != null) {
+			// Existing record..
+			def existingRecord = LegacyPersistenceService.lookupRecordByEckId(eckId);
+			if ( existingRecord != null ) {
+				localUpdateRecord(existingRecord);
 			} else {
-				// New record..
-				def newRecord = persistenceService.createRecord();
-				newRecord.cmsId = cmsId;
-				newRecord.persistentId = persistentId;
-				newRecord.deleted = deleted;
-				newRecord.recordContents = recordContents;
-				
-				def record = persistenceService.saveRecord(newRecord);
-				
-				def htmlResp = [record: record];
-				
-				withFormat {
-					html { return htmlResp; }
-					json { render record as JSON }
-				}
+				// No record with the specified eck ID - can't update..
+				response.sendError(404, "No record found with the specified ECK Id - unable to update");
 			}
 		} else {
-			// Missing required information - return an error
-			response.sendError(400, "An eckId, cmsId, persistentId and recordContents must be specified when calling this function");
+			// New record..
+			saveRecord();
 		}
 	}
 	

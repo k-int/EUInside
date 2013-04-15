@@ -60,11 +60,11 @@ class BootStrap {
 				returnArray['id'] = it.id;
 				returnArray['deleted'] = it.deleted;
 				
-				if ( it.recordContents != null ) {
-					String tempString = new String(it.recordContents);
-					returnArray['recordContents'] = tempString;
+				if ( it.originalData != null ) {
+					String tempString = new String(it.originalData);
+					returnArray['originalData'] = tempString;
 				} else {
-					returnArray['recordContents'] = null;
+					returnArray['originalData'] = null;
 				} 
 			}
 						

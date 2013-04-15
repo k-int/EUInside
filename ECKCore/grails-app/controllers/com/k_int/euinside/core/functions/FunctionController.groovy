@@ -27,7 +27,7 @@ class FunctionController {
 	 */
 	def list() {
 		log.debug("FunctionController::list method called");
-		
+
 		// Use the functions services to build up the list
 		def definitions = internalFunctionsService.list();
 		def externalDefs = externalFunctionsService.list();

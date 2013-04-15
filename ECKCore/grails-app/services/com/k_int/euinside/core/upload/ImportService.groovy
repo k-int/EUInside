@@ -24,7 +24,7 @@ class ImportService {
 			// There's an existing record - update it
 			log.debug("Updating an existing record");
 			
-			existingRecord.recordContents = metadataFileContents;
+			existingRecord.originalData = metadataFileContents;
 			
 			log.debug("About to persist the updated record");
 			def updateParams = [record:existingRecord];
@@ -39,7 +39,7 @@ class ImportService {
 			def newRecord = kiPersistenceWrapperService.createRecord(null);
 			newRecord.cmsId = cmsId;
 			newRecord.persistentId = persistentId;
-			newRecord.recordContents = metadataFileContents;
+			newRecord.originalData = metadataFileContents;
 			
 			log.debug("Saving new record with details set");
 			def saveParams = [record: newRecord, contentType: contentType, filename: filename];

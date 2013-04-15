@@ -17,7 +17,7 @@ class KiPersistenceWrapperService {
 	}
 	
 	// Config settings
-	private def static URL_PERSISTENCE_MODULE_BASE = "http://localhost:28080/KIPersistence";
+	private def static URL_PERSISTENCE_MODULE_BASE = "http://localhost:8080/ECKCore/Persistence";
 	
 	private def static CALLBASE_IDENTIFY    = "/";
 	private def static CALLBASE_PERSISTENCE = "/persistence/";
@@ -149,10 +149,10 @@ class KiPersistenceWrapperService {
 	def saveRecord(params) {
 		
 		def record = params.record;
-		return saveRecord(record.cmsId, record.persistentId, record.deleted, record.recordContents, params.contentType, params.filename);
+		return saveRecord(record.cmsId, record.persistentId, record.deleted, record.originalData, params.contentType, params.filename);
 	}
 	
-	def saveRecord(cmsId, persistentId, deleted, recordContents, contentType, filename) {
+	def saveRecord(cmsId, persistentId, deleted, originalData, contentType, filename) {
 		
 		def method = METHOD_SAVE_RECORD;
 		def format = FORMAT_JSON;
@@ -161,7 +161,7 @@ class KiPersistenceWrapperService {
 		args.put(ARGUMENT_PERSISTENT_ID, persistentId);
 		args.put(ARGUMENT_DELETED, deleted);
 		
-		def httpResponse = httpPost(method, format, args, recordContents, contentType, filename, CALLBASE_PERSISTENCE);
+		def httpResponse = httpPost(method, format, args, originalData, contentType, filename, CALLBASE_PERSISTENCE);
 		return httpResponse;
 	}
 	
@@ -169,10 +169,10 @@ class KiPersistenceWrapperService {
 		
 		def record = params.record;
 		
-		return updateRecord(record.id, record.cmsId, record.persistentId, record.deleted, record.recordContents, params.contentType, params.filename);	
+		return updateRecord(record.id, record.cmsId, record.persistentId, record.deleted, record.originalData, params.contentType, params.filename);	
 	}
 	
-	def updateRecord(eckId, cmsId, persistentId, deleted, recordContents, contentType, filename) {
+	def updateRecord(eckId, cmsId, persistentId, deleted, originalData, contentType, filename) {
 		
 		def method = METHOD_UPDATE_RECORD;
 		def format = FORMAT_JSON;
@@ -182,17 +182,17 @@ class KiPersistenceWrapperService {
 		args.put(ARGUMENT_PERSISTENT_ID, persistentId);
 		args.put(ARGUMENT_DELETED, deleted);
 		
-		def httpResponse = httpPost(method, format, args, recordContents, contentType, filename, CALLBASE_PERSISTENCE);
+		def httpResponse = httpPost(method, format, args, originalData, contentType, filename, CALLBASE_PERSISTENCE);
 		return httpResponse;
 	}
 	
 	def saveOrUpdateRecord(params) {
 		
 		def record = params.record;
-		return saveOrUpdateRecord(record.id, record.cmsId, record.persistentId, record.deleted, record.recordContents, params.contentType, params.filename);	
+		return saveOrUpdateRecord(record.id, record.cmsId, record.persistentId, record.deleted, record.originalData, params.contentType, params.filename);	
 	}
 	
-	def saveOrUpdateRecord(eckId, cmsId, persistentId, deleted, recordContents, contentType, filename) {
+	def saveOrUpdateRecord(eckId, cmsId, persistentId, deleted, originalData, contentType, filename) {
 		
 		def method = METHOD_SAVE_OR_UPDATE_RECORD;
 		def format = FORMAT_JSON;
@@ -202,7 +202,7 @@ class KiPersistenceWrapperService {
 		args.put(ARGUMENT_PERSISTENT_ID, persistentId);
 		args.put(ARGUMENT_DELETED, deleted);
 		
-		def httpResponse = httpPost(method, format, args, recordContents, contentType, filename, CALLBASE_PERSISTENCE);
+		def httpResponse = httpPost(method, format, args, originalData, contentType, filename, CALLBASE_PERSISTENCE);
 		return httpResponse;
 	}
 	
@@ -266,7 +266,7 @@ class KiPersistenceWrapperService {
 		return(httpPost(method, format, args, null, null, null, callBase))
 	}
 	
-	private def httpPost(method, format, args, recordContents, contentType, filename, callBase) {
+	private def httpPost(method, format, args, originalData, contentType, filename, callBase) {
 		def returnValue;
 		
 		def url = determineURL(callBase);
@@ -281,16 +281,17 @@ class KiPersistenceWrapperService {
 			MultipartEntity multiPartContent = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
 
 			// Only add the record contents, if we have been supplied with them
-			if ((recordContents != null) &&
+			if ((originalData != null) &&
 				(contentType != null) &&
 				(filename != null)) {	   
 				// Add the file contents to the request as the recordContents parameter
-			    multiPartContent.addPart(ARGUMENT_RECORD_CONTENTS, new ByteArrayBody(recordContents, contentType, filename))
+			    multiPartContent.addPart(ARGUMENT_RECORD_CONTENTS, new ByteArrayBody(originalData, contentType, filename))
 			}
 				
 			// Now add all the parameters, seems a bit of an odd way of doing it, but hey it seems to work	   
 			args.each() {argument ->
-				multiPartContent.addPart(argument.key, new StringBody((argument.value == null) ? "" : argument.value))
+				String value = (argument.value == null) ? "" : argument.value.toString();
+				multiPartContent.addPart(argument.key, new StringBody(value))
 			}
 
 			// Now we can add the parts to the request
