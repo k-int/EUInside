@@ -6,14 +6,18 @@ import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.k_int.euinside.setmanager.datamodel.ProviderSet
-import com.k_int.euinside.setmanager.datamodel.SetQueuedAction;
-import com.k_int.euinside.setmanager.persistence.PersistenceService;
+import com.k_int.euinside.setmanager.action.ListService;
 import com.k_int.euinside.setmanager.action.StatusService;
 import com.k_int.euinside.setmanager.action.UpdateService;
 
+import com.k_int.euinside.setmanager.datamodel.ProviderSet
+import com.k_int.euinside.setmanager.datamodel.SetQueuedAction;
+
+import com.k_int.euinside.setmanager.persistence.PersistenceService;
+
 class SetController {
 
+	def ListService;
 	def PersistenceService;
 	def StatusService;
 	def UpdateService;
@@ -25,7 +29,10 @@ class SetController {
 	}
 	
 	def list() {
-		
+		ProviderSet set = determineSet();
+		if (set != null) {
+			render ListService.workingSet(set) as JSON;
+		}
 	}
 	
 	def preview() {
