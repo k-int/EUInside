@@ -319,10 +319,11 @@ class PersistenceService {
 	 *          deleted .......... true if the item has been deleted
 	 *
 	 * @return An object containing the following
-	 * 		   	successful ... true if the record was created / updated, false if not
-	 * 			messages ..... an array of error messages if we were not successful
-	 * 		 	record ....... the record that was saved
-	 *          recordFound .. did the record already exist in the database
+	 * 		   	successful ......... true if the record was created / updated, false if not
+	 * 			messages ........... an array of error messages if we were not successful
+	 * 		 	record ............. the record that was saved
+	 *          recordFound ........ did the record already exist in the database
+	 *          newRecordCreated ... true ifr a new record is created 
 	 */
 	def saveRecord(parameters) {
 		def result = null;
@@ -343,6 +344,7 @@ class PersistenceService {
 			// We have not been told, whether it has been deleted or not, so we assume it has not been
 			deleted = false;
 		}
+		
 		boolean existingRecord = true;
 		
 		// First see if the record already exists
@@ -369,6 +371,8 @@ class PersistenceService {
 			// record dosn't exist and we are deleting it, so treat it as successful
 			result = [successful : true];
 		} else {
+			boolean recordChanged = ((recordContents != null) && (checksum != record.checksum));
+			
 			// At this point we should always have a record, either an existing one or a new one
 			if (persistentId != null) {
 				// Set the persistent id as we have one in our hand
@@ -384,11 +388,16 @@ class PersistenceService {
 				// The record is being deleted, so clear out the record contents
 				record.originalData = null;
 				record.checksum = null;
-			} else if ((recordContents != null) &&
-				       (checksum != record.checksum)) {
+				
+				// Set the validation status to be OK
+				record.validationStatus = Record.VALIDATION_STATUS_OK;
+			} else if (recordChanged) {
 				// We have been supplied record contents and they are different from what it was previously
 				record.originalData = recordContents;
 				record.checksum = checksum;
+				
+				// Needs to be revalidated
+				record.validationStatus = Record.VALIDATION_STATUS_NOT_CHECKED;
 			}
 				
 			// Not forgetting to update the last update date
@@ -400,6 +409,7 @@ class PersistenceService {
 		
 		// Let the caller know if this record already existed or not in the result
 	    result.recordFound = existingRecord;
+		result.newRecordCreated = createNewRecord; 
 		return(result);
 	}
 	

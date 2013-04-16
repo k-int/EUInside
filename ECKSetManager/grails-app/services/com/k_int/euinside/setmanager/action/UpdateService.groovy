@@ -7,6 +7,7 @@ import java.util.zip.ZipInputStream;
 
 import com.k_int.euinside.setmanager.datamodel.ProviderSet;
 import com.k_int.euinside.setmanager.datamodel.SetQueuedAction;
+import com.k_int.euinside.setmanager.datamodel.SetWorking;
 import com.k_int.euinside.setmanager.persistence.PersistenceService;
 import com.k_int.euinside.setmanager.utils.ChunkedObject;
 
@@ -116,6 +117,19 @@ class UpdateService {
 			continuationAction = SetQueuedAction.findByParent(parentAction);
 		} 
 
+		// Ensure we have a working set
+		if (queuedAction.set.workingSet == null) {
+			queuedAction.set.workingSet = new SetWorking();
+			queuedAction.set.workingSet.set = queuedAction.set;
+			queuedAction.set.workingSet.lastUpdated = new Date();
+			if (!queuedAction.set.workingSet.save(flush: true) ) {
+				log.error("Failed to create working set");
+				// Errors...
+				queuedAction.set.workingSet.errors.each() {
+					log.error("Error: " + it);
+				}
+			}
+		}
 		int totalRecords = 0;		
 		def recordsProcessed = [ ]; 
 		def recordsToDelete = [ ];
@@ -177,27 +191,22 @@ class UpdateService {
 		// Now deal with any deletions
 		def actualRecordsToMarkAsDeleted = recordsToDelete.minus(recordsProcessed);
 		actualRecordsToMarkAsDeleted.each() {recordId ->
-			def saveResult = PersistenceService.saveRecord([cmsId : recordId,
-															set : set,
-															live : false,
-															deleted : true]);
-			if (saveResult.successful) {
-				if (saveResult.recordFound) {
-					// We only add it to the list of records processed if the record already existed
-					recordsProcessed.push(recordId);
-				}
-			} else {
-				log.error("Failed to mark record \"" + recordId + "\" as deleted for set " + set.id);
-			}
+			processRecord(set, recordId, null, false, true, null, recordsProcessed);
 		}
 
+		// Mark the set as being Dirty, since it has been updated
+		queuedAction.set.workingSet.status = ProviderSet.STATUS_DIRTY;
+
+		// Save the working set
+		PersistenceService.saveRecord(queuedAction.set.workingSet, "SetWorking", queuedAction.set.workingSet.id);
+			
 		// Return the number of records that were processed
 		return(recordsProcessed.size());
 	}
 		
-	private def processRecord(set, record, recordsProcessed) {
+	private def processRecord(set, recordContents, recordsProcessed) {
 		// We have a record to add to the database
-		def rootXML = new XmlSlurper().parse(new ByteArrayInputStream(record));
+		def rootXML = new XmlSlurper().parse(new ByteArrayInputStream(recordContents));
         def rootXMLWithNameSpaceDeclared = rootXML.declareNamespace(LIDO_NAMESPACES);
 		def recordIds = rootXMLWithNameSpaceDeclared.'lido:administrativeMetadata'.'lido:recordWrap'.'lido:recordID';
 		
@@ -212,14 +221,20 @@ class UpdateService {
 		def PersistentRecordId = recordIds.find{it.'@lido:type' == 'guid'}.text();
 		
 		// That is good we have a local record id, so we can continue, where do we get the persistence id from
-		def saveResult = PersistenceService.saveRecord([cmsId : localRecordId,
-														persistentId : (PersistentRecordId.isEmpty() ? null : PersistentRecordId), 
+		processRecord(set, localRecordId, (PersistentRecordId.isEmpty() ? null : PersistentRecordId), false, false, recordContents, recordsProcessed);
+	}
+	
+	private def processRecord(set, cmsId, persistentId, live, deleted, recordContents, recordsProcessed) {
+		// That is good we have a local record id, so we can continue, where do we get the persistence id from
+		def saveResult = PersistenceService.saveRecord([cmsId : cmsId,
+														persistentId : persistentId, 
 														set : set,
-														live : false,
-														recordContents : record,
-														deleted : false]);
-		if (saveResult.successful) {
-			recordsProcessed.push(localRecordId);
+														live : live,
+														recordContents : recordContents,
+														deleted : deleted]);
+		if ((saveResult.successful && !deleted) ||
+		    (saveResult.recordFound && deleted)) {
+			recordsProcessed.push(cmsId);
 		}
 	}
 }

@@ -43,7 +43,9 @@
 			               		<tr>
 			                   		<td colspan="2">
 			                   			<div class="btn btn-primary">
-			                       			<g:field type="button"  name="testSubmit", value="Update"/>
+				                   			<g:field type="button"  name="testUpdate", value="Update"/>
+			                       		
+			                       			<g:field type="button"  name="testStatus", value="Status"/>
 			                       		</div>
 			                   		</td>
 			               		</tr>
@@ -57,11 +59,15 @@
     
     	<script type="text/javascript">
 
-        	$("#testSubmit").click(function() {
-
+        	$("#testUpdate").click(function() {
             	$("#testForm").attr("action", "update");
             	$("#testForm").submit();
-
+	            return false;
+        	});
+    
+        	$("#testStatus").click(function() {
+            	$("#testForm").attr("action", "status");
+            	$("#testForm").submit();
 	            return false;
         	});
     

@@ -9,15 +9,9 @@ class SetWorking {
 	
 	String status = ProviderSet.STATUS_DIRTY;
 	Date lastUpdated;
-	Integer numberWaitingToBeCommitted = 0;
-	Integer numberWaitingToBeValidated = 0;
-	Integer numberWithValidationErrors = 0;
-
+	
     static constraints = {
-		status                     maxSize : 20, nullable : false
-		lastUpdated                              nullable : true
-		numberWaitingToBeCommitted               nullable : false
-		numberWaitingToBeValidated               nullable : false
-		numberWithValidationErrors               nullable : false
+		status                     nullable : false, maxSize : 20
+		lastUpdated                nullable : true
     }
 }

@@ -9,11 +9,9 @@ class SetLive {
 	
 	String status = ProviderSet.STATUS_COMMITTED;
 	Date committed;
-	Integer numberCommitted = 0;
 
     static constraints = {
 		status          maxSize : 20, nullable : false
 		committed                     nullable : true
-		numberCommitted               nullable : false
     }
 }
