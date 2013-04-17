@@ -30,12 +30,16 @@ class UpdateService {
 			multipartFiles.each() {parameterName, multiPartFile ->
 				ChunkedObject recordContentsChunked = new ChunkedObject(multiPartFile.getBytes(), SetQueuedAction.MAX_IMPORT_FILE_CHUNK_SIZE);
 				String contentType = multiPartFile.contentType;
-				if (!save(set, firstFile && deleteAll, recordContentsChunked, contentType, recordsToDeleteChunked)) {
-					result = false;
-				}
+				
+				// We ignore posted files we no content type and thos with the content type of 
+				if ((contentType != null) && !contentType.equalsIgnoreCase("application/octet-stream")) { 
+					if (!save(set, firstFile && deleteAll, recordContentsChunked, contentType, recordsToDeleteChunked)) {
+						result = false;
+					}
 
-				// No longer dealing with the first file				
-				firstFile = false
+					// No longer dealing with the first file				
+					firstFile = false
+				}
 			}
 		}
 		

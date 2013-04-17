@@ -4,6 +4,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.k_int.euinside.setmanager.datamodel.SetHistory;
 import com.k_int.euinside.setmanager.datamodel.SetQueuedAction;
+
+import com.k_int.euinside.setmanager.action.CommitService;
 import com.k_int.euinside.setmanager.action.UpdateService;
 
 class SetQueueProcessorJob {
@@ -12,7 +14,8 @@ class SetQueueProcessorJob {
 		simple name: 'Set Manager Queue', startDelay: 60000, repeatInterval: 60000
     }
 
-	// The service that performs the work for the Update action
+	// The services that perform the work
+	def CommitService;
 	def UpdateService;
 	
 	/** Lock to ensure we only have 1 job processing the queue 
@@ -48,6 +51,12 @@ class SetQueueProcessorJob {
 								actionClosure = {UpdateService.process(queuedAction);}
 								break;
 								
+							case SetQueuedAction.ACTION_COMMIT:
+								actionClosure = {CommitService.process(queuedAction.set);}
+								break;
+								
+							case SetQueuedAction.ACTION_CONVERT_EDM:
+							case SetQueuedAction.ACTION_VALIDATE:
 							default:
 								log.error("Unknown queued action \"" + queuedAction.action + "\" removed from queue");
 								break;

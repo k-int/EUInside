@@ -4,8 +4,11 @@ import java.util.Date;
 
 class SetQueuedAction {
 
-	static String ACTION_CONTINUED = "Continued";
-	static String ACTION_UPDATE    = "Update";
+	static String ACTION_COMMIT      = "Commit";
+	static String ACTION_CONTINUED   = "Continued";
+	static String ACTION_CONVERT_EDM = "ConvertToEDM";
+	static String ACTION_UPDATE      = "Update";
+	static String ACTION_VALIDATE    = "Validate";
 	
 	static int MAX_DELETED_RECORD_CHARACTERS = 2000;
 	static int MAX_IMPORT_FILE_CHUNK_SIZE    = 10 * 1024 * 1024;

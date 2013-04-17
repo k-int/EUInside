@@ -5,6 +5,10 @@ class UrlMappings {
 			controller = "set"
 		}
 
+		"/Help/$action" {
+			controller = "help"
+		}
+
 		"/"(view:"/index")
 		"500"(view:'/error')
 	}

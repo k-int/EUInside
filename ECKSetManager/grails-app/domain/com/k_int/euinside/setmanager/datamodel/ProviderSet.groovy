@@ -5,7 +5,7 @@ import java.util.Date;
 class ProviderSet {
 
 	// The stati that a set can have
-	static public String STATUS_COMMIT     = "Commit";
+	static public String STATUS_COMMITTING = "Committing";
 	static public String STATUS_COMMITTED  = "Committed";
 	static public String STATUS_DIRTY      = "Dirty";
 	static public String STATUS_ERROR      = "Error";
@@ -24,7 +24,12 @@ class ProviderSet {
 	static hasMany = [records : Record,
 		              queuedActions : SetQueuedAction,
 					  history : SetHistory]
-		
+
+	static mapping = {
+		queuedActions sort : 'id', order : 'asc'
+		history       sort : 'id', order : 'desc'
+	}
+
 	// The unique code the provider uses for this set
 	String code;
 

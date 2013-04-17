@@ -323,7 +323,7 @@ class PersistenceService {
 	 * 			messages ........... an array of error messages if we were not successful
 	 * 		 	record ............. the record that was saved
 	 *          recordFound ........ did the record already exist in the database
-	 *          newRecordCreated ... true ifr a new record is created 
+	 *          newRecordCreated ... true if a new record has been created 
 	 */
 	def saveRecord(parameters) {
 		def result = null;
@@ -388,6 +388,7 @@ class PersistenceService {
 				// The record is being deleted, so clear out the record contents
 				record.originalData = null;
 				record.checksum = null;
+				record.convertedData = null;
 				
 				// Set the validation status to be OK
 				record.validationStatus = Record.VALIDATION_STATUS_OK;
@@ -395,11 +396,21 @@ class PersistenceService {
 				// We have been supplied record contents and they are different from what it was previously
 				record.originalData = recordContents;
 				record.checksum = checksum;
+				record.convertedData = null;
 				
 				// Needs to be revalidated
 				record.validationStatus = Record.VALIDATION_STATUS_NOT_CHECKED;
 			}
-				
+
+			// delete any existing validation errors if we are still not in error (ie. been deleted or updated)
+			if (record.validationStatus != Record.VALIDATION_STATUS_ERROR) {
+				// Why is there no deleteAll method or have I missed it ?
+				record.validationErrors.each() {
+					record.validationErrors.remove(it);
+					it.delete(flush : true);
+				}
+			}
+							
 			// Not forgetting to update the last update date
 			record.lastUpdated = new Date();
 			

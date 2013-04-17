@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.k_int.euinside.setmanager.datamodel.ProviderSet;
 import com.k_int.euinside.setmanager.datamodel.Record;
+import com.k_int.euinside.setmanager.datamodel.SetHistory;
 import com.k_int.euinside.setmanager.datamodel.SetLive;
 import com.k_int.euinside.setmanager.datamodel.SetWorking;
 
@@ -17,7 +18,7 @@ class StatusService {
 	 * 
 	 * @return A json friendly map for the status of the set 
 	 */
-    def setStatus(ProviderSet set) {
+    def setStatus(ProviderSet set, String numberOfHistoryItems) {
 		// On the working set determine the following
 		// 1. Status
 		// 2. Number of records
@@ -55,14 +56,45 @@ class StatusService {
 						  "deleteAll"          : it.deleteAll];
 			queuedActions.push(action);
 		}
-		
+
+		// Now build up the history list
+		int numberOfHistoryItemsInt = 20;
+		if (numberOfHistoryItems != null) {
+			try {
+				// Convert the passed in parameter to an int
+				numberOfHistoryItemsInt = Integer.parseInt(numberOfHistoryItems);
+				
+				// Ensure we havn't been given a number less than 0
+				if (numberOfHistoryItemsInt < 1) {
+					numberOfHistoryItemsInt = 20;
+				}
+			} catch (NumberFormatException e) {
+				// No need to do anything as we have already setup the default value 
+			}
+		}
+		def historyItems = [ ];
+		def historyCriteria = SetHistory.createCriteria();
+		def historyRecords = historyCriteria {
+			eq("set", set)
+			maxResults(numberOfHistoryItemsInt)
+			order("id", "desc")
+		}
+		historyRecords.each() {
+			def historyItem = ["action"          : it.action,
+							   "when"            : it.whenPerformed,
+							   "numberOfRecords" : it.numberOfRecords,
+							   "duration"        : it.duration];
+			historyItems.push(historyItem);
+		}
+		 		
 		// Now we can build up the result array
 		def setStatus = ["code"          : set.code,
 			             "description"   : set.description,
 						 "created"       : set.created,
 						 "workingSet"    : workingSet,
 						 "liveSet"       : liveSet,
-						 "queuedActions" : queuedActions];
+						 "queuedActions" : queuedActions,
+						 "history"       : historyItems];
 		return(setStatus); 
     }
 }

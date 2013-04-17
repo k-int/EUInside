@@ -1,122 +1,113 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-	<head>
-		<meta name="layout" content="main"/>
-		<title>Welcome to Grails</title>
-		<style type="text/css" media="screen">
-			#status {
-				background-color: #eee;
-				border: .2em solid #fff;
-				margin: 2em 2em 1em;
-				padding: 1em;
-				width: 12em;
-				float: left;
-				-moz-box-shadow: 0px 0px 1.25em #ccc;
-				-webkit-box-shadow: 0px 0px 1.25em #ccc;
-				box-shadow: 0px 0px 1.25em #ccc;
-				-moz-border-radius: 0.6em;
-				-webkit-border-radius: 0.6em;
-				border-radius: 0.6em;
-			}
+  	<head>
+    	<meta name="layout" content="bootstrap"/>
+		<link rel="stylesheet" href="${resource(dir: 'css', file: 'index.css')}" type="text/css">
+		<g:javascript src="jsonSyntax.js" />
+    	<title>ECKSetManager</title>
+  	</head>
 
-			.ie6 #status {
-				display: inline; /* float double margin fix http://www.positioniseverything.net/explorer/doubled-margin.html */
-			}
+  	<body>
+    	<div class="row-fluid">
 
-			#status ul {
-				font-size: 0.9em;
-				list-style-type: none;
-				margin-bottom: 0.6em;
-				padding: 0;
-			}
-            
-			#status li {
-				line-height: 1.3;
-			}
+	      	<section id="main">
+	
+	        	<div class="hero-unit row">
+	          		<div class="page-header span12">
+	            		<h1>Management of Sets and Records</h1>
+	          		</div>
+	        	</div>
+	        
+	        	<div class="row">
+	          		<div class="span12">
+	            		<h4>Parameters / invocation</h4>
+						<p>The url for the module takes the form <b>/Set/&lt;provider&gt;/&lt;setName&gt;/&lt;action&gt;/&lt;recordId&gt;?parameters</b> Where:</p>
+						<table class="parameters">
+							<tr>
+								<th>URL Part</th>
+								<th align="left">Description</th>
+							</tr>
+							<tr>
+								<td>provider </td>
+								<td>Is the code for the provider of the data (it will be restricted by client IP address as to which machines can provide/request data for a provider) </td>
+							</tr>
+							<tr>
+								<td>setName</td>
+								<td>The set that is to be manipulated or information is to be provided for, if the set does not exist, it will be created, for compatibility with iteration 1 the set name of “default” will be created for any data persisted in iteration 1.</td>
+							</tr>
+							<tr>
+								<td>action</td>
+								<td>The action to be performed on the set</td>
+							</tr>
+							<tr>
+								<td>recordId</td>
+								<td>is the record to be actioned, this is not applicable for all actions and will be ignored if supplied where it is not relevant.</td>
+							</tr>
+						</table>
 
-			#status h1 {
-				text-transform: uppercase;
-				font-size: 1.1em;
-				margin: 0 0 0.3em;
-			}
+						<p>The possible parameters are:</p>
+						<table class="parameters">
+							<tr>
+								<th align="left">Parameter</th>
+								<th align="left">Description</th>
+							</tr>
+							<tr>
+								<td>delete</td>
+								<td>A comma separated list of records to be deleted from the set</td>
+							</tr>
+							<tr>	
+								<td>deleteAll</td>
+								<td>Delete all records from the set first (ie. Recreate the set from the supplied data)	Yes / No</td>
+							</tr>
+							<tr>	
+								<td>historyItems</td>
+								<td>Number of items to show in the history section of the Status action</td>
+							</tr>
+							<tr>
+								<td>setDescription</td>
+								<td>A description that can be used for the set, if the set is being created</td>
+							</tr>
+							<tr>
+								<td>statisticsDetail</td>
+								<td>How much detail to provide in the statistics report for this set, no values are defined for this yet, this will be revisited when we look at what statistics are required and presented</td>
+							</tr>	
+						</table>
 
-			#page-body {
-				margin: 2em 1em 1.25em 18em;
-			}
+						<p>All posted files where the content type contains zip or xml for the actions Update and Commit will be examined to see if they contain records that need to be added to the set, it is assumed the files will be in LIDO format</p>
 
-			h2 {
-				margin-top: 1em;
-				margin-bottom: 0.3em;
-				font-size: 1em;
-			}
+	            		
+						<p>The possible actions are:</p>
+						<ul>
+							<li><g:link controller="Help" action="commit">Commit</g:link></li>
+							<li><g:link controller="Help" action="list">List</g:link></li>
+							<li>Preview</li>
+							<li><g:link controller="Help" action="record">Record</g:link></li>
+							<li>Statistics</li>
+							<li><g:link controller="Help" action="status">Status</g:link></li>
+							<li><g:link controller="Help" action="update">Update</g:link></li>
+							<li><g:link controller="Help" action="validate">Validate</g:link></li>
+						</ul>
+								
+	            		<h4>Testing</h4>
+	            		<p>In order to allow simple testing of the ECK import interfaces, etc. a test form is available <a href="/ECKSetManager/Set/default/default/test">here</a> which actions data for the default provider using the default set.</p>
+	          		</div>
+	        	</div>
+	          
+	      	</section>
 
-			p {
-				line-height: 1.5;
-				margin: 0.25em 0;
-			}
-
-			#controller-list ul {
-				list-style-position: inside;
-			}
-
-			#controller-list li {
-				line-height: 1.3;
-				list-style-position: inside;
-				margin: 0.25em 0;
-			}
-
-			@media screen and (max-width: 480px) {
-				#status {
-					display: none;
-				}
-
-				#page-body {
-					margin: 0 1em 1em;
-				}
-
-				#page-body h1 {
-					margin-top: 0;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<a href="#page-body" class="skip"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-		<div id="status" role="complementary">
-			<h1>Application Status</h1>
-			<ul>
-				<li>App version: <g:meta name="app.version"/></li>
-				<li>Grails version: <g:meta name="app.grails.version"/></li>
-				<li>Groovy version: ${org.codehaus.groovy.runtime.InvokerHelper.getVersion()}</li>
-				<li>JVM version: ${System.getProperty('java.version')}</li>
-				<li>Reloading active: ${grails.util.Environment.reloadingAgentEnabled}</li>
-				<li>Controllers: ${grailsApplication.controllerClasses.size()}</li>
-				<li>Domains: ${grailsApplication.domainClasses.size()}</li>
-				<li>Services: ${grailsApplication.serviceClasses.size()}</li>
-				<li>Tag Libraries: ${grailsApplication.tagLibClasses.size()}</li>
-			</ul>
-			<h1>Installed Plugins</h1>
-			<ul>
-				<g:each var="plugin" in="${applicationContext.getBean('pluginManager').allPlugins}">
-					<li>${plugin.name} - ${plugin.version}</li>
-				</g:each>
-			</ul>
-		</div>
-		<div id="page-body" role="main">
-			<h1>Welcome to Grails</h1>
-			<p>Congratulations, you have successfully started your first Grails application! At the moment
-			   this is the default page, feel free to modify it to either redirect to a controller or display whatever
-			   content you may choose. Below is a list of controllers that are currently deployed in this application,
-			   click on each to execute its default action:</p>
-
-			<div id="controller-list" role="navigation">
-				<h2>Available Controllers:</h2>
-				<ul>
-					<g:each var="c" in="${grailsApplication.controllerClasses.sort { it.fullName } }">
-						<li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName}</g:link></li>
-					</g:each>
-				</ul>
-			</div>
-		</div>
+    	</div>
+    
+	    <script type="text/javascript">
+	
+		    $(document).ready(function (){
+		
+		    	var successData = {success: true,messages: ["Metadata record successfully imported"	],eckId: 1357301124429};
+		    	var failData = {success: false,messages: ["A CMS ID is required and has not been specified","A persistent ID is required and has not been specified"],eckId: 0};
+		        $("#successResponse").html(syntaxHighlight(successData));
+		        $('#failResponse').html(syntaxHighlight(failData));
+		        
+		    });
+	    
+    	</script>
 	</body>
 </html>

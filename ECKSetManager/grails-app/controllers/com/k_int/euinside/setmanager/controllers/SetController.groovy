@@ -1,14 +1,17 @@
 package com.k_int.euinside.setmanager.controllers
 
-import grails.converters.JSON
+import grails.converters.JSON;
 
 import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import com.k_int.euinside.setmanager.action.CommitService;
 import com.k_int.euinside.setmanager.action.ListService;
+import com.k_int.euinside.setmanager.action.RecordService;
 import com.k_int.euinside.setmanager.action.StatusService;
 import com.k_int.euinside.setmanager.action.UpdateService;
+import com.k_int.euinside.setmanager.action.ValidationService;
 
 import com.k_int.euinside.setmanager.datamodel.ProviderSet
 import com.k_int.euinside.setmanager.datamodel.SetQueuedAction;
@@ -17,15 +20,45 @@ import com.k_int.euinside.setmanager.persistence.PersistenceService;
 
 class SetController {
 
+	def CommitService;
 	def ListService;
 	def PersistenceService;
+	def RecordService;
 	def StatusService;
 	def UpdateService;
-	
-//    def index() { }
-	
+	def ValidationService;
+
+	/**
+	 * Determines the set the caller wishes to act upon and whether the provider can access it from the IP that are calling from
+	 * 	
+	 * @return The set to be acted upon
+	 */
+	private def determineSet() {
+		ProviderSet set = null;
+		String providerCode = params.provider;
+		def validIPResult = PersistenceService.checkValidIP(providerCode, request.getRemoteHost());
+		if (validIPResult.validIP) {
+			// We have a valid IP address so do something ...
+			String setCode = params.setname;
+			set = PersistenceService.lookupProviderSet(providerCode, setCode, true, params.setDescription);
+			if (set == null) {
+				response.sendError(404, "Error obtaining set")
+			}
+		} else {
+			response.sendError(403, validIPResult.message);
+		}
+		return(set);
+	}
+
 	def commit() {
-		
+		ProviderSet set = localUpdate();
+		if (set != null) {
+			// Now we can queue the commit
+			CommitService.queue(set);
+			
+			// Inform the caller that we have queued for processing
+			response.sendError(202, "Request has been queued for processing");
+		}
 	}
 	
 	def list() {
@@ -40,7 +73,19 @@ class SetController {
 	}
 	
 	def record() {
-		
+		ProviderSet set = determineSet();
+		if (set != null) {
+			if ((params.recordId == null) || params.recordId.isEmpty()) {
+				response.sendError(404, "recordId has not been specified");
+			} else {
+				def xml = RecordService.fetch(set, params.recordId);
+				if (xml == null) {
+					response.sendError(404, "Unable to locate record with id: " + params.recordId);
+				} else {
+					render(text : xml, contentType : "text/xml");
+				}
+			}
+		}
 	}
 	
 	def statistics() {
@@ -50,28 +95,11 @@ class SetController {
 	def status() {
 		ProviderSet set = determineSet();
 		if (set != null) {
-			render StatusService.setStatus(set) as JSON;
+			render StatusService.setStatus(set, params.historyItems) as JSON;
 		}
 	}
 
-	private def determineSet() {
-		ProviderSet set = null;
-		String providerCode = params.provider;
-		def validIPResult = PersistenceService.checkValidIP(providerCode, request.getRemoteHost());
-		if (validIPResult.validIP) {
-			// We have a valid IP address so do something ...
-			String setCode = params.setname;
-			set = PersistenceService.lookupProviderSet(providerCode, setCode, true, params.setDescription);
-			if (set == null) {
-				response.sendError(403, "Error obtaining set")
-			}
-		} else {
-			response.sendError(403, validIPResult.message);
-		}
-		return(set);
-	}
-
-	def update() {
+	private def localUpdate() {
 		ProviderSet set = determineSet();
 		if (set != null) {
 			// We have a set so we can continue
@@ -84,16 +112,27 @@ class SetController {
 			// Queue the action to be processed later
 			def deleteAll = params.deleteAll;
 			UpdateService.queue(set, files, ((deleteAll != null) && deleteAll.equalsIgnoreCase("yes")), params.delete);
-
+		}
+		return(set);
+	}
+	
+	def update() {
+		if (localUpdate() != null) {
 			// Inform the caller that we have queued for processing
 			response.sendError(202, "Request has been queued for processing");
 		}
 	}
 	
 	def validate() {
-		
+		ProviderSet set = determineSet();
+		if (set != null) {
+			render ValidationService.list(set, params.recordId) as JSON;
+		}
 	}
 
+	def index() {
+	}
+	
 	def test() {
 		ProviderSet set = determineSet();
 		if (set != null) {
