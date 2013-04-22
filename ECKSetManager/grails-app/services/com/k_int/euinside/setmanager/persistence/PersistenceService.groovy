@@ -406,7 +406,8 @@ class PersistenceService {
 			if (record.validationStatus != Record.VALIDATION_STATUS_ERROR) {
 				// Why is there no deleteAll method or have I missed it ?
 				record.validationErrors.each() {
-					record.validationErrors.remove(it);
+					// You need to delete the association before you delete the list item
+					record.removeFromValidationErrors(it);
 					it.delete(flush : true);
 				}
 			}

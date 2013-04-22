@@ -9,6 +9,10 @@ class UrlMappings {
 			controller = "gateway"
 			action = [GET : "persistenceGetRelay", POST : "persistencePostRelay"]
 		}
+		"/SetManager/$path**" {
+			controller = "gateway"
+			action = [GET : "setManagerGetRelay", POST : "setManagerPostRelay"]
+		}
 		"/$controller/$action?/$id?"{
 			constraints {
 				// apply constraints here

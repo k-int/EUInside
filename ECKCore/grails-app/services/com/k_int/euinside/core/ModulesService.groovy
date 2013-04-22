@@ -12,7 +12,8 @@ class ModulesService {
 
 	public static String MODULE_DEFINITION  = "Definition";
 	public static String MODULE_PERSISTENCE = "Persistence";
-
+	public static String MODULE_SET_MANAGER = "SetManager";
+	
 	private def static CONTENT_TYPE_FORM = "multipart/form-data";
 	
 	private static def modules;
@@ -36,7 +37,7 @@ class ModulesService {
 	}
 		
 	private def determineURL(module, urlPath, format) {
-		def url = modules[module].baseURL;
+		String url = modules[module].baseURL + modules[module].basePath;
 		if (urlPath != null) {
 			url += "/" + urlPath;
 		}
@@ -46,19 +47,28 @@ class ModulesService {
 		return(url);
 	} 
 
-	private def processResponse(httpResponse, callerResponse) {
-		callerResponse.setStatus(httpResponse.statusLine.statusCode);
+	def replacePathInHtml(module, html) {
+		def url = modules[module].baseURL;
+		def basePath = modules[module].basePath;
+		return(html.replace(basePath, url + basePath));
+	} 
+
+	private def processResponse(httpResponse, content) {
+		def result = [ : ];
+		result.content = content;
+		result.contentType = null;
+		result.status = httpResponse.statusLine;
 		httpResponse.headers.each {
 			if (it.name == "Content-Type") {
-				def contentType = it.buffer.substring(it.valuePos + 1, it.buffer.length());
-				callerResponse.contentType = contentType;
+				result.contentType = it.buffer.substring(it.valuePos + 1, it.buffer.length());
 			}
 		}
+		return(result);
 	}
 		
 	def httpGet(module, parameters, format, callerResponse) {
 
-		def responseValue;
+		def result = null;
 		def extension = parameters.extension;		
 		def url = determineURL(module, parameters.path, format);
 		
@@ -68,14 +78,14 @@ class ModulesService {
 		def query = createURLArgs(module, parameters);
 		
 		http.get(query : query) { httpResponse, content ->
-			processResponse(httpResponse, callerResponse);
-			responseValue = content;
+			result = processResponse(httpResponse, content);
+//			responseValue = content;
 		}
-		return(responseValue);
+		return(result);
 	}
 
 	def httpPost(module, parameters, format, requestObject, callerResponse) {
-		def responseValue;
+		def result = null;
 		
 		def url = determineURL(module, parameters.path, format);
 		def queryArguments = createURLArgs(module, parameters);
@@ -84,19 +94,11 @@ class ModulesService {
 		// Determine if we have a file to send on
 		def fileContents = null;
 		String fileParameterName = null;
+		def multipartFiles = null;
 		
 		// Only attempt to get the file parameter if this is a multipart request
 		if (requestObject instanceof org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest) {
-			def fileParameters = modules[module].fileParameters;
-			if (fileParameters != null) {
-				fileParameters.keySet().each {
-					fileContents = requestObject.getFile(it);
-					if (fileContents != null) {
-						// We have been passed a file, so we need to save the parameter that it was sent to us under
-						fileParameterName = it;
-					}
-				}
-			}
+			multipartFiles = requestObject.getFileMap(); 
 		}
 	
 		// Now we have everything we need, let us perform the post		
@@ -106,10 +108,11 @@ class ModulesService {
 			MultipartEntity multiPartContent = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
 
 			// Only add the file contents, if we have been supplied with them
-			if ((fileContents != null) &&
-				(fileParameterName != null)) {
-				// Add the file contents to the request as the specified parameter
-			    multiPartContent.addPart(fileParameterName, new ByteArrayBody(fileContents.bytes, fileContents.contentType, fileContents.originalFilename))
+			if (multipartFiles != null) {
+				multipartFiles.each() {parameterName, multiPartFile ->
+					// Add the file contents to the request as the specified parameter
+				    multiPartContent.addPart(parameterName, new ByteArrayBody(multiPartFile.bytes, multiPartFile.contentType, multiPartFile.originalFilename));
+				}
 			}
 				
 			// Now add all the parameters, seems a bit of an odd way of doing it, but hey it seems to work	   
@@ -123,11 +126,16 @@ class ModulesService {
 			// Deal with the response
 			// We need to deal with failures in some sensible way	   
 			response.success = { httpResponse, content ->
-				processResponse(httpResponse, callerResponse);
-				responseValue = content;
-			}	   
+				result = processResponse(httpResponse, content);
+//				responseValue = content;
+			}
+			
+			// handler for any failure status code:
+			response.failure = { httpResponse ->
+				processResponse(httpResponse, null);
+			}
 		}
 	   
-		return(responseValue);
+		return(result);
 	}
 }
