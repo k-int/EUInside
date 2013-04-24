@@ -6,6 +6,7 @@ import org.apache.http.entity.mime.content.ByteArrayBody
 import org.apache.http.entity.mime.HttpMultipartMode
 import org.apache.http.entity.mime.MultipartEntity
 import org.apache.http.entity.mime.content.StringBody
+import javax.servlet.http.HttpServletResponse;
 
 class ModulesService {
 	def grailsApplication
@@ -17,11 +18,16 @@ class ModulesService {
 	private def static CONTENT_TYPE_FORM = "multipart/form-data";
 	
 	private static def modules;
+	private static String contextPath;
 		
 	def initialise() {
 		modules = grailsApplication.config.modules;
 	}
 
+	static public setContextPath(contextPath) {
+		this.contextPath = contextPath;
+	}
+	
 	private def createURLArgs(module, parameters) {
 		def arguments = [ : ];
 		def moduleParameters = modules[module].parameters;
@@ -50,19 +56,26 @@ class ModulesService {
 	def replacePathInHtml(module, html) {
 		def url = modules[module].baseURL;
 		def basePath = modules[module].basePath;
+		
+		// anchors we need to replace in a slightly different way to links as they can still go through the core
+		String anchor = "\\<A .*\\" + basePath; 
+		html = html.replaceAll(anchor) {
+			it.replace(basePath, contextPath + "/" + module);
+		};
+	
+		// Now replace all the other parts with direct paths
 		return(html.replace(basePath, url + basePath));
 	} 
 
 	private def processResponse(httpResponse, content) {
 		def result = [ : ];
 		result.content = content;
-		result.contentType = null;
-		result.status = httpResponse.statusLine;
-		httpResponse.headers.each {
-			if (it.name == "Content-Type") {
-				result.contentType = it.buffer.substring(it.valuePos + 1, it.buffer.length());
-			}
+		if (httpResponse.statusLine.statusCode == HttpServletResponse.SC_OK) {
+			// We should have a content type if everything was OK
+			result.contentType = httpResponse.getContentType();
 		}
+		result.status = httpResponse.statusLine;
+		result.data = httpResponse.getData();
 		return(result);
 	}
 		
@@ -79,7 +92,6 @@ class ModulesService {
 		
 		http.get(query : query) { httpResponse, content ->
 			result = processResponse(httpResponse, content);
-//			responseValue = content;
 		}
 		return(result);
 	}
@@ -127,7 +139,6 @@ class ModulesService {
 			// We need to deal with failures in some sensible way	   
 			response.success = { httpResponse, content ->
 				result = processResponse(httpResponse, content);
-//				responseValue = content;
 			}
 			
 			// handler for any failure status code:

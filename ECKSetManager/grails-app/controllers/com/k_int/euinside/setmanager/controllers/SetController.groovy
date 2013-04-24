@@ -5,6 +5,7 @@ import grails.converters.JSON;
 import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import com.k_int.euinside.setmanager.action.CommitService;
 import com.k_int.euinside.setmanager.action.ListService;
@@ -42,10 +43,10 @@ class SetController {
 			String setCode = params.setname;
 			set = PersistenceService.lookupProviderSet(providerCode, setCode, true, params.setDescription);
 			if (set == null) {
-				response.sendError(404, "Error obtaining set")
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Error obtaining set")
 			}
 		} else {
-			response.sendError(403, validIPResult.message);
+			response.sendError(HttpServletResponse.SC_FORBIDDEN, validIPResult.message);
 		}
 		return(set);
 	}
@@ -57,7 +58,7 @@ class SetController {
 			CommitService.queue(set);
 			
 			// Inform the caller that we have queued for processing
-			response.sendError(202, "Request has been queued for processing");
+			response.sendError(HttpServletResponse.SC_ACCEPTED, "Request has been queued for processing");
 		}
 	}
 	
@@ -76,11 +77,11 @@ class SetController {
 		ProviderSet set = determineSet();
 		if (set != null) {
 			if ((params.recordId == null) || params.recordId.isEmpty()) {
-				response.sendError(404, "recordId has not been specified");
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, "recordId has not been specified");
 			} else {
 				def xml = RecordService.fetch(set, params.recordId);
 				if (xml == null) {
-					response.sendError(404, "Unable to locate record with id: " + params.recordId);
+					response.sendError(HttpServletResponse.SC_NOT_FOUND, "Unable to locate record with id: " + params.recordId);
 				} else {
 					render(text : xml, contentType : "text/xml");
 				}
@@ -119,7 +120,7 @@ class SetController {
 	def update() {
 		if (localUpdate() != null) {
 			// Inform the caller that we have queued for processing
-			response.sendError(202, "Request has been queued for processing");
+			response.sendError(HttpServletResponse.SC_ACCEPTED, "Request has been queued for processing");
 		}
 	}
 	

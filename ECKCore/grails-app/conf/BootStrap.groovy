@@ -6,6 +6,7 @@ import com.k_int.euinside.shared.model.functions.ModuleDefinition;
 
 class BootStrap {
 	def grailsApplication
+	def ModulesService;
 	
     def init = { servletContext ->
 		
@@ -71,7 +72,10 @@ class BootStrap {
 				// We have one that wants initialising and has an initialise method
 				serviceBean.initialise() 
 			} 
-		} 
+		}
+
+		// Set the context path in ModulesService
+		ModulesService.setContextPath(servletContext.contextPath);		 
     }
     def destroy = {
     }
