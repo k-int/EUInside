@@ -2,11 +2,13 @@ package com.k_int.euinside.core
 
 import groovyx.net.http.Method
 import groovyx.net.http.HTTPBuilder;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.http.entity.mime.content.ByteArrayBody
 import org.apache.http.entity.mime.HttpMultipartMode
 import org.apache.http.entity.mime.MultipartEntity
 import org.apache.http.entity.mime.content.StringBody
-import javax.servlet.http.HttpServletResponse;
 
 class ModulesService {
 	def grailsApplication
@@ -42,13 +44,10 @@ class ModulesService {
 		return(arguments);
 	}
 		
-	private def determineURL(module, urlPath, format) {
+	private def determineURL(module, urlPath) {
 		String url = modules[module].baseURL + modules[module].basePath;
 		if (urlPath != null) {
 			url += "/" + urlPath;
-		}
-		if (format != null) {
-			url += "." + format;
 		}
 		return(url);
 	} 
@@ -78,27 +77,18 @@ class ModulesService {
 		return(result);
 	}
 		
-	def httpGet(module, parameters, format, callerResponse) {
-
-		def result = null;
-		def extension = parameters.extension;		
-		def url = determineURL(module, parameters.path, format);
-		
-		log.debug("making HTTP call to url: " + url);
-		
-		def http = new HTTPBuilder(url);
-		def query = createURLArgs(module, parameters);
-		
-		http.get(query : query) { httpResponse, content ->
-			result = processResponse(httpResponse, content);
-		}
-		return(result);
+	def httpGet(module, parameters) {
+		return(http(module, parameters, null, Method.GET));
 	}
 
-	def httpPost(module, parameters, format, requestObject, callerResponse) {
+	def httpPost(module, parameters, requestObject) {
+		return(http(module, parameters, requestObject, Method.POST));
+	}
+	
+	private def http(module, parameters, requestObject, method) {
 		def result = null;
 		
-		def url = determineURL(module, parameters.path, format);
+		def url = determineURL(module, parameters.path);
 		def queryArguments = createURLArgs(module, parameters);
 		log.debug("making HTTP call to url: " + url);
 
@@ -106,33 +96,32 @@ class ModulesService {
 		def fileContents = null;
 		String fileParameterName = null;
 		def multipartFiles = null;
-		
+
 		// Only attempt to get the file parameter if this is a multipart request
-		if (requestObject instanceof org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest) {
+		if ((requestObject != null) &&
+			(requestObject instanceof org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest)) {
 			multipartFiles = requestObject.getFileMap(); 
 		}
 	
 		// Now we have everything we need, let us perform the post		
 		def http = new HTTPBuilder(url);
-		http.request(Method.POST) { req ->
+		http.request(method) { req ->
 			requestContentType : CONTENT_TYPE_FORM
-			MultipartEntity multiPartContent = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
 
 			// Only add the file contents, if we have been supplied with them
 			if (multipartFiles != null) {
+				MultipartEntity multiPartContent = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
 				multipartFiles.each() {parameterName, multiPartFile ->
 					// Add the file contents to the request as the specified parameter
 				    multiPartContent.addPart(parameterName, new ByteArrayBody(multiPartFile.bytes, multiPartFile.contentType, multiPartFile.originalFilename));
 				}
+				
+				// Now we can add the parts to the request
+				req.setEntity(multiPartContent)
 			}
 				
-			// Now add all the parameters, seems a bit of an odd way of doing it, but hey it seems to work	   
-			queryArguments.each() {argument ->
-				multiPartContent.addPart(argument.key, new StringBody((argument.value == null) ? "" : argument.value))
-			}
-
-			// Now we can add the parts to the request
-			req.setEntity(multiPartContent)
+			// add all the arguments
+			uri.query = queryArguments;
 
 			// Deal with the response
 			// We need to deal with failures in some sensible way	   
@@ -142,7 +131,7 @@ class ModulesService {
 			
 			// handler for any failure status code:
 			response.failure = { httpResponse ->
-				processResponse(httpResponse, null);
+				result = processResponse(httpResponse, null);
 			}
 		}
 	   
