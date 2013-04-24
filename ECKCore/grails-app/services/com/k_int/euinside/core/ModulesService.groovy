@@ -22,14 +22,30 @@ class ModulesService {
 	private static def modules;
 	private static String contextPath;
 		
+	/**
+	 * Initialiser called by bootstrap to setup this service
+	 */
 	def initialise() {
 		modules = grailsApplication.config.modules;
 	}
 
+	/**
+	 * Stores the context path that this webapp is being run in
+	 *  
+	 * @param contextPath ... The context path for this contet
+	 */
 	static public setContextPath(contextPath) {
 		this.contextPath = contextPath;
 	}
-	
+
+	/** 
+	 * Determines the query arguments that are to be passed to the module
+	 *  	
+	 * @param module ....... The module we are performing the gateway operation for 
+	 * @param parameters ... The parameters passed to usby the caller
+	 * 
+	 * @return The query arguments to be passed onto the module
+	 */
 	private def createURLArgs(module, parameters) {
 		def arguments = [ : ];
 		def moduleParameters = modules[module].parameters;
@@ -43,7 +59,15 @@ class ModulesService {
 		}
 		return(arguments);
 	}
-		
+
+	/**
+	 * Determines the proper url for the module
+	 * 		
+	 * @param module .... The module we are performing the gateway operation for 
+	 * @param urlPath ... The path within this module that the caller is wanting to goto
+	 * 
+	 * @return The url where the module lives
+	 */
 	private def determineURL(module, urlPath) {
 		String url = modules[module].baseURL + modules[module].basePath;
 		if (urlPath != null) {
@@ -52,6 +76,15 @@ class ModulesService {
 		return(url);
 	} 
 
+	/**
+	 * Mangles the anchors in the html, so that links to the module still go through the gateway
+	 * Links to css, js, etc. are changed so that they go directly to the module
+	 *  
+	 * @param module ... The module we are performing the gateway operation for 
+	 * @param html   ... The html that has been returned
+	 * 
+	 * @return The html with the links modified
+	 */
 	def replacePathInHtml(module, html) {
 		def url = modules[module].baseURL;
 		def basePath = modules[module].basePath;
@@ -66,6 +99,17 @@ class ModulesService {
 		return(html.replace(basePath, url + basePath));
 	} 
 
+	/**
+	 * Interprets the response from the server to pull oyt the information we are interested in
+	 *  
+	 * @param httpResponse ... The response from the server
+	 * @param content ........ The content returned from the server
+	 * 
+	 * @return ... A map that contains the following obects
+	 *                 content ....... The returned content
+	 *                 status ........ The status line
+	 *                 contentType ... The type of the content
+	 */
 	private def processResponse(httpResponse, content) {
 		def result = [ : ];
 		result.content = content;
@@ -77,14 +121,51 @@ class ModulesService {
 		return(result);
 	}
 		
+	/**
+	 * Performs a gateway GET request
+	 * 	
+	 * @param module .......... The module we are performing the gateway operation for 
+	 * @param parameters ...... Query parameters that may need passing onto the module
+	 * @param method .......... The http method to be performed, defined in groovyx.net.http.Method
+	 * 
+	 * @return ... A map that contains the following obects
+	 *                 content ....... The returned content
+	 *                 status ........ The status line
+	 *                 contentType ... The type of the content
+	 */
 	def httpGet(module, parameters) {
 		return(http(module, parameters, null, Method.GET));
 	}
 
+	/**
+	 * Performs a gateway http POST request
+	 * 	
+	 * @param module .......... The module we are performing the gateway operation for 
+	 * @param parameters ...... Query parameters that may need passing onto the module
+	 * @param requestObject ... The original request object, required for passing through any posted files
+	 * 
+	 * @return ... A map that contains the following obects
+	 *                 content ....... The returned content
+	 *                 status ........ The status line
+	 *                 contentType ... The type of the content
+	 */
 	def httpPost(module, parameters, requestObject) {
 		return(http(module, parameters, requestObject, Method.POST));
 	}
-	
+
+	/**
+	 * Performs a gateway http request
+	 * 	
+	 * @param module .......... The module we are performing the gateway operation for 
+	 * @param parameters ...... Query parameters that may need passing onto the module
+	 * @param requestObject ... The original request object, required for passing through any posted files
+	 * @param method .......... The http method to be performed, defined in groovyx.net.http.Method
+	 * 
+	 * @return ... A map that contains the following obects
+	 *                 content ....... The returned content
+	 *                 status ........ The status line
+	 *                 contentType ... The type of the content
+	 */
 	private def http(module, parameters, requestObject, method) {
 		def result = null;
 		

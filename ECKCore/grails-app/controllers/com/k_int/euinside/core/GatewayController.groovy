@@ -39,7 +39,7 @@ class GatewayController {
 			}
 		}
 
-		// If we have not rendered the response then just treat it as is 
+		// If we have not rendered the response then just pass back the status code 
 		if (!rendered) {
 			def statusCode = responseValue.status.statusCode;
 			def statusPhrase =  responseValue.status.reasonPhrase;
