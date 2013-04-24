@@ -12,7 +12,6 @@ class GatewayController {
 
 		def content = responseValue.content;		
 		def contentType = responseValue.contentType;
-		def data = responseValue.data;
 		
 		boolean rendered = false;	
 		if (contentType != null) {

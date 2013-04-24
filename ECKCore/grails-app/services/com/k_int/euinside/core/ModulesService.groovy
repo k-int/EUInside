@@ -70,12 +70,11 @@ class ModulesService {
 	private def processResponse(httpResponse, content) {
 		def result = [ : ];
 		result.content = content;
+		result.status = httpResponse.statusLine;
 		if (httpResponse.statusLine.statusCode == HttpServletResponse.SC_OK) {
 			// We should have a content type if everything was OK
 			result.contentType = httpResponse.getContentType();
 		}
-		result.status = httpResponse.statusLine;
-		result.data = httpResponse.getData();
 		return(result);
 	}
 		
