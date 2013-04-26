@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.k_int.euinside.setmanager.action.CommitService;
 import com.k_int.euinside.setmanager.action.ListService;
+import com.k_int.euinside.setmanager.action.PreviewService;
 import com.k_int.euinside.setmanager.action.RecordService;
 import com.k_int.euinside.setmanager.action.StatusService;
 import com.k_int.euinside.setmanager.action.UpdateService;
@@ -24,6 +25,7 @@ class SetController {
 	def CommitService;
 	def ListService;
 	def PersistenceService;
+	def PreviewService;
 	def RecordService;
 	def StatusService;
 	def UpdateService;
@@ -70,7 +72,17 @@ class SetController {
 	}
 	
 	def preview() {
-		
+		ProviderSet set = determineSet();
+		if (set != null) {
+			String html = PreviewService.preview(set, params.recordId);;
+			if (html.isEmpty()) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Unable to locate record with id: " + params.recordId);
+			} else {
+				render(text        : html,
+					   contentType : "text/html",
+					   encoding    : "UTF-8");
+			}
+		}
 	}
 	
 	def record() {
@@ -131,9 +143,6 @@ class SetController {
 		}
 	}
 
-	def index() {
-	}
-	
 	def test() {
 		ProviderSet set = determineSet();
 		if (set != null) {

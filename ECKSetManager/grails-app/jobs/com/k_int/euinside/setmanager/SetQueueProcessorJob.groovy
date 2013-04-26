@@ -17,6 +17,7 @@ class SetQueueProcessorJob {
 	// The services that perform the work
 	def CommitService;
 	def UpdateService;
+	def ValidationService;
 	
 	/** Lock to ensure we only have 1 job processing the queue 
 	 *  Having multiple jobs would probably work as long as they were not operating on the same set, you would need a lock per set in this case */ 
@@ -55,8 +56,11 @@ class SetQueueProcessorJob {
 								actionClosure = {CommitService.process(queuedAction.set);}
 								break;
 								
-							case SetQueuedAction.ACTION_CONVERT_EDM:
 							case SetQueuedAction.ACTION_VALIDATE:
+								actionClosure = {ValidationService.process(queuedAction.set);}
+								break;
+							
+							case SetQueuedAction.ACTION_CONVERT_EDM:
 							default:
 								log.error("Unknown queued action \"" + queuedAction.action + "\" removed from queue");
 								break;

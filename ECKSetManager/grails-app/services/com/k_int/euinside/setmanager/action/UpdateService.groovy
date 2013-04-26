@@ -8,15 +8,12 @@ import java.util.zip.ZipInputStream;
 import com.k_int.euinside.setmanager.datamodel.ProviderSet;
 import com.k_int.euinside.setmanager.datamodel.SetQueuedAction;
 import com.k_int.euinside.setmanager.datamodel.SetWorking;
-import com.k_int.euinside.setmanager.persistence.PersistenceService;
 import com.k_int.euinside.setmanager.utils.ChunkedObject;
 
-class UpdateService {
+class UpdateService extends ServiceActionBase {
 
 	static def LIDO_NAMESPACES = ['lido' : 'http://www.lido-schema.org'];
 	 
-	def PersistenceService;
-
 	def queue(ProviderSet set, multipartFiles, boolean deleteAll, String recordsToDelete) {
 
 		boolean firstFile = true;
@@ -202,8 +199,11 @@ class UpdateService {
 		queuedAction.set.workingSet.status = ProviderSet.STATUS_DIRTY;
 
 		// Save the working set
-		PersistenceService.saveRecord(queuedAction.set.workingSet, "SetWorking", queuedAction.set.workingSet.id);
-			
+		saveRecord(queuedAction.set.workingSet, "SetWorking", queuedAction.set.workingSet.id);
+
+		// Now we have finished updating, add validate to the queue
+		queueValidate(set);
+		
 		// Return the number of records that were processed
 		return(recordsProcessed.size());
 	}
@@ -230,12 +230,12 @@ class UpdateService {
 	
 	private def processRecord(set, cmsId, persistentId, live, deleted, recordContents, recordsProcessed) {
 		// That is good we have a local record id, so we can continue, where do we get the persistence id from
-		def saveResult = PersistenceService.saveRecord([cmsId : cmsId,
-														persistentId : persistentId, 
-														set : set,
-														live : live,
-														recordContents : recordContents,
-														deleted : deleted]);
+		def saveResult = saveRecord([cmsId : cmsId,
+									 persistentId : persistentId, 
+									 set : set,
+									 live : live,
+									 recordContents : recordContents,
+									 deleted : deleted]);
 		if ((saveResult.successful && !deleted) ||
 		    (saveResult.recordFound && deleted)) {
 			recordsProcessed.push(cmsId);

@@ -5,19 +5,22 @@ import groovyx.net.http.HTTPBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.input.ReaderInputStream;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.content.ByteArrayBody
 import org.apache.http.entity.mime.HttpMultipartMode
 import org.apache.http.entity.mime.MultipartEntity
-import org.apache.http.entity.mime.content.StringBody
 
 class ModulesService {
 	def grailsApplication
 
 	public static String MODULE_DEFINITION  = "Definition";
 	public static String MODULE_PERSISTENCE = "Persistence";
+	public static String MODULE_PREVIEW     = "Preview";
 	public static String MODULE_SET_MANAGER = "SetManager";
-	
-	private def static CONTENT_TYPE_FORM = "multipart/form-data";
+	public static String MODULE_VALIDATE    = "Validate";
 	
 	private static def modules;
 	private static String contextPath;
@@ -90,7 +93,7 @@ class ModulesService {
 		def basePath = modules[module].basePath;
 		
 		// anchors we need to replace in a slightly different way to links as they can still go through the core
-		String anchor = "\\<A .*\\" + basePath; 
+		String anchor = "\\<[aA] .*\\" + basePath; 
 		html = html.replaceAll(anchor) {
 			it.replace(basePath, contextPath + "/" + module);
 		};
@@ -114,6 +117,15 @@ class ModulesService {
 		def result = [ : ];
 		result.content = content;
 		result.status = httpResponse.statusLine;
+		result.contentString = "";
+
+		// If we have a reader in our hand, then get hold of the string		
+		if ((content != null) && (content instanceof java.io.Reader)) {
+			// We probably shouldn't always turn it into a string, as there maybe the possibility in the future
+			// that we are dealing with a binary response and that wioll catch us out
+			result.contentString= IOUtils.toString(new ReaderInputStream(content, "UTF-8"), "UTF-8");
+		}
+
 		if (httpResponse.statusLine.statusCode == HttpServletResponse.SC_OK) {
 			// We should have a content type if everything was OK
 			result.contentType = httpResponse.getContentType();
@@ -126,15 +138,15 @@ class ModulesService {
 	 * 	
 	 * @param module .......... The module we are performing the gateway operation for 
 	 * @param parameters ...... Query parameters that may need passing onto the module
-	 * @param method .......... The http method to be performed, defined in groovyx.net.http.Method
+	 * @param requestObject ... The original request object, required for passing through any posted files
 	 * 
 	 * @return ... A map that contains the following obects
 	 *                 content ....... The returned content
 	 *                 status ........ The status line
 	 *                 contentType ... The type of the content
 	 */
-	def httpGet(module, parameters) {
-		return(http(module, parameters, null, Method.GET));
+	def httpGet(module, parameters, requestObject) {
+		return(http(module, parameters, requestObject, Method.GET));
 	}
 
 	/**
@@ -174,36 +186,59 @@ class ModulesService {
 		log.debug("making HTTP call to url: " + url);
 
 		// Determine if we have a file to send on
-		def fileContents = null;
-		String fileParameterName = null;
-		def multipartFiles = null;
+		def multiPartFiles = null;
 
 		// Only attempt to get the file parameter if this is a multipart request
 		if ((requestObject != null) &&
 			(requestObject instanceof org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest)) {
-			multipartFiles = requestObject.getFileMap(); 
+			multiPartFiles = requestObject.getFileMap(); 
 		}
 	
 		// Now we have everything we need, let us perform the post		
 		def http = new HTTPBuilder(url);
-		http.request(method) { req ->
-			requestContentType : CONTENT_TYPE_FORM
 
+		// We are only interested in text output from the http builder, with regards to json, html and xml
+		http.parser.'application/json' = http.parser.'text/plain';
+		http.parser.'application/xml' = http.parser.'text/plain';
+		http.parser.'text/xml' = http.parser.'text/plain';
+		http.parser.'text/html' = http.parser.'text/plain';
+		
+		http.request(method) { req ->
+			
 			// Only add the file contents, if we have been supplied with them
-			if (multipartFiles != null) {
-				MultipartEntity multiPartContent = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
-				multipartFiles.each() {parameterName, multiPartFile ->
-					// Add the file contents to the request as the specified parameter
-				    multiPartContent.addPart(parameterName, new ByteArrayBody(multiPartFile.bytes, multiPartFile.contentType, multiPartFile.originalFilename));
+			if (multiPartFiles == null) {
+				// No files to send, so just set the content type to that of a form
+				requestContentType : ContentType.MULTIPART_FORM_DATA
+			} else {
+				// If we only have 1 file then do not send it as a form
+				if (multiPartFiles.size() == 1) {
+					// We only have 1 file so set that directly to the body
+					multiPartFiles.each() {parameterName, multiPartFile ->
+						// Do we need to set the content type twice ????
+						requestContentType : multiPartFile.contentType
+												
+						// We only have 1 file so set that directly to the body
+						req.setEntity(new ByteArrayEntity(multiPartFile.bytes, ContentType.parse(multiPartFile.contentType)));
+					}
+				} else if (multiPartFiles.size() > 1) {
+					requestContentType : ContentType.MULTIPART_FORM_DATA
+					MultipartEntity multiPartContent = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
+					multiPartFiles.each() {parameterName, multiPartFile ->
+						// Add the file contents to the request as the specified parameter
+					    multiPartContent.addPart(parameterName, new ByteArrayBody(multiPartFile.bytes, multiPartFile.contentType, multiPartFile.originalFilename));
+					}
+					
+					// Now we can add the parts to the request
+					req.setEntity(multiPartContent)
 				}
-				
-				// Now we can add the parts to the request
-				req.setEntity(multiPartContent)
 			}
 				
 			// add all the arguments
 			uri.query = queryArguments;
-
+			
+			// Set the Accept header
+			headers.'Accept' = requestObject.getHeader("Accept");
+			
 			// Deal with the response
 			// We need to deal with failures in some sensible way	   
 			response.success = { httpResponse, content ->

@@ -49,6 +49,7 @@
 			                   			<div class="btn btn-primary">
 			                       			<g:field type="button"  name="testCommit"     value="Commit"/>
 			                       			<g:field type="button"  name="testList"       value="List Working Set"/>
+			                       			<g:field type="button"  name="testPreview"    value="Preview"/>
 			                       			<g:field type="button"  name="testRecord"     value="Record"/>
 			                       			<g:field type="button"  name="testStatus"     value="Status"/>
 				                   			<g:field type="button"  name="testUpdate"     value="Update"/>
@@ -66,40 +67,38 @@
     
     	<script type="text/javascript">
 
-	    	$("#testCommit").click(function() {
-	        	$("#testForm").attr("action", "commit");
+    		function performAction(action) {
+	        	$("#testForm").attr("action", action);
 	        	$("#testForm").submit();
 	            return false;
+        	}
+        	
+	    	$("#testCommit").click(function() {
+	        	return(performAction("commit"));
 	    	});
 	
 	    	$("#testList").click(function() {
-	        	$("#testForm").attr("action", "list");
-	        	$("#testForm").submit();
-	            return false;
+	        	return(performAction("list"));
+	    	});
+	
+	    	$("#testPreview").click(function() {
+	        	return(performAction("preview"));
 	    	});
 	
 	    	$("#testRecord").click(function() {
-	        	$("#testForm").attr("action", "record");
-	        	$("#testForm").submit();
-	            return false;
+	        	return(performAction("record"));
 	    	});
 	
         	$("#testStatus").click(function() {
-            	$("#testForm").attr("action", "status");
-            	$("#testForm").submit();
-	            return false;
+	        	return(performAction("status"));
         	});
     
         	$("#testUpdate").click(function() {
-            	$("#testForm").attr("action", "update");
-            	$("#testForm").submit();
-	            return false;
+	        	return(performAction("update"));
         	});
     
         	$("#testValidation").click(function() {
-            	$("#testForm").attr("action", "validate");
-            	$("#testForm").submit();
-	            return false;
+	        	return(performAction("validate"));
         	});
     
     	</script>

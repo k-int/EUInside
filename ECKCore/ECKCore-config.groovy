@@ -19,6 +19,13 @@ modules {
 			recordContents = ""
 		}
 	}
+	Preview {
+		baseURL = "http://test.asp.hunteka.hu:11080"
+		basePath = "/eck-preview-module"
+		fileParameters {
+			record = ""
+		}
+	}
 	SetManager {
 		baseURL = "http://localhost:28082"
 		basePath = "/ECKSetManager"
@@ -36,8 +43,11 @@ modules {
 		}
 
 	}
-	Validation {
-		baseURL = "http://localhost:28081"
-		basePath = "/ECKValidation"
+	Validate {
+		baseURL = "http://test.asp.hunteka.hu:11080"
+		basePath = "/eck-validation-module"
+		fileParameters {
+			record = ""
+		}
 	}
 }

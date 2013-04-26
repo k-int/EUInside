@@ -80,7 +80,7 @@
 						<ul>
 							<li><g:link controller="Help" action="commit">Commit</g:link></li>
 							<li><g:link controller="Help" action="list">List</g:link></li>
-							<li>Preview</li>
+							<li><g:link controller="Help" action="preview">Preview</g:link></li>
 							<li><g:link controller="Help" action="record">Record</g:link></li>
 							<li>Statistics</li>
 							<li><g:link controller="Help" action="status">Status</g:link></li>
