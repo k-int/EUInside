@@ -14,6 +14,7 @@ class ListService {
 	 */
     def workingSet(ProviderSet set) {
 		def recordBriefDetails = [ ];
+		def recordsFound = [ : ];
 		Record.findAllWhere(set : set, live : false).each() {
 			def briefDetails = ["cmsId"            : it.cmsId,
 				                "persistentId"     : it.persistentId,
@@ -21,6 +22,18 @@ class ListService {
 								"deleted"          : it.deleted,
 								"validationStatus" : it.validationStatus];
 			recordBriefDetails.push(briefDetails);
+			recordsFound[it.cmsId] = true;
+		}
+		Record.findAllWhere(set : set, live : true).each() {
+			def briefDetails = ["cmsId"            : it.cmsId,
+				                "persistentId"     : it.persistentId,
+								"lastUpdated"      : it.lastUpdated,
+								"deleted"          : it.deleted,
+								"validationStatus" : it.validationStatus];
+			// If we have already added this record then ignore it
+			if (recordsFound[it.cmsId] == null) {
+				recordBriefDetails.push(briefDetails);
+			}
 		}
 		return(recordBriefDetails);
     }
