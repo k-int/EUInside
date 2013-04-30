@@ -2,27 +2,27 @@ package com.k_int.euinside.setmanager.controllers
 
 class HelpController {
 
-    def Commit() {
+    def commit() {
 	}
 
-    def List() {
+    def list() {
 	}
 
-    def Preview() {
+    def preview() {
 	}
 
-    def Record() {
+    def record() {
 	}
 
-    def Statistics() {
+    def statistics() {
 	}
 
-    def Status() {
+    def status() {
 	}
 
-    def Update() {
+    def update() {
 	}
 
-    def Validate() {
+    def validate() {
 	}
 }

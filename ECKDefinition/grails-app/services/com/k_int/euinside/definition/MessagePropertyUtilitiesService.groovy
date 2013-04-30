@@ -3,8 +3,6 @@ package com.k_int.euinside.definition
 
 class MessagePropertyUtilitiesService {
 
-	private static List<String> POSSIBLE_ROOT_PATHS = ["../webapps/ECKDefinition/WEB-INF/",
-													   "./"];
 	private static String DIRECTORY_MESSAGE_PROPERTIES = "grails-app/i18n";
 
 	private static String KEY_PREFIX_DEFINITION = "definition";
@@ -23,10 +21,10 @@ class MessagePropertyUtilitiesService {
 	
 	private static String rootDirectory;
 	
-    static void initialise() {
+    static void initialise(servletContext) {
 
 		// Determine the root directory to the application
-		determineRootDirectory();
+		determineRootDirectory(servletContext);
 		
 		// Called once from bootstrap, to load up our configuration
 		// Look at all the messages.property files to see which ones we have defined 		
@@ -98,8 +96,10 @@ class MessagePropertyUtilitiesService {
 		}
 	}
 
-	private static void determineRootDirectory() {
-		POSSIBLE_ROOT_PATHS.each {
+	private static void determineRootDirectory(servletContext) {
+		def possibleRootPaths = [servletContext.getRealPath("/") + "WEB-INF/",
+			                     "./"];
+		possibleRootPaths.each {
 			// Check to see if the path exists to the messages directory
 			if ((new File(it + DIRECTORY_MESSAGE_PROPERTIES)).exists()) {
 				rootDirectory = it;

@@ -7,9 +7,9 @@ class BootStrap {
 			def serviceBean = grailsApplication.mainContext.getBean(it.propertyName) 
 			if (it.metaClass.respondsTo(serviceBean, 'initialise')) { 
 				// We have one that wants initialising and has an initialise method
-				serviceBean.initialise() 
+				serviceBean.initialise(servletContext) 
 			} 
-		} 
+		}
     }
 	
     def destroy = {

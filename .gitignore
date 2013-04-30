@@ -2,3 +2,4 @@ target
 target-eclipse
 Data/*
 Documents/*
+*/stacktrace.log

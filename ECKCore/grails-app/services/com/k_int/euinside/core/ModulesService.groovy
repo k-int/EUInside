@@ -16,6 +16,7 @@ import org.apache.http.entity.mime.MultipartEntity
 class ModulesService {
 	def grailsApplication
 
+	public static String MODULE_CORE        = "Core";
 	public static String MODULE_DEFINITION  = "Definition";
 	public static String MODULE_PERSISTENCE = "Persistence";
 	public static String MODULE_PREVIEW     = "Preview";
@@ -23,22 +24,52 @@ class ModulesService {
 	public static String MODULE_VALIDATE    = "Validate";
 	
 	private static def modules;
-	private static String contextPath;
+	private static String corePath;
 		
 	/**
 	 * Initialiser called by bootstrap to setup this service
 	 */
 	def initialise() {
-		modules = grailsApplication.config.modules;
-	}
-
-	/**
-	 * Stores the context path that this webapp is being run in
-	 *  
-	 * @param contextPath ... The context path for this contet
-	 */
-	static public setContextPath(contextPath) {
-		this.contextPath = contextPath;
+		modules = grailsApplication.config.moduleConfiguration;
+		
+		// We need to merge the site configuration from modules
+		def modulesSite = grailsApplication.config.modules;
+		// Step through each of the modules the site has defined and update the predefined configuration with their configuration
+		modulesSite.each() {
+			// Is it a module we know abount
+			def module = modules[it.key];
+			if (module.isEmpty()) {
+				log.error("Unknown module in the configuration: \"" + it.key + "\"");
+				modules.remove(it.key);
+			} else {
+				// The 3 settings the site can set are baseURL, basePath and localPath
+				log.info("Using local information for module: \"" + it.key + "\"");
+				it.value.each() { key, value ->
+					if (value instanceof String) {
+						log.info("Setting " + key + " to: \"" + value + "\"");
+						module[key] = value;
+					}
+				}
+			}
+		}
+			
+		// Log all the information we have for a module to the log file
+		log.debug("Dumping module configuration");
+		modules.each() {
+			// Log the module information
+			log.debug("Module: \"" + it.key + "\"");
+			it.value.each () { key, value ->
+				if (value instanceof String) {
+					log.debug(key + ": \"" + value + "\"");
+				} else {
+					value.keySet().each { parameter ->
+						log.debug("Parameter: \"" + parameter + "\"");
+					}
+				}
+			}
+		}
+		
+		corePath = modules[MODULE_CORE].basePath;
 	}
 
 	/** 
@@ -91,15 +122,16 @@ class ModulesService {
 	def replacePathInHtml(module, html) {
 		def url = modules[module].baseURL;
 		def basePath = modules[module].basePath;
+		def localPath = modules[module].localPath;
 		
 		// anchors we need to replace in a slightly different way to links as they can still go through the core
-		String anchor = "\\<[aA] .*\\" + basePath; 
+		String anchor = "\\<[aA] .*\\" + localPath; 
 		html = html.replaceAll(anchor) {
-			it.replace(basePath, contextPath + "/" + module);
+			it.replace(localPath, corePath + "/" + module);
 		};
 	
 		// Now replace all the other parts with direct paths
-		return(html.replace(basePath, url + basePath));
+		return(html.replace(localPath, url + basePath));
 	} 
 
 	/**

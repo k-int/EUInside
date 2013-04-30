@@ -97,3 +97,54 @@ log4j = {
            'grails.app.domain',
            'grails.app.jobs'
 }
+
+// The default module configuration
+// The urls and paths can be overridden in the user configuration 
+moduleConfiguration {
+	Core {
+		baseURL = "http://localhost:8080"
+		basePath = "/ECKCore"
+		localPath = "/ECKCore"
+	}
+	Definition {
+		baseURL = "http://localhost:28081"
+		basePath = "/ECKDefinition"
+		localPath = "/ECKDefinition"
+	}
+	Persistence {
+		baseURL = "http://localhost:28080"
+		basePath = "/KIPersistence"
+		localPath = "/KIPersistence"
+		parameters {
+			eckId = ""
+			cmsId = ""
+			persistentId = ""
+			id = ""
+			idType = ""
+			deleted = ""
+		}
+	}
+	Preview {
+		baseURL = "http://test.asp.hunteka.hu:11080"
+		basePath = "/eck-preview-module"
+		localPath = "/eck-preview-module"
+	}
+	SetManager {
+		baseURL = "http://localhost:28082"
+		basePath = "/ECKSetManager"
+		localPath = "/ECKSetManager"
+		parameters {
+			delete = ""
+			deleteAll = ""
+			historyItems = ""
+			recordId = ""
+			setDescription = ""
+			statisticsDetails = ""
+		}
+	}
+	Validate {
+		baseURL = "http://test.asp.hunteka.hu:11080"
+		basePath = "/eck-validation-module"
+		localPath = "/eck-validation-module"
+	}
+}
