@@ -43,11 +43,11 @@
 		    </section>
     	</div>
     
-		<g:javascript src="json_syntax.js"/>
+		<script src="/ECKDefinition/js/json_syntax.js" type="text/javascript"></script>
 		
 	    <script type="text/javascript">
 		    $(document).ready(function (){
-		    	var errorCodeResponse = {"error":"error1","definition":"The first error code"}
+		    	var errorCodeResponse = {"error":"error1","definition":"The first error code"};
         		$("#errorCodeResponse").html(JSONSyntaxHighlight(errorCodeResponse));
 		    	var allErrorsResponse = [{"error":"error1","definition":"The first error code"},{"error":"error.with.dots","definition":"An error code with dots in it"}];
         		$("#allErrorsResponse").html(JSONSyntaxHighlight(allErrorsResponse));

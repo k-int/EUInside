@@ -3,7 +3,6 @@
   	<head>
     	<meta name="layout" content="bootstrap"/>
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'index.css')}" type="text/css">
-		<g:javascript src="jsonSyntax.js" />
     	<title>ECKSetManager - Status</title>
   	</head>
 
@@ -74,6 +73,8 @@
 	      	</section>
     	</div>
     	
+		<script src="/ECKSetManager/static/js/json_syntax.js" type="text/javascript"></script>
+		
 	    <script type="text/javascript">
 	
 		    $(document).ready(function (){

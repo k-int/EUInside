@@ -29,7 +29,7 @@
 		    </section>
     	</div>
     
-		<g:javascript src="json_syntax.js"/>
+		<script src="/ECKDefinition/js/json_syntax.js" type="text/javascript"></script>
 		
 	    <script type="text/javascript">
 		    $(document).ready(function (){

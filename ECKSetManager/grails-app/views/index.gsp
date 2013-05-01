@@ -3,7 +3,6 @@
   	<head>
     	<meta name="layout" content="bootstrap"/>
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'index.css')}" type="text/css">
-		<g:javascript src="jsonSyntax.js" />
     	<title>ECKSetManager</title>
   	</head>
 
@@ -92,22 +91,7 @@
 	            		<p>In order to allow simple testing of the ECK import interfaces, etc. a test form is available <a href="/ECKSetManager/Set/default/default/test">here</a> which actions data for the default provider using the default set.</p>
 	          		</div>
 	        	</div>
-	          
 	      	</section>
-
     	</div>
-    
-	    <script type="text/javascript">
-	
-		    $(document).ready(function (){
-		
-		    	var successData = {success: true,messages: ["Metadata record successfully imported"	],eckId: 1357301124429};
-		    	var failData = {success: false,messages: ["A CMS ID is required and has not been specified","A persistent ID is required and has not been specified"],eckId: 0};
-		        $("#successResponse").html(syntaxHighlight(successData));
-		        $('#failResponse').html(syntaxHighlight(failData));
-		        
-		    });
-	    
-    	</script>
 	</body>
 </html>
