@@ -1,5 +1,5 @@
 
-// for each module the baseURL, basePath and localPath can be overridden
+// for each module the internalURL, internalPath, externalURL and externalPath can be overridden
 modules {
 	Core {
 	}

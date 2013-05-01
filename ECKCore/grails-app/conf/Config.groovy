@@ -102,19 +102,22 @@ log4j = {
 // The urls and paths can be overridden in the user configuration 
 moduleConfiguration {
 	Core {
-		baseURL = "http://localhost:8080"
-		basePath = "/ECKCore"
-		localPath = "/ECKCore"
+		internalURL = "http://localhost:8080"
+		internalPath = "/ECKCore"
+		externalURL = "http://localhost:8080"
+		externalPath = "/ECKCore"
 	}
 	Definition {
-		baseURL = "http://localhost:28081"
-		basePath = "/ECKDefinition"
-		localPath = "/ECKDefinition"
+		internalURL = "http://localhost:28081"
+		internalPath = "/ECKDefinition"
+		externalURL = "http://localhost:28081"
+		externalPath = "/ECKDefinition"
 	}
 	Persistence {
-		baseURL = "http://localhost:28080"
-		basePath = "/KIPersistence"
-		localPath = "/KIPersistence"
+		internalURL = "http://localhost:28080"
+		internalPath = "/KIPersistence"
+		externalURL = "http://localhost:28080"
+		externalPath = "/KIPersistence"
 		parameters {
 			eckId = ""
 			cmsId = ""
@@ -125,14 +128,16 @@ moduleConfiguration {
 		}
 	}
 	Preview {
-		baseURL = "http://test.asp.hunteka.hu:11080"
-		basePath = "/eck-preview-module"
-		localPath = "/eck-preview-module"
+		internalURL = "http://test.asp.hunteka.hu:11080"
+		internalPath = "/eck-preview-module"
+		externalURL = "http://test.asp.hunteka.hu:11080"
+		externalPath = "/eck-preview-module"
 	}
 	SetManager {
-		baseURL = "http://localhost:28082"
-		basePath = "/ECKSetManager"
-		localPath = "/ECKSetManager"
+		internalURL = "http://localhost:28082"
+		internalPath = "/ECKSetManager"
+		externalURL = "http://localhost:28082"
+		externalPath = "/ECKSetManager"
 		parameters {
 			delete = ""
 			deleteAll = ""
@@ -143,8 +148,9 @@ moduleConfiguration {
 		}
 	}
 	Validate {
-		baseURL = "http://test.asp.hunteka.hu:11080"
-		basePath = "/eck-validation-module"
-		localPath = "/eck-validation-module"
+		internalURL = "http://test.asp.hunteka.hu:11080"
+		internalPath = "/eck-validation-module"
+		externalURL = "http://test.asp.hunteka.hu:11080"
+		externalPath = "/eck-validation-module"
 	}
 }

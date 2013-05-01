@@ -1,6 +1,10 @@
 class UrlMappings {
 
 	static mappings = {
+		name definition : "/Definition" {
+			controller = "gateway"
+			action = [GET : "definitionGetRelay", POST : "definitionPostRelay"]
+		}
 		"/Definition/$path**" {
 			controller = "gateway"
 			action = [GET : "definitionGetRelay", POST : "definitionPostRelay"]
@@ -12,6 +16,10 @@ class UrlMappings {
 		"/Preview/$path**" {
 			controller = "gateway"
 			action = [GET : "previewGetRelay", POST : "previewPostRelay"]
+		}
+		name setManager : "/SetManager" {
+			controller = "gateway"
+			action = [GET : "setManagerGetRelay", POST : "setManagerPostRelay"]
 		}
 		"/SetManager/$path**" {
 			controller = "gateway"

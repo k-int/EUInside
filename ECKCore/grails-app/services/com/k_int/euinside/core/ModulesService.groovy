@@ -42,7 +42,7 @@ class ModulesService {
 				log.error("Unknown module in the configuration: \"" + it.key + "\"");
 				modules.remove(it.key);
 			} else {
-				// The 3 settings the site can set are baseURL, basePath and localPath
+				// The 4 settings the site can set are internalURL, internalPath, externalURL and externalPath 
 				log.info("Using local information for module: \"" + it.key + "\"");
 				it.value.each() { key, value ->
 					if (value instanceof String) {
@@ -69,7 +69,43 @@ class ModulesService {
 			}
 		}
 		
-		corePath = modules[MODULE_CORE].basePath;
+		corePath = modules[MODULE_CORE].externalPath;
+	}
+
+	public static String getCoreModuleCode() {
+		return(MODULE_CORE);
+	}
+	
+	public static String getDefinitionModuleCode() {
+		return(MODULE_DEFINITION);
+	}
+	
+	public static String getPersistenceModuleCode() {
+		return(MODULE_PERSISTENCE);
+	}
+	
+	public static String getPreviewModuleCode() {
+		return(MODULE_PREVIEW);
+	}
+	
+	public static String getSetManagerModuleCode() {
+		return(MODULE_SET_MANAGER);
+	}
+	
+	public static String getValidateModuleCode() {
+		return(MODULE_VALIDATE);
+	}
+
+	public static String getModuleInternalURL(String module) { 
+		return(modules[module].internalURL);
+	}
+
+	public static String getModuleExternalPath(String module) { 
+		return(modules[module].externalPath);
+	}
+
+	public static String getModuleInternalPath(String module) { 
+		return(modules[module].internalPath);
 	}
 
 	/** 
@@ -103,7 +139,7 @@ class ModulesService {
 	 * @return The url where the module lives
 	 */
 	private def determineURL(module, urlPath) {
-		String url = modules[module].baseURL + modules[module].basePath;
+		String url = modules[module].internalURL + modules[module].internalPath;
 		if (urlPath != null) {
 			url += "/" + urlPath;
 		}
@@ -120,18 +156,18 @@ class ModulesService {
 	 * @return The html with the links modified
 	 */
 	def replacePathInHtml(module, html) {
-		def url = modules[module].baseURL;
-		def basePath = modules[module].basePath;
-		def localPath = modules[module].localPath;
+		def externalURL = modules[module].externalURL;
+		def externalPath = modules[module].externalPath;
+		def internalPath = modules[module].internalPath;
 		
 		// anchors we need to replace in a slightly different way to links as they can still go through the core
-		String anchor = "\\<[aA] .*\\" + localPath; 
+		String anchor = "\\<[aA] .*\\" + internalPath; 
 		html = html.replaceAll(anchor) {
-			it.replace(localPath, corePath + "/" + module);
+			it.replace(internalPath, corePath + "/" + module);
 		};
 	
 		// Now replace all the other parts with direct paths
-		return(html.replace(localPath, url + basePath));
+		return(html.replace(internalPath, externalURL + externalPath));
 	} 
 
 	/**
