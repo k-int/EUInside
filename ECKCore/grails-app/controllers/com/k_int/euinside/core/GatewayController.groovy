@@ -55,6 +55,16 @@ class GatewayController {
 		processResponse(responseValue, ModulesService.MODULE_PERSISTENCE);
 	}
 
+	def pidGenerateGetRelay() {
+		def responseValue = ModulesService.httpGet(ModulesService.MODULE_PID_GENERATE, params, request);
+		processResponse(responseValue, ModulesService.MODULE_PID_GENERATE);
+	}
+	
+    def pidGeneratePostRelay() {
+		def responseValue = ModulesService.httpPost(ModulesService.MODULE_PID_GENERATE, params, request);
+		processResponse(responseValue, ModulesService.MODULE_PID_GENERATE);
+	}
+
 	def previewGetRelay() {
 		def responseValue = ModulesService.httpGet(ModulesService.MODULE_VALIDATE, params, request);
 		processResponse(responseValue, ModulesService.MODULE_VALIDATE);
@@ -83,5 +93,15 @@ class GatewayController {
     def validatePostRelay() {
 		def responseValue = ModulesService.httpPost(ModulesService.MODULE_VALIDATE, params, request);
 		processResponse(responseValue, ModulesService.MODULE_VALIDATE);
+	}
+
+	def validate2GetRelay() {
+		def responseValue = ModulesService.httpGet(ModulesService.MODULE_VALIDATE2, params, request);
+		processResponse(responseValue, ModulesService.MODULE_VALIDATE2);
+	}
+	
+    def validate2PostRelay() {
+		def responseValue = ModulesService.httpPost(ModulesService.MODULE_VALIDATE2, params, request);
+		processResponse(responseValue, ModulesService.MODULE_VALIDATE2);
 	}
 }

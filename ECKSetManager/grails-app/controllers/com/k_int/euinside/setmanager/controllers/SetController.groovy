@@ -124,7 +124,7 @@ class SetController {
 				
 			// Queue the action to be processed later
 			def deleteAll = params.deleteAll;
-			UpdateService.queue(set, files, ((deleteAll != null) && deleteAll.equalsIgnoreCase("yes")), params.delete);
+			UpdateService.queue(set, files, request.getInputStream(), request.getContentType(), ((deleteAll != null) && deleteAll.equalsIgnoreCase("yes")), params.delete);
 		}
 		return(set);
 	}

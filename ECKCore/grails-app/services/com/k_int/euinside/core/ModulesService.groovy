@@ -16,12 +16,14 @@ import org.apache.http.entity.mime.MultipartEntity
 class ModulesService {
 	def grailsApplication
 
-	public static String MODULE_CORE        = "Core";
-	public static String MODULE_DEFINITION  = "Definition";
-	public static String MODULE_PERSISTENCE = "Persistence";
-	public static String MODULE_PREVIEW     = "Preview";
-	public static String MODULE_SET_MANAGER = "SetManager";
-	public static String MODULE_VALIDATE    = "Validate";
+	public static String MODULE_CORE         = "Core";
+	public static String MODULE_DEFINITION   = "Definition";
+	public static String MODULE_PERSISTENCE  = "Persistence";
+	public static String MODULE_PID_GENERATE = "PIDGenerate";
+	public static String MODULE_PREVIEW      = "Preview";
+	public static String MODULE_SET_MANAGER  = "SetManager";
+	public static String MODULE_VALIDATE     = "Validate";    // monguz validation
+	public static String MODULE_VALIDATE2    = "Validate2";    // semantika validation
 	
 	private static def modules;
 	private static String corePath;
@@ -140,7 +142,7 @@ class ModulesService {
 	 */
 	private def determineURL(module, urlPath) {
 		String url = modules[module].internalURL + modules[module].internalPath;
-		if (urlPath != null) {
+		if ((urlPath != null) && !urlPath.isEmpty()) {
 			url += "/" + urlPath;
 		}
 		return(url);

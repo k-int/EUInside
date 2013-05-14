@@ -91,3 +91,6 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 }
+
+// For specifying how to access the core
+coreURL = "http://localhost:28180"

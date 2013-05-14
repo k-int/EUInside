@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.IOUtils;
+
 import com.k_int.euinside.setmanager.datamodel.ProviderSet;
 import com.k_int.euinside.setmanager.datamodel.SetQueuedAction;
 import com.k_int.euinside.setmanager.datamodel.SetWorking;
@@ -14,7 +16,7 @@ class UpdateService extends ServiceActionBase {
 
 	static def LIDO_NAMESPACES = ['lido' : 'http://www.lido-schema.org'];
 	 
-	def queue(ProviderSet set, multipartFiles, boolean deleteAll, String recordsToDelete) {
+	def queue(ProviderSet set, multipartFiles, inputStream, requestContentType, boolean deleteAll, String recordsToDelete) {
 
 		boolean firstFile = true;
 		boolean result = true;
@@ -22,7 +24,21 @@ class UpdateService extends ServiceActionBase {
 		
 		// If we have to may characters in the file size or to may characters in the recordsToDelete string then we have to be clever
 		// Each file has to be stored on its own though
-		if (multipartFiles != null) {
+		if (multipartFiles == null) {
+			// Have we been passed an input stream
+			if ((inputStream != null) && (requestContentType != null) && !requestContentType.equalsIgnoreCase("application/octet-stream")) {
+				// We may have been passed the file directly
+				byte[] fileBytes = IOUtils.toByteArray(inputStream);
+				ChunkedObject recordContentsChunked = new ChunkedObject(fileBytes, SetQueuedAction.MAX_IMPORT_FILE_CHUNK_SIZE);
+				
+				if (!save(set, firstFile && deleteAll, recordContentsChunked, requestContentType, recordsToDeleteChunked)) {
+					result = false;
+				}
+
+				// No longer dealing with the first file				
+				firstFile = false
+			}
+		} else {
 			// We have some files
 			multipartFiles.each() {parameterName, multiPartFile ->
 				ChunkedObject recordContentsChunked = new ChunkedObject(multiPartFile.getBytes(), SetQueuedAction.MAX_IMPORT_FILE_CHUNK_SIZE);

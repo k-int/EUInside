@@ -9,6 +9,10 @@ class UrlMappings {
 			controller = "gateway"
 			action = [GET : "definitionGetRelay", POST : "definitionPostRelay"]
 		}
+		"/PIDGenerate/$path**" {
+			controller = "gateway"
+			action = [GET : "pidGenerateGetRelay", POST : "pidGeneratePostRelay"]
+		}
 		"/Persistence/$path**" {
 			controller = "gateway"
 			action = [GET : "persistenceGetRelay", POST : "persistencePostRelay"]
@@ -28,6 +32,10 @@ class UrlMappings {
 		"/Validation/$path**" {
 			controller = "gateway"
 			action = [GET : "validateGetRelay", POST : "validatePostRelay"]
+		}
+		"/Validation2/$path**" {
+			controller = "gateway"
+			action = [GET : "validate2GetRelay", POST : "validate2PostRelay"]
 		}
 		"/$controller/$action?/$id?"{
 			constraints {

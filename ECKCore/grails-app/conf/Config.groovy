@@ -127,6 +127,17 @@ moduleConfiguration {
 			deleted = ""
 		}
 	}
+	PIDGenerate {
+		internalURL = "http://euinside.semantika.si"
+		internalPath = "/pid"
+		externalURL = "http://euinside.semantika.si"
+		externalPath = "/pid"
+		parameters {
+			accessionNumber = ""
+			institutionUrl = ""
+			recordType = ""
+		}
+	}
 	Preview {
 		internalURL = "http://test.asp.hunteka.hu:11080"
 		internalPath = "/eck-preview-module"
@@ -152,5 +163,11 @@ moduleConfiguration {
 		internalPath = "/eck-validation-module"
 		externalURL = "http://test.asp.hunteka.hu:11080"
 		externalPath = "/eck-validation-module"
+	}
+	Validate2 {
+		internalURL = "http://euinside.semantika.si"
+		internalPath = "/validation"
+		externalURL = "http://euinside.semantika.si"
+		externalPath = "/validation"
 	}
 }
