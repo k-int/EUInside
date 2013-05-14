@@ -1,6 +1,11 @@
 package com.k_int.euinside.client.module;
 
 public enum Action {
+	// Actions used by the definition service
+	DEFINITION_ERRORS("errors"),
+	DEFINITION_LANGUAGES("languages"),
+	DEFINITION_PROFILES("profiles"),
+	
 	// Actions used by PID Generate
 	PID_GENERATE_GENERATE("generate"),
 	PID_GENERATE_LOOKUP("lookup"),
