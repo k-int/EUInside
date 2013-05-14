@@ -5,6 +5,11 @@ import com.k_int.euinside.client.module.BaseModule;
 import com.k_int.euinside.client.module.CommandLineArguments;
 import com.k_int.euinside.client.module.Action;
 import com.k_int.euinside.client.module.Module;
+import com.k_int.euinside.client.module.metadataDefinition.error.Error;
+import com.k_int.euinside.client.module.metadataDefinition.error.Errors;
+import com.k_int.euinside.client.module.metadataDefinition.language.Languages;
+import com.k_int.euinside.client.module.metadataDefinition.profile.Field;
+import com.k_int.euinside.client.module.metadataDefinition.profile.Profiles;
 
 public class Definition extends BaseModule {
 

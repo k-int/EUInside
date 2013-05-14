@@ -1,4 +1,4 @@
-package com.k_int.euinside.client.module.metadataDefinition;
+package com.k_int.euinside.client.module.metadataDefinition.error;
 
 import java.util.ArrayList;
 
