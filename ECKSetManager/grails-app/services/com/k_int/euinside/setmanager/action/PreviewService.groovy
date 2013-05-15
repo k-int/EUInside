@@ -8,7 +8,7 @@ import com.k_int.euinside.setmanager.datamodel.Record;
 class PreviewService extends ServiceActionBase {
 	def grailsApplication;
 	
-	private static String PATH_BASE_PREVIEW = "/Preview/templates/default/preview";
+	private static String PATH_BASE_PREVIEW = "/Preview/default/preview";
 	
 	String previewURL = null;
 		

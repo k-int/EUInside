@@ -140,9 +140,9 @@ moduleConfiguration {
 	}
 	Preview {
 		internalURL = "http://app.asp.hunteka.hu:5080"
-		internalPath = "/eck-preview-module"
+		internalPath = "/eck-preview-module/templates"
 		externalURL = "http://app.asp.hunteka.hu:5080"
-		externalPath = "/eck-preview-module"
+		externalPath = "/eck-preview-module/templates"
 	}
 	SetManager {
 		internalURL = "http://localhost:28082"
