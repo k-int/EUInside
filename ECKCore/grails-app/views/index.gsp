@@ -24,9 +24,10 @@
 	            		<ul>
 	                		<li><a href="${ModulesService.getModuleExternalPath(ModulesService.getCoreModuleCode())}/${ModulesService.getDefinitionModuleCode()}/">Metadata Definition</a></li>
 	                		<li><a href="http://euinside.semantika.si/pid/Generate">PID Generation</a></li>
-	                		<li><a href="http://test.asp.hunteka.hu:11080/eck-preview-servlet/index.html">Preview</a></li>
+	                		<li><a href="http://app.asp.hunteka.hu:5080/eck-preview-servlet/index.html">Preview</a></li>
 	                		<li><a href="${ModulesService.getModuleExternalPath(ModulesService.getCoreModuleCode())}/${ModulesService.getSetManagerModuleCode()}/">Set Manager</a></li>
-	                		<li><a href="http://test.asp.hunteka.hu:11080/eck-validation-servlet/index.html">Validation</a></li>
+	                		<li><a href="http://app.asp.hunteka.hu:5080/eck-validation-servlet/index.html">Validation (monguz)</a></li>
+	                		<li><a href="http://euinside.semantika.si/">Validation (semantika)</a></li>
 	            		</ul>
 	          		</div>
 	
