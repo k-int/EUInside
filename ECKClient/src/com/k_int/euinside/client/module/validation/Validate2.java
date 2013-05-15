@@ -1,7 +1,6 @@
 package com.k_int.euinside.client.module.validation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,12 +13,28 @@ import com.k_int.euinside.client.module.CommandLineArguments;
 import com.k_int.euinside.client.module.Module;
 import com.k_int.euinside.client.module.validation.semantika.Errors;
 
+/**
+ * This class provides the interface for the Validation module supplied by semantika
+ *  
+ */
 public class Validate2 extends BaseModule {
 
+	/**
+	 * Builds the path required for the validaion module
+	 * 
+	 * @return The path that is required for the validation module
+	 */
 	static private String buildPath() {
 		return(buildPath(Module.VALIDATION2, PATH_SEPARATOR + Action.VALIDATION_VALIDATE.getName()));
 	}
 
+	/**
+	 * Maps the HttpResult into the Errors array
+	 * 
+	 * @param result The HttpResult from calling the module
+	 * 
+	 * @return The list of errros for this record
+	 */
 	static private Errors mapHttpResultToErrors(HttpResult result) {
 		Errors errors = null;
 		if (result.getHttpStatusCode() == HttpServletResponse.SC_OK) {
@@ -28,39 +43,65 @@ public class Validate2 extends BaseModule {
 
 		return(errors);
 	}
-	
-	static public Errors sendBytes(ArrayList<byte[]> xmlData, ArrayList<byte[]> zipData) {
-		return(mapHttpResultToErrors(ClientHTTP.sendBytes(buildPath(), xmlData, zipData)));
+
+	/**
+	 * Sends the supplied record to the validation module
+	 * 
+	 * @param record The record that needs to be validated
+	 * 
+	 * @return All errors associated with the record
+	 */
+	static public Errors sendBytes(byte[] record) {
+		ArrayList<byte[]> recordArray = new ArrayList<byte[]>();
+		recordArray.add(record);
+		return(mapHttpResultToErrors(ClientHTTP.sendBytes(buildPath(), recordArray, null)));
 	}
 
-	static public Errors sendFiles(ArrayList<String> filenames) {
-		return(mapHttpResultToErrors(ClientHTTP.sendFiles(buildPath(), filenames)));
+	/**
+	 * Sends the contents of the specified file to be validated
+	 * 
+	 * @param filename The name of the file that contains the record that requires validating
+	 * 
+	 * @return All errors associated with the record
+	 */
+	static public Errors sendFiles(String filename) {
+		ArrayList<String> filenameArray = new ArrayList<String>();
+		filenameArray.add(filename);
+		return(mapHttpResultToErrors(ClientHTTP.sendFiles(buildPath(), filenameArray)));
 	}
 	
+	/**
+	 * Exercises all the methods with the supplied parameters
+	 * 
+	 * @param args The parameters passed in on the command line, valid parameters are:
+	 * 		-coreBaseURL ... The base URL of the core module
+	 * 		-badFilename ... The name of the file that contains a record with validation errors
+	 * 		-filename ...... The name of a file that contains a record with no validation errors
+	 */
 	public static void main(String [] args)
 	{
 		CommandLineArguments arguments = parseCommandLineArguments(args);
-		
-		String[] files = arguments.getFilenames().split(";"); 
-		ArrayList<String> arrayFilenames = new ArrayList<String>(Arrays.asList(files));
-		Errors errors = sendFiles(arrayFilenames);
 
-		if (errors == null) {
-			System.out.println("Failed to validate file");
-		} else {
-			System.out.println("Result from validate2");
-			System.out.println(errors.toString());
+		if (!arguments.getFilenames().isEmpty()) {
+			Errors errors = sendFiles(arguments.getFilenames().get(0));
+	
+			if (errors == null) {
+				System.out.println("Failed to validate file");
+			} else {
+				System.out.println("Result from validate2");
+				System.out.println(errors.toString());
+			}
 		}
-		
-		files = arguments.getBadFilenames().split(";"); 
-		arrayFilenames = new ArrayList<String>(Arrays.asList(files));
-		errors = sendFiles(arrayFilenames);
 
-		if (errors == null) {
-			System.out.println("Failed to validate file");
-		} else {
-			System.out.println("Result from validate2");
-			System.out.println(errors.toString());
+		if (!arguments.getBadFilenames().isEmpty()) {
+			Errors errors = sendFiles(arguments.getBadFilenames().get(0));
+	
+			if (errors == null) {
+				System.out.println("Failed to validate file");
+			} else {
+				System.out.println("Result from validate2");
+				System.out.println(errors.toString());
+			}
 		}
 	}
 }

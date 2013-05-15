@@ -7,7 +7,7 @@ import com.k_int.euinside.setmanager.datamodel.ValidationError;
 class ValidationService extends ServiceActionBase {
 	def grailsApplication;
 	
-	private static String PATH_BASE_VALIDATION = "/Validation/profiles/lido/validate";
+	private static String PATH_BASE_VALIDATION = "/Validation/lido/validate";
 	
 	String validationURL = null;
 		

@@ -1,21 +1,23 @@
 package com.k_int.euinside.client.module;
 
+import java.util.ArrayList;
+
 import com.k_int.euinside.client.module.setmanager.SetManager;
 
 public class CommandLineArguments {
 	String accessionNumber = "";
-	String badFilenames = "";
+	ArrayList<String> badFilenames = new ArrayList<String>();
 	String coreBaseURL = "http://euinside.k-int.com/ECKCore2";
 	boolean deleteAll = false;
 	String errorCode = "";
 	String field = "";
-	String filenames = "";
+	ArrayList<String> filenames = new ArrayList<String>();
 	String institutionURL = "";
 	String language = "";
 	String pid = "";
 	String profile = "";
 	String provider = SetManager.PROVIDER_DEFAULT;
-	String recordsToDelete = null;
+	ArrayList<String> recordsToDelete = new ArrayList<String>();
 	String recordType = "";
 	boolean runAll = false;
 	boolean runCommit = false;
@@ -37,9 +39,9 @@ public class CommandLineArguments {
 					runAll = true;
 					break;
 					
-				case "-badFilenames":
+				case "-badFilename":
 					i++;
-					badFilenames = args[i];
+					badFilenames.add(args[i]);
 					break;
 					
 				case "-commit":
@@ -65,9 +67,9 @@ public class CommandLineArguments {
 					field = args[i];
 					break;
 					
-				case "-filenames":
+				case "-filename":
 					i++;
-					filenames = args[i];
+					filenames.add(args[i]);
 					break;
 					
 				case "-institutionURL":
@@ -99,9 +101,9 @@ public class CommandLineArguments {
 					provider = args[i];
 					break;
 					
-				case "-recordsToDelete":
+				case "-recordToDelete":
 					i++;
-					recordsToDelete = args[i];
+					recordsToDelete.add(args[i]);
 					break;
 					
 				case "-recordType":
@@ -139,11 +141,11 @@ public class CommandLineArguments {
 		this.accessionNumber = accessionNumber;
 	}
 
-	public String getBadFilenames() {
+	public ArrayList<String> getBadFilenames() {
 		return(badFilenames);
 	}
 	
-	public void setBadFilenames(String badFilenames) {
+	public void setBadFilenames(ArrayList<String> badFilenames) {
 		this.badFilenames = badFilenames;
 	}
 	
@@ -179,11 +181,11 @@ public class CommandLineArguments {
 		this.field = field;
 	}
 	
-	public String getFilenames() {
+	public ArrayList<String> getFilenames() {
 		return(filenames);
 	}
 	
-	public void setFilenames(String filenames) {
+	public void setFilenames(ArrayList<String> filenames) {
 		this.filenames = filenames;
 	}
 	
@@ -227,11 +229,11 @@ public class CommandLineArguments {
 		this.provider = provider;
 	}
 	
-	public String getRecordsToDelete() {
+	public ArrayList<String> getRecordsToDelete() {
 		return(recordsToDelete);
 	}
 	
-	public void setRecordsToDelete(String recordsToDelete) {
+	public void setRecordsToDelete(ArrayList<String> recordsToDelete) {
 		this.recordsToDelete = recordsToDelete;
 	}
 	

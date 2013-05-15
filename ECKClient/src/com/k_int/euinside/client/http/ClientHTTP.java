@@ -143,9 +143,7 @@ public class ClientHTTP extends BaseClient {
 		            HttpResponse response = httpclient.execute(httppost);
 		            HttpEntity resEntity = response.getEntity();
 		            int httpStatusCode = response.getStatusLine().getStatusCode();
-		            if (resEntity.getContentLength() > 0) {
-		            	result.setContent(EntityUtils.toString(resEntity, StandardCharsets.UTF_8));		            	
-		            }
+	            	result.setContent(EntityUtils.toString(resEntity, StandardCharsets.UTF_8));		            	
 		            result.setHttpStatusCode(httpStatusCode);
 		            if ((httpStatusCode != HttpServletResponse.SC_OK) && (httpStatusCode != HttpServletResponse.SC_ACCEPTED)) {
 		            	result.setCallResult(Error.HTTP_ERROR);

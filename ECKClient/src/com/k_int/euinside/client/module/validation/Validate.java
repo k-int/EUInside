@@ -1,7 +1,6 @@
 package com.k_int.euinside.client.module.validation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 //import javax.servlet.http.HttpServletResponse;
 
@@ -13,11 +12,30 @@ import com.k_int.euinside.client.module.BaseModule;
 import com.k_int.euinside.client.module.CommandLineArguments;
 import com.k_int.euinside.client.module.Module;
 
+/**
+ * This class provides the interface for the Validation module supplied by monguz
+ *  
+ */
 public class Validate extends BaseModule{
+
+	static private String VALIDATION_PROFILE = "lido";
+	
+	/**
+	 * Builds the path required for the validaion module
+	 * 
+	 * @return The path that is required for the validation module
+	 */
 	static private String buildPath() {
-		return(buildPath(Module.VALIDATION, PATH_SEPARATOR + Action.VALIDATION_VALIDATE.getName()));
+		return(buildPath(Module.VALIDATION, PATH_SEPARATOR + VALIDATION_PROFILE + PATH_SEPARATOR + Action.VALIDATION_VALIDATE.getName()));
 	}
 
+	/**
+	 * Maps the result returned json into a set of classes, at the moment the data is not returned in a structured way, so we just return what was returned by the module
+	 * 
+	 * @param result ... The result returned from the validation module
+	 * 
+	 * @return The result returned from the server
+	 */
 	static private HttpResult mapHttpResultToErrors(HttpResult result) {
 		// Monguz are not returning anything structured yet
 //		Errors errors = null;
@@ -27,39 +45,65 @@ public class Validate extends BaseModule{
 
 		return(result);
 	}
-	
-	static public HttpResult sendBytes(ArrayList<byte[]> xmlData, ArrayList<byte[]> zipData) {
-		return(mapHttpResultToErrors(ClientHTTP.sendBytes(buildPath(), xmlData, zipData)));
+
+	/**
+	 * Sends the supplied record to the Validation module for validation
+	 *  
+	 * @param xmlRecord ... The record that is to be sent
+	 * 
+	 * @return The result returned form the server (it is not structured so we do not attempt to interpret it)
+	 */
+	static public HttpResult sendBytes(byte[] xmlRecord) {
+		ArrayList<byte[]> recordArray = new ArrayList<byte[]>();
+		recordArray.add(xmlRecord);
+		return(mapHttpResultToErrors(ClientHTTP.sendBytes(buildPath(), recordArray, null)));
 	}
 
-	static public HttpResult sendFiles(ArrayList<String> filenames) {
-		return(mapHttpResultToErrors(ClientHTTP.sendFiles(buildPath(), filenames)));
+	/**
+	 * Sends the supplied record to the Validation module for validation
+	 *  
+	 * @param filename ... The file that contains the record that is to be sent to the validation module
+	 * 
+	 * @return The result returned form the server (it is not structured so we do not attempt to interpret it)
+	 */
+	static public HttpResult sendFiles(String filename) {
+		ArrayList<String> filenameArray = new ArrayList<String>();
+		filenameArray.add(filename);
+		return(mapHttpResultToErrors(ClientHTTP.sendFiles(buildPath(), filenameArray)));
 	}
 	
+	/**
+	 * Exercises all the methods with the supplied parameters
+	 * 
+	 * @param args The parameters passed in on the command line, valid parameters are:
+	 * 		-coreBaseURL ... The base URL of the core module
+	 * 		-badFilename ... The name of the file that contains a record with validation errors
+	 * 		-filename ...... The name of a file that contains a record with no validation errors
+	 */
 	public static void main(String [] args)
 	{
 		CommandLineArguments arguments = parseCommandLineArguments(args);
 		
-		String[] files = arguments.getFilenames().split(";"); 
-		ArrayList<String> arrayFilenames = new ArrayList<String>(Arrays.asList(files));
-		HttpResult errors = sendFiles(arrayFilenames);
-
-		if (errors == null) {
-			System.out.println("Failed to validate file");
-		} else {
-			System.out.println("Result from validate");
-			System.out.println(errors.toString());
+		if (!arguments.getFilenames().isEmpty()) {
+			HttpResult errors = sendFiles(arguments.getFilenames().get(0));
+	
+			if (errors == null) {
+				System.out.println("Failed to validate file");
+			} else {
+				System.out.println("Result from validate");
+				System.out.println(errors.toString());
+			}
 		}
 		
-		files = arguments.getBadFilenames().split(";"); 
-		arrayFilenames = new ArrayList<String>(Arrays.asList(files));
-		errors = sendFiles(arrayFilenames);
-
-		if (errors == null) {
-			System.out.println("Failed to validate file");
-		} else {
-			System.out.println("Result from validate");
-			System.out.println(errors.toString());
+		if (!arguments.getBadFilenames().isEmpty()) {
+			HttpResult errors = sendFiles(arguments.getBadFilenames().get(0));
+	
+			if (errors == null) {
+				System.out.println("Failed to validate file");
+			} else {
+				System.out.println("Result from validate");
+				System.out.println(errors.toString());
+			}
 		}
 	}
 }

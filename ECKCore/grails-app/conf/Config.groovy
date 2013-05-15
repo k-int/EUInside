@@ -139,9 +139,9 @@ moduleConfiguration {
 		}
 	}
 	Preview {
-		internalURL = "http://test.asp.hunteka.hu:11080"
+		internalURL = "http://app.asp.hunteka.hu:5080"
 		internalPath = "/eck-preview-module"
-		externalURL = "http://test.asp.hunteka.hu:11080"
+		externalURL = "http://app.asp.hunteka.hu:5080"
 		externalPath = "/eck-preview-module"
 	}
 	SetManager {
@@ -159,10 +159,10 @@ moduleConfiguration {
 		}
 	}
 	Validate {
-		internalURL = "http://test.asp.hunteka.hu:11080"
-		internalPath = "/eck-validation-module"
-		externalURL = "http://test.asp.hunteka.hu:11080"
-		externalPath = "/eck-validation-module"
+		internalURL = "http://app.asp.hunteka.hu:5080"
+		internalPath = "/eck-validation-module/profiles"
+		externalURL = "http://app.asp.hunteka.hu:5080"
+		externalPath = "/eck-validation-module/profiles"
 	}
 	Validate2 {
 		internalURL = "http://euinside.semantika.si"

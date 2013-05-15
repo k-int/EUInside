@@ -16,13 +16,33 @@ import com.k_int.euinside.client.module.BaseModule;
 import com.k_int.euinside.client.module.CommandLineArguments;
 import com.k_int.euinside.client.module.Module;
 
+/**
+ * This class provides the interface for the PID Generation module
+ *  
+ */
 public class PIDGenerate extends BaseModule {
 	private static Log log = LogFactory.getLog(PIDGenerate.class);
 
+	/** 
+	 * Generates a PID when supplied with all the requisite components
+	 * 
+	 * @param institutionURL .... The institutions url
+	 * @param recordType ........ The type of record a pid is being requested for
+	 * @param accessionNumber ... The unique identifier for the record
+	 * 
+	 * @return A generated pid for the supplied details
+	 */
 	static public String generate(String institutionURL, String recordType, String accessionNumber) {
 		return(generate(new PIDComponents(institutionURL, recordType, accessionNumber)));
 	}
-	
+
+	/**
+	 * Generates a PID given a PIDComponents object
+	 * 
+	 * @param components ... Contains the insitutionURL, recordType and accessionNumber components that are required to generate the PID
+	 * 
+	 * @return A generated PID for the supplied details
+	 */
 	static public String generate(PIDComponents components) {
 		String result;
 		ArrayList<BasicNameValuePair> attributes = new ArrayList<BasicNameValuePair>();
@@ -35,7 +55,14 @@ public class PIDGenerate extends BaseModule {
 		
 		return(result);
 	}
-	
+
+	/**
+	 * Reverse engineers a PID into its institution URL, record type and accession number, this will only work if the PID was generated from the ECK PID generation module
+	 *  
+	 * @param pid The PID that was generation from the ECK PID Generation module
+	 * 
+	 * @return A PIDComponents object that contains the separate components that make up an ECK PID 
+	 */
 	static public PIDComponents lookUp(String pid) {
 		PIDComponents result = null;
 		try {
@@ -48,6 +75,15 @@ public class PIDGenerate extends BaseModule {
 		return(result);
 	}
 	
+	/**
+	 * Exercises all the methods with the passed in parameters
+	 * 
+	 * @param args The parameters passed in on the command line, valid parameters are:
+	 * 		-coreBaseURL ....... The base URL of the core module
+	 * 		-accessionNumber ... The unique identifier for this record in the CMS
+	 * 		-institutionURL .... The institutions URL
+	 * 		-recordType ........ The type of record that we are generating a PID for
+	 */
 	public static void main(String [] args)
 	{
 		CommandLineArguments arguments = parseCommandLineArguments(args);
