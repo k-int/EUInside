@@ -9,6 +9,9 @@ public enum Action {
 	// Actions used by PID Generate
 	PID_GENERATE_GENERATE("generate"),
 	PID_GENERATE_LOOKUP("lookup"),
+
+	// Actions used by the preview service
+	PREVIEW_PREVIEW("preview"),
 	
 	// Actions Used by the Set Manager
 	SET_MANAGER_COMMIT("commit"),

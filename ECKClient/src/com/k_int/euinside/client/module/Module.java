@@ -4,6 +4,7 @@ public enum Module {
 
 	DEFINITION("Definition"),
 	PID_GENERATE("PIDGenerate"),
+	PREVIEW("Preview"),
 	SET_MANAGER("SetManager/Set"),
 	VALIDATION("Validation"),   // monguz
 	VALIDATION2("Validation2"); // Semantika
