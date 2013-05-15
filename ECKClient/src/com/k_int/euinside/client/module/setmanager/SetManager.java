@@ -17,16 +17,20 @@ import com.k_int.euinside.client.module.setmanager.status.Status;
 import com.k_int.euinside.client.module.setmanager.update.Update;
 import com.k_int.euinside.client.module.setmanager.validate.ValidationErrors;
 
+/**
+ * This class provides the interface for the Set Manager module
+ *  
+ */
 public class SetManager extends BaseModule {
 
 	static public String PROVIDER_DEFAULT = "default";
 	static public String SET_DEFAULT = "default";
 
-	static String buildPath(String provider, String set, Action action) {
+	static private String buildPath(String provider, String set, Action action) {
 		return(buildPath(provider, set, action, null));
 	}
 	
-	static String buildPath(String provider, String set, Action action, ArrayList<BasicNameValuePair> attributes) {
+	static private String buildPath(String provider, String set, Action action, ArrayList<BasicNameValuePair> attributes) {
 		if (provider == null) {
 			provider = PROVIDER_DEFAULT;
 		}
@@ -37,15 +41,15 @@ public class SetManager extends BaseModule {
 		return(buildPath(Module.SET_MANAGER, modulePath, attributes));
 	}
 	
-	static Status getStatus() {
+	static public Status getStatus() {
 		return(getStatus(null, null, 0));
 	}
 	
-	static Status getStatus(String provider, String set) {
+	static public Status getStatus(String provider, String set) {
 		return(getStatus(provider, set, 0));
 	}
 	
-	static BriefRecords getList(String provider, String set) {
+	static public BriefRecords getList(String provider, String set) {
 		BriefRecords result = null;
 		String path = buildPath(provider, set, Action.SET_MANAGER_LIST);
 
@@ -53,7 +57,7 @@ public class SetManager extends BaseModule {
 		return(result);
 	}
 
-	static Status getStatus(String provider, String set, int historyItems) {
+	static public Status getStatus(String provider, String set, int historyItems) {
 		Status result = null;
 		ArrayList<BasicNameValuePair> attributes = new ArrayList<BasicNameValuePair>();
 		if (historyItems > 0) {
@@ -65,24 +69,24 @@ public class SetManager extends BaseModule {
 		return(result);
 	}
 
-	static HttpResult commit(String provider, String set) {
+	static public HttpResult commit(String provider, String set) {
 		// Just call update
 		return(update(provider, set, null, true, false, null));
 	}
 
-	static HttpResult update(String provider, String set, ArrayList<String> filenames, boolean commit, boolean deleteAll, String recordsToDelete) {
+	static public HttpResult update(String provider, String set, ArrayList<String> filenames, boolean commit, boolean deleteAll, String recordsToDelete) {
 		// Are we going to commit or just update
 		String path = buildPath(provider, set, commit ? Action.SET_MANAGER_COMMIT : Action.SET_MANAGER_UPDATE);
 		return(Update.sendFiles(path, filenames, deleteAll, recordsToDelete));
 	}
 
-	static HttpResult update(String provider, String set, ArrayList<byte[]> xmlData, ArrayList<byte[]> zipData, boolean commit, boolean deleteAll, String recordsToDelete) {
+	static public HttpResult update(String provider, String set, ArrayList<byte[]> xmlData, ArrayList<byte[]> zipData, boolean commit, boolean deleteAll, String recordsToDelete) {
 		// Are we going to commit or just update
 		String path = buildPath(provider, set, commit ? Action.SET_MANAGER_COMMIT : Action.SET_MANAGER_UPDATE);
 		return(Update.sendBytes(path, xmlData, zipData, deleteAll, recordsToDelete));
 	}
 
-	static ValidationErrors getValidate(String provider, String set) {
+	static public ValidationErrors getValidate(String provider, String set) {
 		ValidationErrors result = null;
 		String path = buildPath(provider, set, Action.SET_MANAGER_VALIDATE);
 
