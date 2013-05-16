@@ -18,10 +18,12 @@ public class CommandLineArguments {
 	String profile = "";
 	String provider = SetManager.PROVIDER_DEFAULT;
 	ArrayList<String> recordsToDelete = new ArrayList<String>();
+	String recordId = "";
 	String recordType = "";
 	boolean runAll = false;
 	boolean runCommit = false;
 	boolean runList = false;
+	boolean runPreview = false;
 	boolean runStatus = false;
 	boolean runUpdate = false;
 	boolean runValidate = false;
@@ -91,6 +93,10 @@ public class CommandLineArguments {
 					pid = args[i];
 					break;
 					
+				case "-preview":
+					runPreview = true;
+					break;
+					
 				case "-profile":
 					i++;
 					profile = args[i];
@@ -106,6 +112,11 @@ public class CommandLineArguments {
 					recordsToDelete.add(args[i]);
 					break;
 					
+				case "-recordId":
+					i++;
+					recordId = args[i];
+					break;
+
 				case "-recordType":
 					i++;
 					recordType = args[i];
@@ -237,6 +248,14 @@ public class CommandLineArguments {
 		this.recordsToDelete = recordsToDelete;
 	}
 	
+	public String getRecordId() {
+		return(recordId);
+	}
+
+	public void setRecordId(String recordId) {
+		this.recordId = recordId;
+	}
+
 	public String getRecordType() {
 		return(recordType);
 	}
@@ -275,6 +294,14 @@ public class CommandLineArguments {
 	
 	public void setRunList(boolean runList) {
 		this.runList = runList;
+	}
+	
+	public boolean isRunPreview() {
+		return(runPreview);
+	}
+	
+	public void setRunPreview(boolean runPreview) {
+		this.runPreview = runPreview;
 	}
 	
 	public boolean isRunStatus() {

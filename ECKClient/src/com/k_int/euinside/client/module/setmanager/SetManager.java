@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.k_int.euinside.client.HttpResult;
+import com.k_int.euinside.client.http.ClientHTTP;
 import com.k_int.euinside.client.json.ClientJSON;
 import com.k_int.euinside.client.module.Action;
 import com.k_int.euinside.client.module.Attribute;
@@ -106,7 +107,6 @@ public class SetManager extends BaseModule {
 	 * 
 	 * @param provider ... The provider of the records
 	 * @param set ........ The set the records belong to
-
 	 * @return A list of all the records in the set
 	 */
 	static public BriefRecords getList(String provider, String set) {
@@ -114,6 +114,25 @@ public class SetManager extends BaseModule {
 		String path = buildPath(provider, set, Action.SET_MANAGER_LIST);
 
 		result = ClientJSON.readJSON(path, BriefRecords.class);
+		return(result);
+	}
+
+	/**
+	 * Returns a preview of the specified record
+	 * 
+	 * @param provider ... The provider of the records
+	 * @param set ........ The set the records belong to
+	 * @Param recordId ... The identifier for the record you want to preview 
+	 *
+	 * @return A list of all the records in the set
+	 */
+	static public String preview(String provider, String set, String recordId) {
+		String result = null;
+		ArrayList<BasicNameValuePair> attributes = new ArrayList<BasicNameValuePair>();
+		attributes.add(new BasicNameValuePair(Attribute.RECORD_ID.getName(), recordId));
+		String path = buildPath(provider, set, Action.SET_MANAGER_PREVIEW, attributes);
+
+		result = ClientHTTP.send(path).getContent();
 		return(result);
 	}
 
@@ -248,6 +267,12 @@ public class SetManager extends BaseModule {
 			System.out.println("Calling Action commit");
 			HttpResult result = commit(arguments.getProvider(), arguments.getSet());
 			System.out.println("Result from update: " + result.toString() + "\n");
+		}
+
+		if (arguments.isRunAll() || arguments.isRunPreview()) {
+			System.out.println("Calling Action Preview");
+			String result = preview(arguments.getProvider(), arguments.getSet(), arguments.getRecordId());
+			System.out.println("Result from preview: " + result + "\n");
 		}
 	}
 }

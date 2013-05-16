@@ -6,6 +6,7 @@ public enum Attribute {
 	DELETE_ALL("deleteAll"),
 	HISTORY_ITEMS("historyItems"),
 	INSTITUTION_URL("institutionUrl"),
+	RECORD_ID("recordId"),
 	RECORD_TYPE("recordType");
 
 	private String name;

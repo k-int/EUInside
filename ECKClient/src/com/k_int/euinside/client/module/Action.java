@@ -16,6 +16,7 @@ public enum Action {
 	// Actions Used by the Set Manager
 	SET_MANAGER_COMMIT("commit"),
 	SET_MANAGER_LIST("list"),
+	SET_MANAGER_PREVIEW("preview"),
 	SET_MANAGER_STATUS("status"),
 	SET_MANAGER_UPDATE("update"),
 	SET_MANAGER_VALIDATE("validate"),

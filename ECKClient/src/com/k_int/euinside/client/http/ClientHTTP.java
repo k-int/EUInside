@@ -15,7 +15,9 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -116,6 +118,10 @@ public class ClientHTTP extends BaseClient {
 		return(result);
 	}
 	
+	static public HttpResult send(String path) {
+		return(send(path, null, null));
+	}
+	
 	static public HttpResult send(String path, MultipartEntity requestEntity, ArrayList<BasicNameValuePair> attributes) {
 		HttpResult result = new HttpResult();
 		if (attributes != null) {
@@ -134,13 +140,18 @@ public class ClientHTTP extends BaseClient {
 	        HttpClient httpclient = new DefaultHttpClient();
 	        try {
 	        	String url = buildURL(path);
-	            HttpPost httppost = new HttpPost(url);
+	        	HttpRequestBase httpRequest;
+	        	if (requestEntity == null) {
+	        		httpRequest = new HttpGet(url);
+	        	} else {
+	        		HttpPost httpPost = new HttpPost(url);
+	        		httpPost.setEntity(requestEntity);
+	        		httpRequest = httpPost;
+	        	}
 
-	            httppost.setEntity(requestEntity);
-
-	            System.out.println("executing request " + httppost.getRequestLine());
+	            System.out.println("executing request " + httpRequest.getRequestLine());
 	            try {
-		            HttpResponse response = httpclient.execute(httppost);
+		            HttpResponse response = httpclient.execute(httpRequest);
 		            HttpEntity resEntity = response.getEntity();
 		            int httpStatusCode = response.getStatusLine().getStatusCode();
 	            	result.setContent(EntityUtils.toString(resEntity, StandardCharsets.UTF_8));		            	
