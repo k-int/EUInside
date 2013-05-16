@@ -122,7 +122,7 @@ public class SetManager extends BaseModule {
 	 * 
 	 * @param provider ... The provider of the records
 	 * @param set ........ The set the records belong to
-	 * @Param recordId ... The identifier for the record you want to preview 
+	 * @param recordId ... The identifier for the record you want to preview 
 	 *
 	 * @return A list of all the records in the set
 	 */

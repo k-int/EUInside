@@ -91,7 +91,7 @@ public class Definition extends BaseModule {
 	 * 
 	 * @param language The language you want the errors for
 	 * 
-	 * @return 
+	 * @return The errors for the specified language
 	 */
 	static public Errors getErrors(String language) {
 		Errors result = ClientJSON.readJSON(BuildErrorPath(language, null), Errors.class);

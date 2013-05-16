@@ -1,5 +1,9 @@
 package com.k_int.euinside.client.module.setmanager.validate;
 
+/**
+ * The Error class represents an error that has occured
+ *
+ */
 public class Error {
 
 	String errorCode;
@@ -8,6 +12,11 @@ public class Error {
 	public Error() {
 	}
 
+	/**
+	 * Retrieve the error code associated with this error
+     *
+	 * @return The error code
+	 */
 	public String getErrorCode() {
 		return(errorCode);
 	}
@@ -15,7 +24,12 @@ public class Error {
 	public void setErrorCode(String errorCode) {
 		this.errorCode = errorCode;
 	}
-	
+
+	/**
+	 * Retrieve any additional information associated with the error
+	 * 
+	 * @return The additional information
+	 */
 	public String getAdditionalInformation() {
 		return(additionalInformation);
 	}
@@ -24,7 +38,9 @@ public class Error {
 		this.additionalInformation = additionalInformation;
 	}
 	
-
+	/**
+	 * Formats the members of this class in a simple to view way
+	 */
 	public String toString() {
 		String result = "Class: Error:\n"; 
 		result += "\tError Code: " + errorCode + "\n";
