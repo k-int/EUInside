@@ -9,6 +9,10 @@ class ProviderValidIP {
 	// The IP address that is valid for this provider
 	String ipAddress;
 	
+	static mapping = {
+		version false 
+	}
+	
     static constraints = {
 		ipAddress size : 7..23, nullable : false, blank : false
     }

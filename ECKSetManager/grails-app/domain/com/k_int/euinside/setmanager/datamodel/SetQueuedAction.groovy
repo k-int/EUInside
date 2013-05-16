@@ -37,6 +37,10 @@ class SetQueuedAction {
 	// Do we delete all the records first
 	boolean deleteAll = false;
 	
+	static mapping = {
+		version false 
+	}
+	
     static constraints = {
 		action             nullable : false, maxSize : 20
 		queued             nullable : false

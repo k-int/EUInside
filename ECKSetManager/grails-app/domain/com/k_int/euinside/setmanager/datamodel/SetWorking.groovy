@@ -10,6 +10,10 @@ class SetWorking {
 	String status = ProviderSet.STATUS_DIRTY;
 	Date lastUpdated;
 	
+	static mapping = {
+		version false 
+	}
+	
     static constraints = {
 		status                     nullable : false, maxSize : 20
 		lastUpdated                nullable : true

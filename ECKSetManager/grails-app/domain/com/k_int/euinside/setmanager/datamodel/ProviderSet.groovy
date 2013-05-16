@@ -26,6 +26,7 @@ class ProviderSet {
 					  history : SetHistory]
 
 	static mapping = {
+		version false
 		queuedActions sort : 'id', order : 'asc'
 		history       sort : 'id', order : 'desc'
 	}

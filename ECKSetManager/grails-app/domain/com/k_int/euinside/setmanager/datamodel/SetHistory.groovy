@@ -19,6 +19,10 @@ class SetHistory {
 	// Length of time it took to process this action
 	Integer duration;
 	
+	static mapping = {
+		version false 
+	}
+	
     static constraints = {
 		action          maxSize : 20, nullable : false
 		whenPerformed                 nullable : false

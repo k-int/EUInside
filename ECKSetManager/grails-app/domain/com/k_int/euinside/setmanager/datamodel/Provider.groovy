@@ -14,6 +14,10 @@ class Provider {
 	static hasMany = [validIPAddresses : ProviderValidIP,
 		              sets             : ProviderSet];
 	
+	static mapping = {
+		version false 
+	}
+	
     static constraints = {
 		code        maxSize : 20,  nullable : false, blank : false, unique : true
 		description maxSize : 200, nullable : true,  blank : true

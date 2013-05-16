@@ -11,6 +11,10 @@ class ValidationError {
 	// Any additional information that may have been returned
 	String additionalInformation;
 		
+	static mapping = {
+		version false 
+	}
+	
     static constraints = {
 		additionalInformation maxSize : 1000, nullable : true
 		errorCode             maxSize : 40,   nullable : false

@@ -10,6 +10,10 @@ class SetLive {
 	String status = ProviderSet.STATUS_COMMITTED;
 	Date committed;
 
+	static mapping = {
+		version false 
+	}
+	
     static constraints = {
 		status          maxSize : 20, nullable : false
 		committed                     nullable : true
