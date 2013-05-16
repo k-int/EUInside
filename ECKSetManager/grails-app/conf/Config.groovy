@@ -93,4 +93,4 @@ log4j = {
 }
 
 // For specifying how to access the core
-coreURL = "http://localhost:28180"
+coreURL = "http://localhost:28180/ECKCore"
