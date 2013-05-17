@@ -237,8 +237,8 @@ class UpdateService extends ServiceActionBase {
 			log.info("failed to find a record id using lido record id \"" + localRecordId + "\" instead");
 		}
 
-		// TODO: Need to determine the persistence Id, for the time being pick up the guid		
-		def PersistentRecordId = recordIds.find{it.'@lido:type' == 'guid'}.text();
+		// The persistence Id lives in the objectPublishedID, there could be many, but we are interested in the first one		
+		def PersistentRecordId = rootXMLWithNameSpaceDeclared.'lido:objectPublishedID'.find{true}.text();
 		
 		// That is good we have a local record id, so we can continue, where do we get the persistence id from
 		processRecord(set, localRecordId, (PersistentRecordId.isEmpty() ? null : PersistentRecordId), false, false, recordContents, recordsProcessed);
