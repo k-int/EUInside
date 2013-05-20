@@ -51,8 +51,8 @@ public class Preview extends BaseModule{
 	/**
 	 * Exercises all the methods with the supplied parameters
 	 * 
-	 * @param args The parameters passed in on the command line, valid parameters are:
-	 * 		-coreBaseURL ... The base URL of the core module
+	 * @param args The parameters passed in on the command line, valid parameters are:<br/><br/>
+	 * 		-coreBaseURL ... The base URL of the core module<br/>
 	 * 		-filename ...... The name of a file that contains a record with no validation errors
 	 */
 	public static void main(String [] args)

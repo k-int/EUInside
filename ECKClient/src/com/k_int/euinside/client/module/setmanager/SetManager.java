@@ -206,18 +206,18 @@ public class SetManager extends BaseModule {
 	/**
 	 * Exercises all the methods with the passed in parameters
 	 * 
-	 * @param args The parameters passed in on the command line, valid parameters are:
-	 * 		-coreBaseURL ... The base URL of the core module
-	 * 		-all .............. Call all methods
-	 * 		-commit ........... Call the commit method
-	 * 		-deleteAll ........ Do we delete all records prior to the update
-	 * 		-filename ......... A filename to be supplied to the update call (may occur multiple times)
-	 * 		-list ............. Call the list method
-	 * 		-provider ......... Who the provider of the records is
-	 * 		-recordToDelete ... The identifier for a record to be deleted (maybe occur multiple times)
-	 * 		-set .............. The set that we want to action for the specified provider
-	 * 		-status ........... Call the status method
-	 * 		-update ........... Call the update method
+	 * @param args The parameters passed in on the command line, valid parameters are:<br/><br/>
+	 * 		-coreBaseURL ... The base URL of the core module<br/>
+	 * 		-all .............. Call all methods<br/>
+	 * 		-commit ........... Call the commit method<br/>
+	 * 		-deleteAll ........ Do we delete all records prior to the update<br/>
+	 * 		-filename ......... A filename to be supplied to the update call (may occur multiple times)<br/>
+	 * 		-list ............. Call the list method<br/>
+	 * 		-provider ......... Who the provider of the records is<br/>
+	 * 		-recordToDelete ... The identifier for a record to be deleted (maybe occur multiple times)<br/>
+	 * 		-set .............. The set that we want to action for the specified provider<br/>
+	 * 		-status ........... Call the status method<br/>
+	 * 		-update ........... Call the update method<br/>
 	 * 		-validate ......... Call the validate method
 	 */
 	public static void main(String [] args)

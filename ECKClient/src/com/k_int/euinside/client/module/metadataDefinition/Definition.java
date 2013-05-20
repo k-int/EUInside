@@ -171,10 +171,10 @@ public class Definition extends BaseModule {
 	/**
 	 * Exercises all the methods with the passed in parameters
 	 * 
-	 * @param args The parameters passed in on the command line, valid parameters are:
-	 * 		-coreBaseURL ... The base URL of the core module
-	 * 		-errorCode ..... The error code to request the definition for
-	 * 		-language ...... The languages the definitions are to be returned in
+	 * @param args The parameters passed in on the command line, valid parameters are:<br/><br/>
+	 * 		-coreBaseURL ... The base URL of the core module<br/>
+	 * 		-errorCode ..... The error code to request the definition for<br/>
+	 * 		-language ...... The languages the definitions are to be returned in<br/>
 	 * 		-profile ....... The profile that you are interested in
 	 */
 	public static void main(String [] args)
