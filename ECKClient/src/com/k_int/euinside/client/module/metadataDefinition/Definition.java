@@ -172,10 +172,14 @@ public class Definition extends BaseModule {
 	 * Exercises all the methods with the passed in parameters
 	 * 
 	 * @param args The parameters passed in on the command line, valid parameters are:<br/><br/>
-	 * 		-coreBaseURL ... The base URL of the core module<br/>
-	 * 		-errorCode ..... The error code to request the definition for<br/>
-	 * 		-language ...... The languages the definitions are to be returned in<br/>
-	 * 		-profile ....... The profile that you are interested in
+	 *  <table width="100%">
+	 * 	    <col width="15%"/>
+	 *      <col width="85%"/>
+	 *      <tr><td>-coreBaseURL</td><td>The base URL of the core module</td></tr>
+	 *      <tr><td>-errorCode</td><td>The error code to request the definition for</td></tr>
+	 *      <tr><td>-language</td><td>The languages the definitions are to be returned in</td></tr>
+	 *      <tr><td>-profile</td><td>The profile that you are interested in</td></tr>
+     *  </table>
 	 */
 	public static void main(String [] args)
 	{

@@ -74,9 +74,13 @@ public class Validate2 extends BaseModule {
 	 * Exercises all the methods with the supplied parameters
 	 * 
 	 * @param args The parameters passed in on the command line, valid parameters are:<br/><br/>
-	 * 		-coreBaseURL ... The base URL of the core module<br/>
-	 * 		-badFilename ... The name of the file that contains a record with validation errors<br/>
-	 * 		-filename ...... The name of a file that contains a record with no validation errors
+	 *  <table width="100%">
+	 * 	    <col width="15%"/>
+	 *      <col width="85%"/>
+	 *      <tr><td>-coreBaseURL</td><td>The base URL of the core module</td></tr>
+	 * 		<tr><td>-badFilename</td><td>The name of the file that contains a record with validation errors</td></tr>
+	 * 		<tr><td>-filename</td><td>The name of a file that contains a record with no validation errors</td></tr>
+     *  </table>
 	 */
 	public static void main(String [] args)
 	{

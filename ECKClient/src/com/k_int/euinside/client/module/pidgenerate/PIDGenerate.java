@@ -79,10 +79,14 @@ public class PIDGenerate extends BaseModule {
 	 * Exercises all the methods with the passed in parameters
 	 * 
 	 * @param args The parameters passed in on the command line, valid parameters are:<br/><br/>
-	 * 		-coreBaseURL ....... The base URL of the core module<br/>
-	 * 		-accessionNumber ... The unique identifier for this record in the CMS<br/>
-	 * 		-institutionURL .... The institutions URL<br/>
-	 * 		-recordType ........ The type of record that we are generating a PID for
+	 *  <table width="100%">
+	 * 	    <col width="15%"/>
+	 *      <col width="85%"/>
+	 *      <tr><td>-coreBaseURL</td><td>The base URL of the core module</td></tr>
+	 *      <tr><td>-accessionNumber</td><td>The unique identifier for this record in the CMS</td></tr>
+	 *      <tr><td>-institutionURL</td><td>The institutions URL</td></tr>
+	 *      <tr><td>-recordType</td><td>The type of record that we are generating a PID for</td></tr>
+     *  </table>
 	 */
 	public static void main(String [] args)
 	{

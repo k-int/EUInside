@@ -207,18 +207,22 @@ public class SetManager extends BaseModule {
 	 * Exercises all the methods with the passed in parameters
 	 * 
 	 * @param args The parameters passed in on the command line, valid parameters are:<br/><br/>
-	 * 		-coreBaseURL ... The base URL of the core module<br/>
-	 * 		-all .............. Call all methods<br/>
-	 * 		-commit ........... Call the commit method<br/>
-	 * 		-deleteAll ........ Do we delete all records prior to the update<br/>
-	 * 		-filename ......... A filename to be supplied to the update call (may occur multiple times)<br/>
-	 * 		-list ............. Call the list method<br/>
-	 * 		-provider ......... Who the provider of the records is<br/>
-	 * 		-recordToDelete ... The identifier for a record to be deleted (maybe occur multiple times)<br/>
-	 * 		-set .............. The set that we want to action for the specified provider<br/>
-	 * 		-status ........... Call the status method<br/>
-	 * 		-update ........... Call the update method<br/>
-	 * 		-validate ......... Call the validate method
+	 *  <table width="100%">
+	 * 	    <col width="15%"/>
+	 *      <col width="85%"/>
+	 *      <tr><td>-coreBaseURL</td><td>The base URL of the core module</td></tr>
+	 * 		<tr><td>-all</td><td>Call all methods</td></tr>
+	 * 		<tr><td>-commit</td><td>Call the commit method</td></tr>
+	 * 		<tr><td>-deleteAll</td><td>Do we delete all records prior to the update</td></tr>
+	 * 		<tr><td>-filename</td><td>A filename to be supplied to the update call (may occur multiple times)</td></tr>
+	 * 		<tr><td>-list</td><td>Call the list method</td></tr>
+	 * 		<tr><td>-provider</td><td>Who the provider of the records is</td></tr>
+	 * 		<tr><td>-recordToDelete</td><td>The identifier for a record to be deleted (maybe occur multiple times)</td></tr>
+	 * 		<tr><td>-set</td><td>The set that we want to action for the specified provider</td></tr>
+	 * 		<tr><td>-status</td><td>Call the status method</td></tr>
+	 * 		<tr><td>-update</td><td>Call the update method</td></tr>
+	 * 		<tr><td>-validate</td><td>Call the validate method</td></tr>
+     *  </table>
 	 */
 	public static void main(String [] args)
 	{
