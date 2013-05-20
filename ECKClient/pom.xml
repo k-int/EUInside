@@ -35,6 +35,7 @@
 		  <source>1.7</source>
 		  <sourcepath>src</sourcepath>
 		  <splitindex>true</splitindex>
+          <stylesheetfile>src/javadocStylesheet.css</stylesheetfile>
 		  <subpackages>com.k_int.euinside.client</subpackages>
 		  <use>true</use>
 		  <version>true</version>

@@ -76,7 +76,7 @@ public class Validate extends BaseModule{
 	 * Exercises all the methods with the supplied parameters
 	 * 
 	 * @param args The parameters passed in on the command line, valid parameters are:<br/><br/>
-	 *  <table width="100%">
+	 *  <table class="arguments">
 	 * 	    <col width="15%"/>
 	 *      <col width="85%"/>
 	 *      <tr><td>-coreBaseURL</td><td>The base URL of the core module</td></tr>
