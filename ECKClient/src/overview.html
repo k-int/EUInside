@@ -1,0 +1,93 @@
+<HTML>
+	<BODY>
+		<style type="text/css">
+			table.dependentLibraries {
+				border-width: 3px;
+				border-spacing: 2px;
+				border-style: outset;
+				border-color: gray;
+				border-collapse: separate;
+				background-color: white;
+				font-weight:bold;
+			}
+			table.dependentLibraries th {
+				border-width: 1px;
+				padding: 1px;
+				border-style: inset;
+				border-color: gray;
+				background-color: white;
+				-moz-border-radius: ;
+				font-weight:bold;
+			}
+			table.dependentLibraries td {
+				border-width: 1px;
+				padding: 1px;
+				border-style: inset;
+				border-color: gray;
+				background-color: white;
+				-moz-border-radius: ;
+				color: green
+			}
+		</style>
+
+		Provides the classes necessary to interface with the ECKCore using a java 7 client 
+		<p>
+			All interfaces to the ECK functionality are static methods with each module having its own interface
+			<br/>
+       		<ul>
+           		<li>{@link com.k_int.euinside.client.module.metadataDefinition.Definition Metadata Definition}</li>
+           		<li>{@link com.k_int.euinside.client.module.pidgenerate.PIDGenerate PID Generation}</li>
+           		<li>{@link com.k_int.euinside.client.module.preview.Preview Preview}</li>
+           		<li>{@link com.k_int.euinside.client.module.setmanager.SetManager Set Manager}</li>
+           		<li>{@link com.k_int.euinside.client.module.validation.Validate Validation (monguz)}</li>
+           		<li>{@link com.k_int.euinside.client.module.validation.Validate2 Validation (semantika)}</li>
+       		</ul>
+       		<br/>
+       		The client library is dependent upon the following libraries:
+       		<br/>
+       		<br/>
+       		<table border="1" class="dependentLibraries">
+       			<tr>
+       				<th>Group</th>
+       				<th>Artifact</th>
+       				<th>Version</th>
+       			</tr>
+       			<tr>
+       				<td>com.fasterxml.jackson.core</td>
+       				<td>jackson-annotations</td>
+       				<td>2.2.1</td>
+       			</tr>
+       			<tr>
+       				<td>com.fasterxml.jackson.core</td>
+       				<td>jackson-databind</td>
+       				<td>2.2.1</td>
+       			</tr>
+       			<tr>
+       				<td>commons-logging</td>
+       				<td>commons-logging</td>
+       				<td>1.1.2</td>
+       			</tr>
+       			<tr>
+       				<td>javax.servlet</td>
+       				<td>servlet-api</td>
+       				<td>2.5</td>
+       			</tr>
+       			<tr>
+       				<td>log4j</td>
+       				<td>log4j</td>
+       				<td>1.2.17</td>
+       			</tr>
+       			<tr>
+       				<td>org.apache.httpcomponents</td>
+       				<td>httpclient</td>
+       				<td>4.2.5</td>
+       			</tr>
+       			<tr>
+       				<td>org.apache.httpcomponents</td>
+       				<td>httpmime</td>
+       				<td>4.2.1</td>
+       			</tr>
+       		</table>
+		</p>
+	</BODY>
+</HTML>

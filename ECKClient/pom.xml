@@ -22,8 +22,6 @@
         <version>2.9</version>
         <configuration>
           <encoding>UTF-8</encoding>
-          <show>public</show>
-          <nohelp>true</nohelp>
           <links>
           	<link>http://hc.apache.org/httpcomponents-client-ga/httpclient/apidocs</link>
 			<link>http://hc.apache.org/httpcomponents-client-ga/httpmime/apidocs</link>
@@ -31,12 +29,15 @@
 			<link>http://docs.oracle.com/javase/7/docs/api</link>
 			<link>http://docs.oracle.com/javaee/6/api</link>
           </links>
+          <nohelp>true</nohelp>
+          <overview>src/overview.html</overview>
+          <show>public</show>
 		  <source>1.7</source>
 		  <sourcepath>src</sourcepath>
 		  <splitindex>true</splitindex>
+		  <subpackages>com.k_int.euinside.client</subpackages>
 		  <use>true</use>
 		  <version>true</version>
-		  <subpackages>com.k_int.euinside.client</subpackages>
         </configuration>
       </plugin>
     </plugins>

@@ -13,7 +13,7 @@
 	
 	        	<div class="hero-unit row">
 	          		<div class="page-header span12">
-	            		<h1>Welcome to the ECK Core prototype system</h1>
+	            		<h1>Welcome to the ECK Core (iteration 2) prototype system</h1>
 	        	  	</div>
 	          		<p>The gateway for the modules used by ECK</p>
 	        	</div>
