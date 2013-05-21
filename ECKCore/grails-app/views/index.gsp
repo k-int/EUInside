@@ -22,15 +22,15 @@
 	          		<div class="span12">
 	            		<h2>Available Modules</h2>
 	            		<ul>
-	                		<li><a href="${ModulesService.getModuleExternalPath(ModulesService.getCoreModuleCode())}/${ModulesService.getDefinitionModuleCode()}/">Metadata Definition</a></li>
-	                		<li><a href="http://euinside.semantika.si/pid/Generate">PID Generation</a></li>
-	                		<li><a href="http://app.asp.hunteka.hu:5080/eck-preview-servlet/index.html">Preview</a></li>
-	                		<li><a href="${ModulesService.getModuleExternalPath(ModulesService.getCoreModuleCode())}/${ModulesService.getSetManagerModuleCode()}/">Set Manager</a></li>
-	                		<li><a href="http://app.asp.hunteka.hu:5080/eck-validation-servlet/index.html">Validation (monguz)</a></li>
-	                		<li><a href="http://euinside.semantika.si/">Validation (semantika)</a></li>
+	                		<li><g:link base="${ModulesService.getModuleExternalPath(ModulesService.getCoreModuleCode())}/${ModulesService.getDefinitionModuleCode()}/">Metadata Definition</g:link></li>
+	                		<li><g:link base="http://euinside.semantika.si/pid/Generate">PID Generation</g:link></li>
+	                		<li><g:link base="http://app.asp.hunteka.hu:5080/eck-preview-servlet/index.html">Preview</g:link></li>
+	                		<li><g:link base="${ModulesService.getModuleExternalPath(ModulesService.getCoreModuleCode())}/${ModulesService.getSetManagerModuleCode()}/">Set Manager</g:link></li>
+	                		<li><g:link base="http://app.asp.hunteka.hu:5080/eck-validation-servlet/index.html">Validation (monguz)</g:link></li>
+	                		<li><g:link base="http://euinside.semantika.si/">Validation (semantika)</g:link></li>
 	            		</ul>
 	          		</div>
-	
+	            Documentation for the Java 7 Client for the ECKCore can be found <g:link base="http://euinside.k-int.com/ECKClient/apidocs">here</g:link>
 		        </div>
 	    	</section>
     	</div>
