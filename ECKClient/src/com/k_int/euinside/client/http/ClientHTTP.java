@@ -32,6 +32,9 @@ import com.k_int.euinside.client.BaseClient;
 import com.k_int.euinside.client.Error;
 import com.k_int.euinside.client.HttpResult;
 
+/**
+ * The ClientHTTP class wraps the basic http GET and POST functionality 
+ */
 public class ClientHTTP extends BaseClient {
 	private static Log log = LogFactory.getLog(ClientHTTP.class);
 
@@ -42,11 +45,30 @@ public class ClientHTTP extends BaseClient {
 	
 	// Why isn't this part of the ContentType class
 	static private String CONTENT_TYPE_APPLICATION_ZIP = "application/zip";
-	
+
+	/**
+	 * Performs a HTTP PUT to send the supplied data to the given path
+	 * 
+	 * @param path The URL / Path of where the data needs to be sent
+	 * @param xmlData An array of xml files that are to be sent
+	 * @param zipData An array of zip files that are to be sent
+	 * 
+	 * @return A HttpResult object that can be interrogated to see if the call was successful or not
+	 */
 	static public HttpResult sendBytes(String path, ArrayList<byte[]> xmlData, ArrayList<byte[]> zipData) {
 		return(sendBytes(path, xmlData, zipData, null));
 	}
 
+	/**
+	 * Performs a HTTP PUT to send the supplied data to the given path
+	 * 
+	 * @param path The URL / Path of where the data needs to be sent
+	 * @param xmlData An array of xml files that are to be sent
+	 * @param zipData An array of zip files that are to be sent
+	 * @param attributes An array of attribute name / value pairs that need to be added to the path 
+	 * 
+	 * @return A HttpResult object that can be interrogated to see if the call was successful or not
+	 */
 	static public HttpResult sendBytes(String path, ArrayList<byte[]> xmlData, ArrayList<byte[]> zipData, ArrayList<BasicNameValuePair> attributes) {
 		HttpResult result = new HttpResult();
 		
@@ -71,10 +93,27 @@ public class ClientHTTP extends BaseClient {
 		return(result);
 	}
 
+	/**
+	 * Performs a HTTP PUT to send the supplied files to the given path
+	 * 
+	 * @param path The URL / Path of where the files need to be sent
+	 * @param filenames An array of filenames that need to be sent
+	 * 
+	 * @return A HttpResult object that can be interrogated to see if the call was successful or not
+	 */
 	static public HttpResult sendFiles(String path, ArrayList<String> filenames) {
 		return(sendFiles(path, filenames, null));
 	}
 	
+	/**
+	 * Performs a HTTP PUT to send the supplied files to the given path
+	 * 
+	 * @param path The URL / Path of where the files need to be sent
+	 * @param filenames An array of filenames that need to be sent
+	 * @param attributes An array of attribute name / value pairs that need to be added to the path 
+	 * 
+	 * @return A HttpResult object that can be interrogated to see if the call was successful or not
+	 */
 	static public HttpResult sendFiles(String path, ArrayList<String> filenames, ArrayList<BasicNameValuePair> attributes) {
 		HttpResult result = new HttpResult();
 		
@@ -117,11 +156,27 @@ public class ClientHTTP extends BaseClient {
 		}
 		return(result);
 	}
-	
+
+	/**
+	 * Performs a HTTP GET
+	 *  
+	 * @param path The url / path to perform the GET operation against
+	 * 
+	 * @return A HttpResult object that can be interrogated to see if the call was successful or not
+	 */
 	static public HttpResult send(String path) {
 		return(send(path, null, null));
 	}
-	
+
+	/**
+	 * Performs a HTTP operation against the specified  path
+	 * 
+	 * @param path The URL path to perform the operation against 
+	 * @param requestEntity The entities to be posted, if this field is null then a GET will occur
+	 * @param attributes An array of attribute name / value pairs that need to be added to the path
+	 *  
+	 * @return A HttpResult object that can be interrogated to see if the call was successful or not
+	 */
 	static public HttpResult send(String path, MultipartEntity requestEntity, ArrayList<BasicNameValuePair> attributes) {
 		HttpResult result = new HttpResult();
 		if (attributes != null) {
@@ -149,7 +204,7 @@ public class ClientHTTP extends BaseClient {
 	        		httpRequest = httpPost;
 	        	}
 
-	            System.out.println("executing request " + httpRequest.getRequestLine());
+	            log.info("executing request " + httpRequest.getRequestLine());
 	            try {
 		            HttpResponse response = httpclient.execute(httpRequest);
 		            HttpEntity resEntity = response.getEntity();

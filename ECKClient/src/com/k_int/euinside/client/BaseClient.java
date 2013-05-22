@@ -1,7 +1,7 @@
 package com.k_int.euinside.client;
 
 /**
- * The base client class that holds the methods that are shared by all the clients 
+ * The BaseClient class contains the functionality that is shared by all the clients 
  */
 public class BaseClient {
 	private static String coreBaseURL = null;

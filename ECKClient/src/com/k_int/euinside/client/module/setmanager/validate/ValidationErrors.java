@@ -14,6 +14,8 @@ public class ValidationErrors extends ArrayList<ValidationError>{
 
 	/**
 	 * Formats the members of this class in a simple to view way
+	 * 
+	 * @return The formatted string
 	 */
 	public String toString() {
 		String result = "Class: ValidationErrors\n";

@@ -70,6 +70,8 @@ public class ValidationError {
 
 	/**
 	 * Formats the members of this class in a simple to view way
+	 * 
+	 * @return The formatted string
 	 */
 	public String toString() {
 		String result = "Class: ValidationError:\n"; 

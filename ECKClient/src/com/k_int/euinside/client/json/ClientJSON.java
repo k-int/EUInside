@@ -13,6 +13,11 @@ import org.apache.commons.logging.LogFactory;
 
 import com.k_int.euinside.client.BaseClient;
 
+/**
+ * The ClientJSON class handles json manipulation for us,
+ * either through results from a http call or being passed a json string,
+ * both methods return class instances of the specified type if the json is of the correct format. 
+ */
 public class ClientJSON extends BaseClient {
 	private static Log log = LogFactory.getLog(ClientJSON.class);
 
@@ -22,7 +27,15 @@ public class ClientJSON extends BaseClient {
 		mapper = new ObjectMapper();
 		mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 	}
-	
+
+	/**
+	 * Takes a json string and turns it into instances of the specified class
+	 * 
+	 * @param json The json string that needs to be interpreted
+	 * @param resultType The class that the json string needs to be interpreted as
+	 * 
+	 * @return An instance of the specified class or null if the json was not in the correct format for this class
+	 */
 	static public <T> T readJSONString(String json, Class<T> resultType) {
 		T result = null;
 		try {
@@ -37,6 +50,14 @@ public class ClientJSON extends BaseClient {
 		return(result);
 	}
 	
+	/**
+	 * Takes a url / path and performs a HTTP GET operation and turns the resulting json string into instances of the specified class
+	 * 
+	 * @param path The url / path that we need to perform the http get against to obtain the json
+	 * @param resultType The class that the json string needs to be interpreted as
+	 * 
+	 * @return An instance of the specified class or null if the json was not in the correct format for this class or there was an http error
+	 */
 	static public <T> T readJSON(String path, Class<T> resultType) {
 		T result = null;
 		if (getCoreBaseURL() == null) {
