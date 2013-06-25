@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ECKClient</groupId>
   <artifactId>ECKClient</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <name>ECKClient</name>
   <description>Client librart to support the ECK modules</description>
   <build>
@@ -12,8 +12,9 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.0</version>
         <configuration>
-          <source/>
-          <target/>
+          <source>1.7</source>
+          <target>1.7</target>
+          <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
       <plugin>
@@ -79,5 +80,33 @@
   		<artifactId>jackson-annotations</artifactId>
   		<version>2.2.1</version>
   	</dependency>
+  	<dependency>
+  		<groupId>commons-io</groupId>
+  		<artifactId>commons-io</artifactId>
+  		<version>2.4</version>
+  	</dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <id>k-int</id>
+      <name>k-int Development Repository</name>
+      <url>http://developer.k-int.com/maven2/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>k-int-release-repo</id>
+      <name>k-int Releases Repositoy</name>
+      <url>http://developer.k-int.com/nexus-webapp-1.4.0/content/repositories/releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
+  <scm>
+    <connection>scm:git:git://github.com/k-int/EUInside.git</connection>
+    <developerConnection>scm:git:https://github.com/k-int/EUInside.git</developerConnection>
+    <url>https://github.com/k-int/EUInside</url>
+  </scm>
 </project>
